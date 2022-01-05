@@ -1,8 +1,7 @@
-#Magrathea#
+# Magrathea #
 
 (Excerpt from The Hitchhiker's Guide to the Galaxy, Page 634784, Section 5a, Entry: MAGRATHEA)
-
-Planet interior structure code for astronomers, planetary scientists, mice, and more. Magrathea (Huang, Rice, and Steffen 2022).  Coming soon.
+Planet interior structure code for astronomers, planetary scientists, mice, and more by Huang, Rice, and Steffen (2022).
 
 ## What is this repository for? ##
 
