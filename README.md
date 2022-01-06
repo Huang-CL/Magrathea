@@ -7,11 +7,11 @@ Planet interior structure code for astronomers, planetary scientists, mice, and 
 
 ## What is this repository for? ##
 
-A planet structure code which considers the case of fully differentiated interiors with a terrestrial bulk composition.
-The code integrates the hydrostatic equation inside out.
-Given the mass of each layer, the code iterates the center pressure in order to shoot for the correct planet radius.
-The code support 4 layers in maximum.  Iron, Rocky, Ice, and ideal gas.  
-The code was initially developed by Chenliang Huang and David R. Rice at UNLV starting in 2017.
+A planet structure code which considers the case of fully differentiated interiors.
+The code integrates the hydrostatic equation in order to shoot for the correct planet radius givent the mass in each layer.
+The code returns the pressure, temperature, density, phase, and radius at steps of enclosed mass.
+The code support 4 layers: core, mantle, hydrosphere, and atmosphere. Each layer has a phase diagram with equations of state chosen for each phase.  
+The code was developed by Chenliang Huang and David R. Rice at UNLV starting in 2017.
 
 
 ## How do I get set up? ##
@@ -29,7 +29,7 @@ On Ubuntu system, the gsl package can also be installed from Ubuntu repository u
 
 If the gsl library is not installed globally (under /usr/local/ or equivalent), the actual path toward the gsl headers (e.g. `~/include` or `~/gsl/include`) and gsl library (e.g. `~/lib` or `~/gsl/lib`) should be put in the `Makefile` following `-I` in `CFLAGS` and `-L` in `LDFLAGS`.  Note: The path after `-I` should end with `/include`, not `/include/gsl`.  The path of headers and libraries can be find with `gsl-config --cflags` and ` gsl-config --libs`.
 
-On Windows system, download the [cyqwin terminal](https://www.cygwin.com/). Include package 'gsl' upon installation. We suggest including all packages in devel, science, math, and python along with a text editor. Directory will be found in: /cygdrive/c/Users/USERNAME/PATH_TO_UNLVPLANET.
+On Windows system, download the [cyqwin terminal](https://www.cygwin.com/). Include package 'gsl' upon installation. We suggest including all packages in devel, science, math, and python along with a text editor. Directory will be found in: /cygdrive/c/Users/USERNAME/PATH_TO_MAGRATHEA.
 
 For the first time, or working with a new computer, compile the code with `make -B`, or `make clean` then `make`.
 Later on, compile the code with `make`.
@@ -40,11 +40,13 @@ If an error message like "error while loading shared libraries: libgsl.so.23: ca
 
 ## Configuration ##
 
+Magrathea.pdf (Huang, Rice, & Steffen 2022) contains the most compelete details for using the first version of the code.
+
 ### Pick phases ###
 
 The build-in phases are listed in the a file `EOSlist.h`.  The detailed definition of each one can be found in `EOSlist.cpp`.
 
-To pick desired phases, change the corresponding return values of `find_water_phase`, `find_Fe_phase`, or `find_Si_phase` in `phase.cpp` at the desired pressure and temperature according to the phase diagram.
+To pick desired phases, change the corresponding return values of `find_water_phase`, `find_Fe_phase`, or `find_Si_phase` in `phase.cpp` using conditionals to set the desired pressure and temperature according to the phase diagram.
 
 ### Adding new phases ###
 
@@ -55,30 +57,16 @@ New phases should be listed into the file `EOSlist.h` and defined in `EOSlist.cp
 ## Capability and Output ##
 
 ### Construct a planet ###
-The basic capability. Calculate the structure of a planet given the mass of each layer (Iron, Rock, Water, Gas).
-Adjust the parameters of getmass function in `main.cpp`.  Four input parameters are the planet core (Fe) mass, mantle mass, ice mass, and ideal gas mass in the unit of Earth mass.
+The basic capability. Calculate the structure of a planet given the mass of each layer.
+Adjust the parameters of getmass function in `main.cpp`.  Four input parameters are the planet core mass, mantle mass, hydrosphere mass, and atmosphere mass in the unit of Earth mass. Temperature of the surface and discontinuities in temperature at layer boundaries can also be inputted.
 The planet structure will be output as an ASCII file with pressure (GPa), interior mass (Earth mass), density (g cm$^{-3}$), temperature (K), and phase of composition as a function of radius (Earth radius).
-The filename can be set in the next line.
 
 
 ## FAQ ##
 Don't Panic.
 
 
-[](* Summary of set up)
-[](* Configuration)
-[](* Dependencies)
-[](* Database configuration)
-[](* How to run tests)
-[](* Deployment instructions)
+### Who do I talk to? ###
 
-[](### Contribution guidelines ###)
-
-[](* Writing tests)
-[](* Code review)
-[](* Other guidelines)
-
-[](### Who do I talk to? ###)
-
-[](* Repo owner or admin)
-[](* Other community or team contact)
+Chenliang Huang, University of Arizona [website](https://www.lpl.arizona.edu/~huangcl/)
+David R. Rice, University of Nevada, Las Vegas [website](https://www.physics.unlv.edu/~drice986/)
