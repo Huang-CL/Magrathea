@@ -1,94 +1,32 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-
-<head>
-<title>README.html</title>
-
-</head>
-
-<body>
-
-<h1>README</h1>
-
-<h2>What is this repository for?</h2>
-
-<p>A planet structure code which considers the case of fully differentiated interiors with a terrestrial bulk composition.
-The code integrates the hydrostatic equation inside out.
-Given the mass of each layer, the code iterates the center pressure in order to shoot for the correct planet radius.
-The code support 4 layers in maximum.  Iron, Rocky, Ice, and ideal gas. <br />
-The code was initially developed by Chenliang Huang at UNLV in 2017.</p>
-
-<p><a href="* Quick summary"></a>
-<a href="* Version"></a>
-<a href="* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo"></a>)</p>
-
-<h2>How do I get set up?</h2>
-
-<p>To run the code, one needs to <a href="https://www.gnu.org/software/gsl/">install the gsl library</a>(>= v2.0).  Download the compressed package from the <a href="ftp://ftp.gnu.org/gnu/gsl/">GNU ftp site</a>.  Extract the file and install the package following the instruction in the <code>INSTALL</code> file.  For the simplest case, </p>
-
+<h1 id="magrathea">Magrathea</h1>
+<p>(Excerpt from The Hitchhiker’s Guide to the Galaxy, Page 634784, Section 5a, Entry: MAGRATHEA)</p>
+<p>Planet interior structure code for astronomers, planetary scientists, mice, and more by Huang, Rice, and Steffen (2022).</p>
+<h2 id="what-is-this-repository-for">What is this repository for?</h2>
+<p>A planet structure code which considers the case of fully differentiated interiors. The code integrates the hydrostatic equation in order to shoot for the correct planet radius givent the mass in each layer. The code returns the pressure, temperature, density, phase, and radius at steps of enclosed mass. The code support 4 layers: core, mantle, hydrosphere, and atmosphere. Each layer has a phase diagram with equations of state chosen for each phase.<br />
+The code was developed by Chenliang Huang and David R. Rice at UNLV starting in 2017.</p>
+<h2 id="how-do-i-get-set-up">How do I get set up?</h2>
+<p>To run the code, one needs to <a href="https://www.gnu.org/software/gsl/">install the gsl library</a>(&gt;= v2.0). Download the compressed package from the <a href="ftp://ftp.gnu.org/gnu/gsl/">GNU ftp site</a>. Extract the file and install the package following the instruction in the <code>INSTALL</code> file. For the simplest case,</p>
 <pre><code>sudo ./configure
 sudo make
-sudo make install
-</code></pre>
-
-<p>should configure, build, and install the gsl package.  A few prerequisites, such as <code>g++</code>, <code>make</code>, <code>make-guile</code>, may need to be installed following the error messages throughout the process. </p>
-
-<p>On Ubuntu system, the gsl package can also be installed from Ubuntu repository using 
-<code>sudo apt-get install libgsl23 libgsl-dev gsl-bin</code>.</p>
-
-<p>If the gsl library is not installed globally (under /usr/local/ or equivalent), the actual path toward the gsl headers (e.g. <code>~/include</code> or <code>~/gsl/include</code>) and gsl library (e.g. <code>~/lib</code> or <code>~/gsl/lib</code>) should be put in the <code>Makefile</code> following <code>-I</code> in <code>CFLAGS</code> and <code>-L</code> in <code>LDFLAGS</code>.  Note: The path after <code>-I</code> should end with <code>/include</code>, not <code>/include/gsl</code>.  The path of headers and libraries can be find with <code>gsl-config --cflags</code> and <code>gsl-config --libs</code>.</p>
-
-<p>On Windows system, download the <a href="https://www.cygwin.com/">cyqwin terminal</a>. Include package 'gsl' upon installation. We suggest including all packages in devel, science, math, and python along with a text editor. Directory will be found in: /cygdrive/c/Users/USERNAME/PATH<em>TO</em>UNLVPLANET.</p>
-
-<p>For the first time, or working with a new computer, compile the code with <code>make -B</code>, or <code>make clean</code> then <code>make</code>.
-Later on, compile the code with <code>make</code>.
-The name of the compiled program is called planet by default.  To run the compiled program, run
-<code>./planet</code>.</p>
-
-<p>If an error message like "error while loading shared libraries: libgsl.so.23: cannot open shared object file: No such file or directory" is reported when running the code, add <code>export LD_LIBRARY_PATH=/usr/local/lib</code> (directory of gsl library files) to the <code>.bashrc</code> file, or add <code>setenv LD_LIBRARY_PATH /usr/local/lib</code> to the <code>.cshrc</code> file.</p>
-
-<h2>Configuration</h2>
-
-<h3>Pick phases</h3>
-
-<p>The build-in phases are listed in the a file <code>EOSlist.h</code>.  The detailed definition of each one can be found in <code>EOSlist.cpp</code>.</p>
-
-<p>To pick desired phases, change the corresponding return values of <code>find_water_phase</code>, <code>find_Fe_phase</code>, or <code>find_Si_phase</code> in <code>phase.cpp</code> at the desired pressure and temperature according to the phase diagram.</p>
-
-<h3>Adding new phases</h3>
-
-<p>The code takes new EOS in the format of (1) 3rd order Birch-Murnaghan, (2) 4th order Birch-Murnaghan, (3) Vinet, (4) Holzapfel, (5) Keane, (6) input table from file for interpolation, (7) user-defined function.
-New phases should be listed into the file <code>EOSlist.h</code> and defined in <code>EOSlist.cpp</code>.</p>
-
-<h2>Capability and Output</h2>
-
-<h3>Construct a planet</h3>
-
-<p>The basic capability. Calculate the structure of a planet given the mass of each layer (Iron, Rock, Water, Gas).
-Adjust the parameters of getmass function in <code>main.cpp</code>.  Four input parameters are the planet core (Fe) mass, mantle mass, ice mass, and ideal gas mass in the unit of Earth mass.
-The planet structure will be output as an ASCII file with pressure (GPa), interior mass (Earth mass), density (g cm$^{-3}$), temperature (K), and phase of composition as a function of radius (Earth radius).
-The filename can be set in the next line.</p>
-
-<p><a href="* Summary of set up"></a>
-<a href="* Configuration"></a>
-<a href="* Dependencies"></a>
-<a href="* Database configuration"></a>
-<a href="* How to run tests"></a>
-<a href="* Deployment instructions"></a></p>
-
-<p><a href="### Contribution guidelines ###"></a></p>
-
-<p><a href="* Writing tests"></a>
-<a href="* Code review"></a>
-<a href="* Other guidelines"></a></p>
-
-<p><a href="### Who do I talk to? ###"></a></p>
-
-<p><a href="* Repo owner or admin"></a>
-<a href="* Other community or team contact"></a></p>
-
-</body>
-</html>
+sudo make install</code></pre>
+<p>should configure, build, and install the gsl package. A few prerequisites, such as <code>g++</code>, <code>make</code>, <code>make-guile</code>, may need to be install following the error messages throughout the process.</p>
+<p>On Ubuntu system, the gsl package can also be installed from Ubuntu repository using <code>sudo apt-get install libgsl23 libgsl-dev gsl-bin</code>.</p>
+<p>If the gsl library is not installed globally (under /usr/local/ or equivalent), the actual path toward the gsl headers (e.g. <code>~/include</code> or <code>~/gsl/include</code>) and gsl library (e.g. <code>~/lib</code> or <code>~/gsl/lib</code>) should be put in the <code>Makefile</code> following <code>-I</code> in <code>CFLAGS</code> and <code>-L</code> in <code>LDFLAGS</code>. Note: The path after <code>-I</code> should end with <code>/include</code>, not <code>/include/gsl</code>. The path of headers and libraries can be find with <code>gsl-config --cflags</code> and <code>gsl-config --libs</code>.</p>
+<p>On Windows system, download the <a href="https://www.cygwin.com/">cyqwin terminal</a>. Include package ‘gsl’ upon installation. We suggest including all packages in devel, science, math, and python along with a text editor. Directory will be found in: /cygdrive/c/Users/USERNAME/PATH_TO_MAGRATHEA.</p>
+<p>For the first time, or working with a new computer, compile the code with <code>make -B</code>, or <code>make clean</code> then <code>make</code>. Later on, compile the code with <code>make</code>. The name of the compiled program is called planet by default. To run the compiled program, run <code>./planet</code>.</p>
+<p>If an error message like “error while loading shared libraries: libgsl.so.23: cannot open shared object file: No such file or directory” is reported when running the code, add <code>export LD_LIBRARY_PATH=/usr/local/lib</code> (directory of gsl library files) to the <code>.bashrc</code> file, or add <code>setenv LD_LIBRARY_PATH /usr/local/lib</code> to the <code>.cshrc</code> file.</p>
+<h2 id="configuration">Configuration</h2>
+<p>Magrathea.pdf (Huang, Rice, &amp; Steffen 2022) contains the most compelete details for using the first version of the code.</p>
+<h3 id="pick-phases">Pick phases</h3>
+<p>The build-in phases are listed in the a file <code>EOSlist.h</code>. The detailed definition of each one can be found in <code>EOSlist.cpp</code>.</p>
+<p>To pick desired phases, change the corresponding return values of <code>find_water_phase</code>, <code>find_Fe_phase</code>, or <code>find_Si_phase</code> in <code>phase.cpp</code> using conditionals to set the desired pressure and temperature according to the phase diagram.</p>
+<h3 id="adding-new-phases">Adding new phases</h3>
+<p>The code takes new EOS in the format of (1) 3rd order Birch-Murnaghan, (2) 4th order Birch-Murnaghan, (3) Vinet, (4) Holzapfel, (5) Keane, (6) input table from file for interpolation, (7) user-defined function. New phases should be listed into the file <code>EOSlist.h</code> and defined in <code>EOSlist.cpp</code>.</p>
+<h2 id="capability-and-output">Capability and Output</h2>
+<h3 id="construct-a-planet">Construct a planet</h3>
+<p>The basic capability. Calculate the structure of a planet given the mass of each layer. Adjust the parameters of getmass function in <code>main.cpp</code>. Four input parameters are the planet core mass, mantle mass, hydrosphere mass, and atmosphere mass in the unit of Earth mass. Temperature of the surface and discontinuities in temperature at layer boundaries can also be inputted. The planet structure will be output as an ASCII file with pressure (GPa), interior mass (Earth mass), density (g cm<span class="math inline"><sup> − 3</sup></span>), temperature (K), and phase of composition as a function of radius (Earth radius).</p>
+<h2 id="faq">FAQ</h2>
+<p>Don’t Panic.</p>
+<h3 id="who-do-i-talk-to">Who do I talk to?</h3>
+<p>Chenliang Huang, University of Arizona <a href="https://www.lpl.arizona.edu/~huangcl/">website</a></p>
+<p>David R. Rice, University of Nevada, Las Vegas <a href="https://www.physics.unlv.edu/~drice986/">website</a></p>
