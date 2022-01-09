@@ -335,8 +335,7 @@ EOS::EOS(string phaseinput, double params[][2], double bparams[], int length, in
     exit(1);
   }
 
-  V0 *= n*NA*1E-24;
-  
+  // fitted polynomial parameters of the thermal coefficients b(V) in erg/mol.  Convert eV/atom to erg/mol need to multiply eV_erg*n*NA. For example, for MgSiO3, 0.9821 eV/atom = 4.824E12 *0.9821 erg/mol = 4.738E12 erg/mol.
   b = new double[bn];
   for (int i=0; i<bn; i++)
     b[i] = bparams[i];
@@ -379,8 +378,6 @@ void EOS::modifyEOS(double params[][2], int length)  // modify the constructed E
       break;
     case 1:
       V0=params[i][1];
-      if(eqntype>=8)		// RTpress style
-	V0 *= n*NA*1E-24;
       break;
     case 2:
       K0=params[i][1];
@@ -508,8 +505,6 @@ void EOS::modifyEOS(int index, double value)	     // modify one value of the EOS
     break;
   case 1:
     V0=value;
-    if(eqntype>=8)		// RTpress style
-      V0 *= n*NA*1E-24;
     break;
   case 2:
     K0=value;
@@ -1007,7 +1002,7 @@ double EOS::gamma0S(double V)
 }
 
 double EOS::bV(double V)
-// thermal coefficients b(V) in eV/atom (Eq.10), take volume in cm^3 / mol
+// thermal coefficients b(V) in erg/mol (Eq.10), take volume in cm^3 / mol
 {
   double sum=0;
   double Vdev = (V/V0-1);
@@ -1017,7 +1012,7 @@ double EOS::bV(double V)
 }
 
 double EOS::bVp(double V)
-// derivative of b(V) in eV mol/(cm^3 atom) (Eq. B.2), take volume in cm^3 / mol
+// derivative of b(V) in erg/cm^3 (microbar) (Eq. B.2), take volume in cm^3 / mol
 {
   double sum=0;
   double Vdev = (V/V0-1);
@@ -1036,13 +1031,13 @@ double EOS::TOS(double V)
 }
 
 double EOS::Cv (double V, double T)
-//total heat capacity in eV/atom/K (Eq. B.4), take volume in cm^3 / mol
+//total heat capacity in erg/mol/K (Eq. B.4), take volume in cm^3 / mol
 {
-  return bV(V)*fTp(T) + 1.5*kb/eV_erg;
+  return bV(V)*fTp(T) + 1.5*n*R;
 }
 
 double EOS::Spot(double V, double T)
-// potential contribution of entropy in eV/atom/K, take volume in cm^3 / mol
+// potential contribution of entropy in erg/mol/K, take volume in cm^3 / mol
 {
   return bV(V)/(beta-1)*fTp(T);
 }
@@ -1111,11 +1106,11 @@ double EOS::Press(double rho, double T)
 
   if (gsl_finite(T) && getthermal() == 8) // RTpress style
   {
-    double cf = 1E-10*eV_erg*n*NA;
-// conversion factor from eV mol/cm^3 atom to GPa
+    double cf = 1E-10;
+// conversion factor from erg/cm^3 to GPa
     double T_OS = TOS(V);
     double fTp_OS = fTp(T_OS);
-    double bVpV = bVp(V);	// in eV mol/cm^3 atom
+    double bVpV = bVp(V);	// in  erg/cm^3 (microbar)
 
     P += - cf*bVpV*fT(T) + cf*gamma0S(V)*(T-T0)/V*Cv(V,T_OS) + cf*bVpV/(beta-1)*(T*(fTp(T)-fTp_OS) - T0*(fTp(T0)-fTp_OS));
   }
@@ -1291,7 +1286,7 @@ double EOS::dTdP_S(double P, double T, double &rho_guess)
 }
 
 double P_EOS_S(double rho, void *params)
-// function used to solve volume and temperature along adiabatic temperature profile with known temperature gradient. Used in Wolf EOS. Read in V (in \AA/atom), return the difference between pressure from EOS and target P (in GPa).  Let this function equals 0 to solve for the correct rho.
+// function used to solve volume and temperature along adiabatic temperature profile with known temperature gradient.  Read in rho, return the difference between pressure from EOS and target P (in GPa).  Let this function equals 0 to solve for the correct rho.
 {
   struct EOS_params *p = (struct EOS_params *) params;
 

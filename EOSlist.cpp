@@ -2,18 +2,18 @@
 
 /*
   phasetype is the name of a phase. The comment about the EOS used for the phase should be in the parentheses separated by a space.
-0.	eqntype. 8 for RTpress style.
-1.	V0 in cm^3 / mol, or in \AA^3 /atom for RTpress style.
+0.	eqntype. 8-12 for RTpress style.
+1.	V0 in cm^3 / mol.
 	For ice, 1 \AA^3 = N_A / (2*10^24) cm^3/mol = 0.3011 cm^3/mol
 2.	K0 in GPa
 3.	K0p
 4.	K0pp in GPa ^-1
-5.	mmol in g / mol, or mean molecular weight of gas, or in g / mol for RTpress style
+5.	mmol in g / mol, or mean molecular weight of gas
 6.	P0 (GPa) the minimum pressure.  The pressure correspond to V0
 7.	Cp in 10^7 erg/g/K Heat capacity at constant pressure
 8.	Theta0 (K), a fitting parameter to Einstein temperature or Debye temperature
 9.	gamma0, a fitting parameter of Grueneisen parameter
-10.	beta, a fitting parameter of Grueneisen parameter.  In RTpress style, it represents the "m" which stands for the power-law exponent in the thermal deviation term. theoretically expected value: 0.6
+10.	beta, a fitting parameter of Grueneisen parameter.  In RTpress style, it represents the "m" which stands for the power-law exponent in the thermal deviation term.  Theoretically expected value: 0.6.
 11.	gammainf, a fitting parameter of Grueneisen parameter
 12.	gamma0p, volume derivative of the Grueneisen parameter
 13.	e0 (10^-6 K^-1), electronic contribution to Helmholtz free energy
@@ -24,6 +24,9 @@
 18.	Debye_approx, whether use Debye approximation or Einstein approximation. Debye approximation is slower but more accurate at temperature lower than Debye/Einstein temperature.  Positive number for Debye, otherwise Einstein.
 19.     thermal_type, indicates the thermal type of the phase.  0 indicates no temperature profile available, 1 indicates entropy method, 2 indicates the temperature gradient method.  The only method to set the gradient is using the modify_extern_dTdP function, 3 indicates ideal gas, 4 indicates the EOS is fitted along the isentrope, type 8 indicates RTpress style.
 20-27.  at1-at4 & ap1 - ap4
+
+
+For RTpress style of EOS, also need a _b array. They are fitted polynomial parameters of the thermal coefficients b(V) in erg/mol.  Convert eV/atom to erg/mol need to multiply eV_erg*n*NA. For example, for MgSiO3, 0.9821 eV/atom = 4.824E12 *0.9821 erg/mol = 4.738E12 erg/mol.
 */
 
 
@@ -131,8 +134,8 @@ EOS *Si_liquid = new EOS("Si liquid (Mosenfelder)", Si_liquid_array, sizeof(Si_l
 // -----------------------------------
 // MgSiO3, liquid, Wolf & Bower 2018, Table 1 S11, Using RTpress structure
 
-double Si_Liquid_Wolf_array[][2] = {{0, 10}, {1, 12.949}, {2, 13.2}, {3, 8.238}, {5, mMg+mSi+3*mO}, {9, 0.1899}, {10, 0.6}, {12, -1.94}, {15, 5},  {17, 3000}};
-double Si_Liquid_Wolf_b[] = {0.9821, 0.615, 1.31, -3.0, -4.1};
+double Si_Liquid_Wolf_array[][2] = {{0, 10}, {1, 38.99}, {2, 13.2}, {3, 8.238}, {5, mMg+mSi+3*mO}, {9, 0.1899}, {10, 0.6}, {12, -1.94}, {15, 5},  {17, 3000}};
+double Si_Liquid_Wolf_b[] = {4.738E12, 2.97E12, 6.32E12, -1.4E13, -2.0E13};
 
 EOS *Si_Liquid_Wolf = new EOS("Si liquid (Wolf)", Si_Liquid_Wolf_array, Si_Liquid_Wolf_b, sizeof(Si_Liquid_Wolf_array)/2/sizeof(Si_Liquid_Wolf_array[0][0]), sizeof(Si_Liquid_Wolf_b)/sizeof(Si_Liquid_Wolf_b[0]));
 

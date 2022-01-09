@@ -73,9 +73,9 @@ struct EOS
   double gamma0S (double V);
   // Grueneisen parameter along the reference adiabat (eq A.3), take volume in cm^3 / mol
   double bV(double V);
-  // thermal coefficients b(V) (Eq.10) in eV/atom, take volume in cm^3 / mol
+  // thermal coefficients b(V) (Eq.10) in erg/mol, take volume in cm^3 / mol
   double bVp(double V);
-  // derivative of b(V) (Eq. B.2) eV mol/(cm^3 atom), take volume in cm^3 / mol
+  // derivative of b(V) (Eq. B.2) erg/cm^3 (microbar), take volume in cm^3 / mol
   double TOS(double V);
   // reference adiabat temperature profile (Eq. 7), take volume in cm^3 / mol
   double fT (double T) {return pow(T/T0, beta) -1;}
@@ -83,9 +83,9 @@ struct EOS
   double fTp (double T) {return beta/T0*pow(T/T0, beta-1);}
   // thermal deviation from the reference temperature (Eq. 9)
   double Cv (double V, double T);
-  //total heat capacity in eV/atom/K (Eq. B.4), take volume in cm^3 / mol
+  //total heat capacity in erg/mol/K (Eq. B.4), take volume in cm^3 / mol
   double Spot(double V, double T);
-  // potential contribution of entropy in eV/atom/K, take volume in cm^3 / mol
+  // potential contribution of entropy in erg/mol/K, take volume in cm^3 / mol
   double gamma (double V, double T);
   // Grueneisen parameter (Eq. 17), take volume in cm^3 / mol
   double Press (double rho, double T);
@@ -109,7 +109,7 @@ private:
   int thermal_type;		       // Indicates the thermal type of the phase.  0 indicates no temperature profile available, 1 indicates entropy method, 2 indicates the temperature gradient method, 3 indicates ideal gas, 4 indicates the EOS is fitted along the isentrope, 5 indicates no Theta0, 6 indicates has Theta 0 but no electron pressure, 7 indicates has electron pressure as well, type 8, RTpress style
   double *rhotable, *Ptable;	// density table in cgs, Ptable in GPa.
   int bn;				// number of indices of b
-  double* b;				// fitted polynomial parameters of the thermal coefficients b(V) in eV/atom
+  double* b;				// fitted polynomial parameters of the thermal coefficients b(V) in erg/mol.  Convert eV/atom to erg/mol need to multiply eV_erg*n*NA. For example, for MgSiO3, 0.9821 eV/atom = 4.824E12 *0.9821 erg/mol = 4.738E12 erg/mol.
 
   gsl_interp_accel *acc; // The gsl interpolation accelerator.
   gsl_spline *spline; // The gsl workspace objects
@@ -118,7 +118,7 @@ private:
 /*
   phasetype is the name of a phase. The comment about the EOS used for the phase should be in the parentheses separated by a space.
 0.	eqntype. 8 for RTpress style.
-1.	V0 in cm^3 / mol. For RTpress style, the input is in \AA^3 /atom and the number would be converted to cm^3/mol by the constructor
+1.	V0 in cm^3 / mol. 
 	For ice, 1 \AA^3 = N_A / (2*10^24) cm^3/mol = 0.3011 cm^3/mol
 2.	K0 in GPa
 3.	K0p
