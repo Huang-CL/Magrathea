@@ -53,6 +53,17 @@ To pick desired phases, change the corresponding return values of `find_water_ph
 The code takes new EOS in the format of (1) 3rd order Birch-Murnaghan, (2) 4th order Birch-Murnaghan, (3) Vinet, (4) Holzapfel, (5) Keane, (6) input table from file for interpolation, (7) user-defined function.
 New phases should be listed into the file `EOSlist.h` and defined in `EOSlist.cpp`.
 
+### Useful unit conversions ###
+
+The input parameters required to create an EOS in the program are typically in cgs units.  I list of input variables and their units can be found in the appendix table in Magrathea.pdf.  However, the EOS measurement/calculation article may list their result in different units.  Thus, the following unit conversions maybe helpful.
+
+In the equations below, *m* is the number of formula units per unit cell. For example, cubic ice-VII (space group Pn3m) has two water molecules per unit cell, so *m=2*.
+*n* is the number atoms per molecule formula. For example, MgSiO<sub>3</sub> has 5 atoms in a molecule, so *n=5*.
+
+
+* 1 &#8491;<sup>3</sup>/cell = 10<sup>-24</sup>N<sub>A</sub>/m cm<sup>3</sup>/mol = 0.6022/m cm<sup>3</sup>/mol.
+* 1 &#8491;<sup>3</sup>/atom = 10<sup>-24</sup>nN<sub>A</sub> cm<sup>3</sup>/mol = 0.6022n cm<sup>3</sup>/mol.
+* 1 eV/atom = 1.602&times;10<sup>-12</sup>nN<sub>A</sub> erg/mol = 9.649&times;10<sup>11</sup>n erg/mol. 
 
 ## Capability and Output ##
 
