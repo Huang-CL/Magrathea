@@ -64,6 +64,7 @@ In the equations below, *m* is the number of formula units per unit cell. For ex
 * 1 &#8491;<sup>3</sup>/cell = 10<sup>-24</sup>N<sub>A</sub>/m cm<sup>3</sup>/mol = 0.6022/m cm<sup>3</sup>/mol.
 * 1 &#8491;<sup>3</sup>/atom = 10<sup>-24</sup>nN<sub>A</sub> cm<sup>3</sup>/mol = 0.6022n cm<sup>3</sup>/mol.
 * 1 eV/atom = 1.602&times;10<sup>-12</sup>nN<sub>A</sub> erg/mol = 9.649&times;10<sup>11</sup>n erg/mol. 
+* 1 GPa = 10<sup>10</sup>&micro;bar = 0.01 Mbar.
 
 ## Capability and Output ##
 
