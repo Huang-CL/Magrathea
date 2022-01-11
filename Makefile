@@ -4,12 +4,12 @@ CFLAGS= -std=c++0x -O3 -Wall #-I ~/include
 
 LDFLAGS= -L/usr/local/lib -lgsl -lgslcblas -lm #-L ~/lib
 
-planet: main.o EOS.o EOSlist.o phase.o hydro.o EOSmodify.o
+planet: ./src/main.o ./src/EOS.o ./src/EOSlist.o ./src/phase.o ./src/hydro.o ./src/EOSmodify.o
 
 	$(CC) -o $@ $^ $(LDFLAGS) $(DEBUG) 
 
-%.o: %.cpp
+./src/%.o: %.cpp
 	$(CC) $(CFLAGS) $(DEBUG) -c $^
 
 clean:
-	rm -f *.o planet
+	rm -f *.o ./src/*.o planet
