@@ -296,6 +296,17 @@ EOS *watervapor = new EOS("Water vapor", watervapor_array, 3);
 double Gas_iso_array[3][2] = {{0,6}, {5,18}, {15,0}};
 EOS *Gas_iso = new EOS("Isothermal Ideal Gas", Gas_iso_array, 3);
 
+// ==========  OTHER  ================
+// -----------------------------------
+// Gold, Heinz & Jeanloz 1983, J. Appl. Phys. (included for a Hitchiker's-related joke)
+double Gold_array[][2] = {{0,0}, {1,10.215}, {2,166.65}, {3,5.4823}, {5,196.96657}, {8,170}, {9,2.95}, {12,1.7}, {15,1}};
+EOS *Gold = new EOS("Gold", Gold_array, sizeof(Gold_array)/2/sizeof(Gold_array[0][0]));
+// -----------------------------------
+// Platinum, Matsui et al. 2009, J. Appl. Phys. (included for a Hitchiker's-related joke)
+double Plat_array[][2] = {{0,2}, {1,10.03}, {2,273}, {3,5.20}, {5,195.084}, {8,230}, {9,2.7}, {10,1.1}, {15,1}};
+EOS *Plat = new EOS("Plat", Plat_array, sizeof(Plat_array)/2/sizeof(Plat_array[0][0]));
+
+
 // ============== An example on the format of dTdP function ==============
 double dTdP_gas(double P, double T)
 // return the adiabatic temperature gradient at given pressure and temperature point for ideal gas.
