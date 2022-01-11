@@ -31,6 +31,8 @@ If the gsl library is not installed globally (under /usr/local/ or equivalent), 
 
 On Windows system, download the [cyqwin terminal](https://www.cygwin.com/). Include package 'gsl' upon installation. We suggest including all packages in devel, science, math, and python along with a text editor. Directory will be found in: /cygdrive/c/Users/USERNAME/PATH_TO_MAGRATHEA.
 
+Install Magrathea by cloning this repository `git clone https://github.com/Huang-CL/Magrathea.git`. Everything needed is in the top level, future updates will improve the directory structure.
+
 For the first time, or working with a new computer, compile the code with `make -B`, or `make clean` then `make`.
 Later on, compile the code with `make`.
 The name of the compiled program is called planet by default.  To run the compiled program, run
