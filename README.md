@@ -1,4 +1,4 @@
-# Magrathea #
+# MAGRATHEA #
 
 (Excerpt from The Hitchhiker's Guide to the Galaxy, Page 634784, Section 5a, Entry: MAGRATHEA)
 
