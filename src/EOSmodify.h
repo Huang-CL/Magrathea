@@ -1,5 +1,5 @@
-#ifndef TWOLAYER_H_
-#define TWOLAYER_H_
+#ifndef EOSMODIFY_H_
+#define EOSMODIFY_H_
 
 #include "hydro.h"
 
