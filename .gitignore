@@ -1,0 +1,13 @@
+#ignore compiled code
+*.o
+planet
+#ignore specific versions
+main_test.cpp
+#ignore emacs edit file
+*~
+#ignore input output file
+*.txt
+#ignore makefile
+Makefile
+#ignore outdated files
+*old*
