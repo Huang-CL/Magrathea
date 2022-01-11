@@ -338,7 +338,7 @@ int main()
     }
 
     fout<<"MPlanet, MCore, MMantle, MWater, RCore, RMantle, RWater, RPlanet, RPosterior"<<endl;
-    #pragma omp parallel for schedule(dynamic) num_threads(3) private(planet, Rs)   
+//    #pragma omp parallel for schedule(dynamic) num_threads(3) private(planet, Rs)   
     for(int i=0; i<nline; i++) //Loop for each posterior
     {
       int step=1; //Step size for core/manlte %
@@ -430,7 +430,7 @@ int main()
           }       
         }
         while(abs(Rtarg[i]-R1)/Rtarg[i]>rerr);  //Find Radius with error
-        #pragma omp critical
+//        #pragma omp critical
         if (final!='y') //Don't record if the posterior radius is less than radius with 0% water
         {
           fout<<Mp[i]<<"\t "<<MC<<"\t "<<MM<<"\t "<<MW<<"\t ";
