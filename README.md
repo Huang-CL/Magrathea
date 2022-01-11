@@ -8,7 +8,7 @@ Planet interior structure code for astronomers, planetary scientists, mice, and 
 ## What is this repository for? ##
 
 A planet structure code which considers the case of fully differentiated interiors.
-The code integrates the hydrostatic equation in order to shoot for the correct planet radius givent the mass in each layer.
+The code integrates the hydrostatic equation in order to shoot for the correct planet radius given the mass in each layer.
 The code returns the pressure, temperature, density, phase, and radius at steps of enclosed mass.
 The code support 4 layers: core, mantle, hydrosphere, and atmosphere. Each layer has a phase diagram with equations of state chosen for each phase.  
 The code was developed by Chenliang Huang and David R. Rice at UNLV starting in 2017.
