@@ -68,6 +68,10 @@ In the equations below, *m* is the number of formula units per unit cell. For ex
 * 1 eV/atom = 1.602&times;10<sup>-12</sup>nN<sub>A</sub> erg/mol = 9.649&times;10<sup>11</sup>n erg/mol. 
 * 1 GPa = 10<sup>10</sup>&micro;bar = 0.01 Mbar.
 
+### Print EOS into a table ###
+
+The code can print the pressure-density relation of a build-in EOS into an ASCII table by using the `printEOS` function of the EOS object. This can be a simple way to double check the EOS is set up correctly. The table covers the pressure range from 0.1 GPa (or P<sub>0</sub> if it is larger) to 2000 GPa at the temperature T<sub>0</sub> (default 300 K) of the EOS. The output table file is located at `./tabulated/phasename.txt`.
+
 ## Capability and Output ##
 
 ### Construct a planet ###
