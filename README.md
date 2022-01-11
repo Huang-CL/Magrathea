@@ -31,12 +31,12 @@ If the gsl library is not installed globally (under /usr/local/ or equivalent), 
 
 On Windows system, download the [cyqwin terminal](https://www.cygwin.com/). Include package 'gsl' upon installation. We suggest including all packages in devel, science, math, and python along with a text editor. Directory will be found in: /cygdrive/c/Users/USERNAME/PATH_TO_MAGRATHEA.
 
-Install Magrathea by cloning this repository `git clone https://github.com/Huang-CL/Magrathea.git`. Everything needed is in the top level, future updates will improve the directory structure.
+Install Magrathea by cloning this repository `git clone https://github.com/Huang-CL/Magrathea.git`.
 
 For the first time, or working with a new computer, compile the code with `make -B`, or `make clean` then `make`.
 Later on, compile the code with `make`.
 The name of the compiled program is called planet by default.  To run the compiled program, run
-`./planet`.
+`./planet` in the top level directory. Choose input_mode and edit the planet and options for the run in src/main.cpp.
 
 If an error message like "error while loading shared libraries: libgsl.so.23: cannot open shared object file: No such file or directory" is reported when running the code, add `export LD_LIBRARY_PATH=/usr/local/lib` (directory of gsl library files) to the `.bashrc` file, or add `setenv LD_LIBRARY_PATH /usr/local/lib` to the `.cshrc` file.
 
