@@ -40,7 +40,7 @@ int main()
     vector<double> Tgap = {0, 0, 0, 300};
     // The temperature of the outer boundary of the inner component minus the inner boundary of the outer component.  A positive number indicates temperature increases inward.  0 indicates the temperature is continuous at the boundary of components.  The last number is the planetary surface temperature.
 
-    vector<double> Mcomp =  {0.29,0.69,0.02,0.005};
+    vector<double> Mcomp =  {0.29,0.69,0.02,0.005}; //Mass in Earth Masses of Core, Mantle, Hydrosphere, Atmosphere
     planet=fitting_method(Comp, Mcomp, Tgap, ave_rho, P_surface, false);
     cout<<count_shoot<<' '<<count_step<<endl;
     if (!planet)
