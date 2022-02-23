@@ -388,6 +388,7 @@ EOS* find_Si_phase(double P, double T)
 }
 
 EOS* find_gas_phase(double P, double T)
+// Isothermal gas for P less than 100 bar, the radiative/convective boundary (Nixon & Madhusudhan 2021). Adiabatic idea gas for P > 100 bar. 
 {
   if (P <= 0 || T <= 0)
   {
