@@ -290,11 +290,11 @@ EOS *IceZeng2013FMNR = new EOS("Ice (FMNR 2009)", FMNR[1], FMNR[0], 13);
 double Gas_array[3][2] = {{0,6}, {5,3}, {15,2}};
 EOS *Gas = new EOS("Ideal Gas", Gas_array, 3);
 
+double Gas_iso_array[3][2] = {{0,6}, {5,3}, {15,0}};
+EOS *Gas_iso = new EOS("Isothermal Ideal Gas", Gas_iso_array, 3);
+
 double watervapor_array[3][2] = {{0,6}, {5,18}, {15,3}};
 EOS *watervapor = new EOS("Water vapor", watervapor_array, 3);
-
-double Gas_iso_array[3][2] = {{0,6}, {5,18}, {15,0}};
-EOS *Gas_iso = new EOS("Isothermal Ideal Gas", Gas_iso_array, 3);
 
 // ==========  OTHER  ================
 // -----------------------------------

@@ -395,7 +395,8 @@ EOS* find_gas_phase(double P, double T)
   }
   // else if (T > 500)
   //   return watervapor;
-  
+  else if (P < 1E7)
+    return Gas_iso;
   else
     return Gas;
 }
