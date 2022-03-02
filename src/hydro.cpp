@@ -1467,8 +1467,14 @@ hydro* Rloop(vector<PhaseDgm> &Comp, vector<double> M_Comp, vector<double> ave_r
 
   Rp = Pc = Tc = 0;
 
+  double Mtot = accumulate(M_Comp.begin(), M_Comp.end(), 0.0);
   for (int i = 0; i < n_Comp; i++)
-    Rp += M_Comp[i]*ME/ave_rho[i];
+  {
+    if (i==3)
+      Rp += M_Comp[i]*ME/(ave_rho[i]+sqrt(M_Comp[i]*Mtot)/20.);
+    else
+      Rp += M_Comp[i]*ME/ave_rho[i];
+  }
 
   Rp = cbrt(3*Rp / (4*pi));			// initial guess of planet radius.
 
