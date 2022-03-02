@@ -459,7 +459,7 @@ hydro::hydro(double Rp, vector<PhaseDgm> &Comp_in, vector<double> Mass_Comp, vec
       gsl_odeiv2_step_reset(s);
       gsl_odeiv2_evolve_reset(e);
       h = pow(rb[0], 4) * P[0] / (10 * G * M[0]);
-    }      
+    }
   }
   count_shoot++;
   count_step+=rb.size();
@@ -1467,8 +1467,14 @@ hydro* Rloop(vector<PhaseDgm> &Comp, vector<double> M_Comp, vector<double> ave_r
 
   Rp = Pc = Tc = 0;
 
+  double Mtot = accumulate(M_Comp.begin(), M_Comp.end(), 0.0);
   for (int i = 0; i < n_Comp; i++)
-    Rp += M_Comp[i]*ME/ave_rho[i];
+  {
+    if (i==3)
+      Rp += M_Comp[i]*ME/(ave_rho[i]+sqrt(M_Comp[i]*Mtot)/20.);
+    else
+      Rp += M_Comp[i]*ME/ave_rho[i];
+  }
 
   Rp = cbrt(3*Rp / (4*pi));			// initial guess of planet radius.
 
