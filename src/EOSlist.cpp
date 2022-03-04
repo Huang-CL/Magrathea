@@ -8,9 +8,9 @@
 2.	K0 in GPa
 3.	K0p
 4.	K0pp in GPa ^-1
-5.	mmol in g / mol, or mean molecular weight of gas
+5.	mmol in g / mol, or mean molecular weight of gas, or in g / mol for RTpress style
 6.	P0 (GPa) the minimum pressure.  The pressure correspond to V0
-7.	Cp in 10^7 erg/g/K Heat capacity at constant pressure
+7.	cp in 10^7 erg/g/K Heat capacity per mass at constant pressure
 8.	Theta0 (K), a fitting parameter to Einstein temperature or Debye temperature
 9.	gamma0, a fitting parameter of Grueneisen parameter
 10.	beta, a fitting parameter of Grueneisen parameter.  In RTpress style, it represents the "m" which stands for the power-law exponent in the thermal deviation term.  Theoretically expected value: 0.6.
@@ -21,9 +21,10 @@
 15.	n is the number of atoms in the chemical formula of the compound.  Should have n*NA atoms within V.  The n of ideal gas is the number of atoms per molecule for the purpose of adiabatic index.  NOTE: n=2 for collinear molecules e.g. carbon dioxide!  Isothermal atmosphere can be achieved by setting n=0.
 16.     Z is the atomic number (number of electron)
 17.	T0, the reference temperature for the thermal pressure
-18.	Debye_approx, whether use Debye approximation or Einstein approximation. Debye approximation is slower but more accurate at temperature lower than Debye/Einstein temperature.  Positive number for Debye, otherwise Einstein.
-19.     thermal_type, indicates the thermal type of the phase.  0 indicates no temperature profile available, 1 indicates entropy method, 2 indicates the temperature gradient method.  The only method to set the gradient is using the modify_extern_dTdP function, 3 indicates ideal gas, 4 indicates the EOS is fitted along the isentrope, type 8 indicates RTpress style.
-20-27.  at1-at4 & ap1 - ap4
+18.	alpha, the coefficient of thermal expansion at a reference pressure P0 in 10^-6 K^-1
+19.Debye_approx, whether use Debye approximation or Einstein approximation. Debye approximation is slower but more accurate at temperature lower than Debye/Einstein temperature.  Positive number for Debye, otherwise Einstein.
+20.     thermal_type, indicates the thermal type of the phase.  0 indicates no temperature profile available, 1 indicates entropy method, 2 indicates the temperature gradient method.  The only method to set the gradient is using the modify_extern_dTdP function, 3 indicates ideal gas, 4 indicates the EOS is fitted along the isentrope, type 8 indicates RTpress style.
+21-28.  at1-at4 & ap1 - ap4
 
 
 For RTpress style of EOS, also need a _b array. They are fitted polynomial parameters of the thermal coefficients b(V) in erg/mol.  Convert eV/atom to erg/mol need to multiply eV_erg*n*NA. For example, for MgSiO3, 0.9821 eV/atom = 4.824E12 *0.9821 erg/mol = 4.738E12 erg/mol.
@@ -127,7 +128,7 @@ EOS *Si_PPv_Sakai = new EOS("Si PPv (Sakai)", Si_PPv_Sakai_array, sizeof(Si_PPv_
 // ---------------------------------
 // MgSiO3, liquid, Mosenfelder et al. (2009), Table 5, BM4LC, Journal of Geophysical Research: Solid Earth 38.202E-5 m^3/kg = 64.1 AA^3
 
-double Si_liquid_array[][2] = {{0,1}, {1,64.1}, {2,24.7}, {3,9.2}, {4,-1.87}, {5,mMg+mSi+3*mO}, {9,0.37}, {10,-1.71}, {11, 0}, {15,5}, {17, 1673}, {19, 4}};
+double Si_liquid_array[][2] = {{0,1}, {1,64.1}, {2,24.7}, {3,9.2}, {4,-1.87}, {5,mMg+mSi+3*mO}, {9,0.37}, {10,-1.71}, {11, 0}, {15,5}, {17, 1673}, {20, 4}};
 
 EOS *Si_liquid = new EOS("Si liquid (Mosenfelder)", Si_liquid_array, sizeof(Si_liquid_array)/2/sizeof(Si_liquid_array[0][0]));
 
@@ -210,11 +211,25 @@ double IceVI_ExoPlex_array[][2] = {{0,0}, {1,14.17}, {2,14.01}, {3,4}, {5,18.015
 EOS *IceVI_ExoPlex = new EOS("Ice VI (ExoPlex)", IceVI_ExoPlex_array, sizeof(IceVI_ExoPlex_array)/2/sizeof(IceVI_ExoPlex_array[0][0]));
 
 // -----------------------------------
-// Ice VII, ExoPlex, unkown source
+// Ice VI, Bezacier et al. 2014 & Tchijov et al. 2004
+
+double IceVI_Bezacier_array[][2] = {{0,0}, {1,14.17}, {2,14.05}, {3,4}, {5,18.01528}, {7, 2.6}, {17, 300}, {18, 146.}};
+
+EOS *IceVI_Bezacier = new EOS("Ice VI (Bezacier)", IceVI_Bezacier_array, sizeof(IceVI_Bezacier_array)/2/sizeof(IceVI_Bezacier_array[0][0]));
+
+// -----------------------------------
+// Ice VII, ExoPlex, Bezacier et al. 2014
 
 double IceVII_ExoPlex_array[][2] = {{0,0}, {1,12.49}, {2,20.15}, {3,4}, {5,18.01528}};
 
 EOS *IceVII_ExoPlex = new EOS("Ice VII (ExoPlex)", IceVII_ExoPlex_array, sizeof(IceVII_ExoPlex_array)/2/sizeof(IceVII_ExoPlex_array[0][0]));
+
+// -----------------------------------
+// Ice VII, Bezacier et al. 2014 & Tchijov et al. 2004
+
+double IceVII_Bezacier_array[][2] = {{0,0}, {1,12.49}, {2,20.15}, {3,4}, {5,18.01528}, {7, 2.3}, {17, 300}, {18, 115.8}};
+
+EOS *IceVII_Bezacier = new EOS("Ice VII (Bezacier)", IceVII_Bezacier_array, sizeof(IceVII_Bezacier_array)/2/sizeof(IceVII_Bezacier_array[0][0]));
 
 // -----------------------------------
 // Ice VII, Zachary Grande

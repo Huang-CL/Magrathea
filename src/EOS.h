@@ -102,11 +102,11 @@ struct EOS
 private:
   string phasetype;
   int eqntype;
-  double V0, K0, K0p, K0pp, mmol, P0, Cp, Theta0, gamma0, beta, gammainf, gamma0p, e0, g, T0;
+  double V0, K0, K0p, K0pp, mmol, P0, cp, Theta0, gamma0, beta, gammainf, gamma0p, e0, g, T0, alpha;
   double at1, at2, at3, at4, ap1, ap2, ap3, ap4;
   int n, Z;
   bool Debye_approx;		       // Debye approximate or Einstein approximate.
-  int thermal_type;		       // Indicates the thermal type of the phase.  0 indicates no temperature profile available, 1 indicates entropy method, 2 indicates the temperature gradient method, 3 indicates ideal gas, 4 indicates the EOS is fitted along the isentrope, 5 indicates no Theta0, 6 indicates has Theta 0 but no electron pressure, 7 indicates has electron pressure as well, type 8, RTpress style
+  int thermal_type;		       // Indicates the thermal type of the phase.  0 indicates no temperature profile available, 1 indicates entropy method, 2 indicates the temperature gradient method, 3 indicates ideal gas, 4 indicates the EOS is fitted along the isentrope, 5 indicates no Theta0, 6 indicates has Theta 0 but no electron pressure, 7 indicates has electron pressure as well, type 8, RTpress style, type 9 thermal expansion
   double *rhotable, *Ptable;	// density table in cgs, Ptable in GPa.
   int bn;				// number of indices of b
   double* b;				// fitted polynomial parameters of the thermal coefficients b(V) in erg/mol.  Convert eV/atom to erg/mol need to multiply eV_erg*n*NA. For example, for MgSiO3, 0.9821 eV/atom = 4.824E12 *0.9821 erg/mol = 4.738E12 erg/mol.
@@ -117,7 +117,7 @@ private:
   
 /*
   phasetype is the name of a phase. The comment about the EOS used for the phase should be in the parentheses separated by a space.
-0.	eqntype. 8 for RTpress style.
+0.	eqntype. 8-12 for RTpress style.
 1.	V0 in cm^3 / mol. 
 	For ice, 1 \AA^3 = N_A / (2*10^24) cm^3/mol = 0.3011 cm^3/mol
 2.	K0 in GPa
@@ -125,10 +125,10 @@ private:
 4.	K0pp in GPa ^-1
 5.	mmol in g / mol, or mean molecular weight of gas, or in g / mol for RTpress style
 6.	P0 (GPa) the minimum pressure.  The pressure correspond to V0
-7.	Cp in 10^7 erg/g/K Heat capacity at constant pressure
+7.	cp in 10^7 erg/g/K Heat capacity per mass at constant pressure
 8.	Theta0 (K), a fitting parameter to Einstein temperature or Debye temperature
 9.	gamma0, a fitting parameter of Grueneisen parameter
-10.	beta, a fitting parameter of Grueneisen parameter.  In RTpress style, it represents the "m" which stands for the power-law exponent in the thermal deviation term. theoretically expected value: 0.6
+10.	beta, a fitting parameter of Grueneisen parameter.  In RTpress style, it represents the "m" which stands for the power-law exponent in the thermal deviation term.  Theoretically expected value: 0.6.
 11.	gammainf, a fitting parameter of Grueneisen parameter
 12.	gamma0p, volume derivative of the Grueneisen parameter
 13.	e0 (10^-6 K^-1), electronic contribution to Helmholtz free energy
@@ -136,10 +136,12 @@ private:
 15.	n is the number of atoms in the chemical formula of the compound.  Should have n*NA atoms within V.  The n of ideal gas is the number of atoms per molecule for the purpose of adiabatic index.  NOTE: n=2 for collinear molecules e.g. carbon dioxide!  Isothermal atmosphere can be achieved by setting n=0.
 16.     Z is the atomic number (number of electron)
 17.	T0, the reference temperature for the thermal pressure
-18.	Debye_approx, whether use Debye approximation or Einstein approximation. Debye approximation is slower but more accurate at temperature lower than Debye/Einstein temperature.  Positive number for Debye, otherwise Einstein.
-19.     thermal_type, indicates the thermal type of the phase.  0 indicates no temperature profile available, 1 indicates entropy method, 2 indicates the temperature gradient method.  The only method to set the gradient is using the modify_extern_dTdP function, 3 indicates ideal gas, 4 indicates the EOS is fitted along the isentrope, type 8 indicates RTpress style.
-20-27.  at1-at4 & ap1 - ap4
- */
+18.     alpha, the coefficient of thermal expansion at a reference pressure P0 in 10^-6 K^-1
+19.	Debye_approx, whether use Debye approximation or Einstein approximation. Debye approximation is slower but more accurate at temperature lower than Debye/Einstein temperature.  Positive number for Debye, otherwise Einstein.
+20.     thermal_type, indicates the thermal type of the phase.  0 indicates no temperature profile available, 1 indicates entropy method, 2 indicates the temperature gradient method.  The only method to set the gradient is using the modify_extern_dTdP function, 3 indicates ideal gas, 4 indicates the EOS is fitted along the isentrope, type 8 indicates RTpress style .
+21-28.  at1-at4 & ap1 - ap4
+
+For RTpress style of EOS, also need a _b array. They are fitted polynomial parameters of the thermal coefficients b(V) in erg/mol.  Convert eV/atom to erg/mol need to multiply eV_erg*n*NA. For example, for MgSiO3, 0.9821 eV/atom = 4.824E12 *0.9821 erg/mol = 4.738E12 erg/mol.*/
 };
 
 double P_EOS(double rho, void *params);
