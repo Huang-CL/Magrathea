@@ -1,13 +1,13 @@
 #include "EOS.h"
 
-EOS::EOS():phasetype(""),eqntype(0), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), cp(numeric_limits<double>::quiet_NaN()), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha(numeric_limits<double>::quiet_NaN()), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), Debye_approx(false), thermal_type(0), rhotable(NULL), Ptable(NULL), bn(0), acc(NULL), spline(NULL), nline(0)
+EOS::EOS():phasetype(""),eqntype(0), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha0(numeric_limits<double>::quiet_NaN()), alpha1(0), xi(0), cp_a(numeric_limits<double>::quiet_NaN()), cp_b(0), cp_c(0), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), Debye_approx(false), thermal_type(0), rhotable(NULL), Ptable(NULL), bn(0), acc(NULL), spline(NULL), nline(0)
 {
   density_extern=NULL;
   entropy_extern=NULL;
   dTdP = NULL;
 }
 
-EOS::EOS(string phaseinput, double params[][2], int length):phasetype(phaseinput),eqntype(0), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), cp(numeric_limits<double>::quiet_NaN()), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha(numeric_limits<double>::quiet_NaN()), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), Debye_approx(false), thermal_type(0), rhotable(NULL), Ptable(NULL), bn(0), acc(NULL), spline(NULL), nline(0)
+EOS::EOS(string phaseinput, double params[][2], int length):phasetype(phaseinput),eqntype(0), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha0(numeric_limits<double>::quiet_NaN()), alpha1(0), xi(0), cp_a(numeric_limits<double>::quiet_NaN()), cp_b(0), cp_c(0), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), Debye_approx(false), thermal_type(0), rhotable(NULL), Ptable(NULL), bn(0), acc(NULL), spline(NULL), nline(0)
 {
   density_extern=NULL;
   entropy_extern=NULL;
@@ -39,69 +39,81 @@ EOS::EOS(string phaseinput, double params[][2], int length):phasetype(phaseinput
       P0=params[i][1];
       break;
     case 7:
-      cp=params[i][1];
-      break;
-    case 8:
       Theta0=params[i][1];
       break;
-    case 9:
+    case 8:
       gamma0=params[i][1];
       break;
-    case 10:
+    case 9:
       beta=params[i][1];
       break;
-    case 11:
+    case 10:
       gammainf=params[i][1];
       break;
-    case 12:
+    case 11:
       gamma0p=params[i][1];
       break;
-    case 13:
+    case 12:
       e0=params[i][1];
       break;
-    case 14:
+    case 13:
       g=params[i][1];
       break;
-    case 15:
+    case 14:
       n=round(params[i][1]);
       break;
-    case 16:
+    case 15:
       Z=round(params[i][1]);
       break;
-    case 17:
+    case 16:
       T0=params[i][1];
       break;
+    case 17:
+      alpha0=params[i][1];
+      break;
     case 18:
-      alpha=params[i][1];
+      alpha1=params[i][1];
       break;
     case 19:
-      Debye_approx = params[i][1]>0 ? true : false;
+      xi=params[i][1];
       break;
     case 20:
-      thermal_type = params[i][1];
+      cp_a=params[i][1];
       break;
     case 21:
-      at1 = params[i][1];
+      cp_b=params[i][1];
       break;
     case 22:
-      at2 = params[i][1];
+      cp_c=params[i][1];
       break;
     case 23:
-      at3 = params[i][1];
+      Debye_approx = params[i][1]>0 ? true : false;
       break;
     case 24:
-      at4 = params[i][1];
+      thermal_type = params[i][1];
       break;
     case 25:
-      ap1 = params[i][1];
+      at1 = params[i][1];
       break;
     case 26:
-      ap2 = params[i][1];
+      at2 = params[i][1];
       break;
     case 27:
-      ap3 = params[i][1];
+      at3 = params[i][1];
       break;
     case 28:
+      at4 = params[i][1];
+      break;
+    case 29:
+      ap1 = params[i][1];
+      break;
+    case 30:
+      ap2 = params[i][1];
+      break;
+    case 31:
+      ap3 = params[i][1];
+      break;
+    case 32:
       ap4 = params[i][1];
       break;
     default:
@@ -131,7 +143,7 @@ EOS::EOS(string phaseinput, double params[][2], int length):phasetype(phaseinput
     else
       thermal_type = 5;
   }
-  else if (thermal_type!=1 && thermal_type!=2 && thermal_type!=4 && gsl_finite(cp) && gsl_finite(alpha) && gsl_finite(T0)) // thermal type not specified and have enough information to calculate using thermal expansion
+  else if (thermal_type!=1 && thermal_type!=2 && thermal_type!=4 && gsl_finite(cp(300)) && gsl_finite(alpha(10,300)) && gsl_finite(T0)) // thermal type not specified and have enough information to calculate using thermal expansion
     thermal_type = 9;
   
   if (eqntype >= 8)		// RTpress EOS style
@@ -141,7 +153,7 @@ EOS::EOS(string phaseinput, double params[][2], int length):phasetype(phaseinput
   }
 }
 
-EOS::EOS(string phaseinput, string filename):phasetype(phaseinput),eqntype(5), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), cp(numeric_limits<double>::quiet_NaN()), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha(numeric_limits<double>::quiet_NaN()), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), Debye_approx(false), thermal_type(0), bn(0)
+EOS::EOS(string phaseinput, string filename):phasetype(phaseinput),eqntype(5), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha0(numeric_limits<double>::quiet_NaN()), alpha1(0), xi(0), cp_a(numeric_limits<double>::quiet_NaN()), cp_b(0), cp_c(0), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), Debye_approx(false), thermal_type(0), bn(0)
 {
   ifstream fin;
   string sline;
@@ -192,7 +204,7 @@ EOS::EOS(string phaseinput, string filename):phasetype(phaseinput),eqntype(5), V
   gsl_spline_init (spline, Ptable, rhotable, nline);
 }
 
-EOS::EOS(string phaseinput, double (*f)(double P, double T), double (*g)(double rho, double T)):phasetype(phaseinput),eqntype(0), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), cp(numeric_limits<double>::quiet_NaN()), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha(numeric_limits<double>::quiet_NaN()), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), Debye_approx(false), rhotable(NULL), Ptable(NULL),  bn(0), acc(NULL), spline(NULL), nline(0)
+EOS::EOS(string phaseinput, double (*f)(double P, double T), double (*g)(double rho, double T)):phasetype(phaseinput),eqntype(0), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha0(numeric_limits<double>::quiet_NaN()), alpha1(0), xi(0), cp_a(numeric_limits<double>::quiet_NaN()), cp_b(0), cp_c(0), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), Debye_approx(false), rhotable(NULL), Ptable(NULL),  bn(0), acc(NULL), spline(NULL), nline(0)
 {
   density_extern=f;
   entropy_extern=g;
@@ -204,7 +216,7 @@ EOS::EOS(string phaseinput, double (*f)(double P, double T), double (*g)(double 
     thermal_type = 0;
 }
 
-EOS::EOS(string phaseinput, double *Plist, double *rholist, int len_list):phasetype(phaseinput),eqntype(5), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), cp(numeric_limits<double>::quiet_NaN()), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha(numeric_limits<double>::quiet_NaN()), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), Debye_approx(false), thermal_type(0), bn(0), nline(len_list)
+EOS::EOS(string phaseinput, double *Plist, double *rholist, int len_list):phasetype(phaseinput),eqntype(5), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha0(numeric_limits<double>::quiet_NaN()), alpha1(0), xi(0), cp_a(numeric_limits<double>::quiet_NaN()), cp_b(0), cp_c(0), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), Debye_approx(false), thermal_type(0), bn(0), nline(len_list)
 {
   density_extern=NULL;
   entropy_extern=NULL;
@@ -233,7 +245,7 @@ EOS::EOS(string phaseinput, double *Plist, double *rholist, int len_list):phaset
   gsl_spline_init (spline, Ptable, rhotable, nline);
 }
 
-EOS::EOS(string phaseinput, double params[][2], double bparams[], int length, int blength):phasetype(phaseinput),eqntype(8), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), cp(numeric_limits<double>::quiet_NaN()), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha(numeric_limits<double>::quiet_NaN()), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), Debye_approx(false), thermal_type(8), rhotable(NULL), Ptable(NULL), bn(blength), acc(NULL), spline(NULL), nline(0)		
+EOS::EOS(string phaseinput, double params[][2], double bparams[], int length, int blength):phasetype(phaseinput),eqntype(8), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha0(numeric_limits<double>::quiet_NaN()), alpha1(0), xi(0), cp_a(numeric_limits<double>::quiet_NaN()), cp_b(0), cp_c(0), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), Debye_approx(false), thermal_type(8), rhotable(NULL), Ptable(NULL), bn(blength), acc(NULL), spline(NULL), nline(0)		
 {
   // construction EOS for RTpress
   density_extern=NULL;
@@ -267,68 +279,80 @@ EOS::EOS(string phaseinput, double params[][2], double bparams[], int length, in
       P0=params[i][1];
       break;
     case 7:
-      cp=params[i][1];
-      break;
-    case 8:
       Theta0=params[i][1];
       break;
-    case 9:
+    case 8:
       gamma0=params[i][1];
       break;
-    case 10:
+    case 9:
       beta=params[i][1];
       break;
-    case 11:
+    case 10:
       gammainf=params[i][1];
       break;
-    case 12:
+    case 11:
       gamma0p=params[i][1];
       break;
-    case 13:
+    case 12:
       e0=params[i][1];
       break;
-    case 14:
+    case 13:
       g=params[i][1];
       break;
-    case 15:
+    case 14:
       n=round(params[i][1]);
       break;
-    case 16:
+    case 15:
       Z=round(params[i][1]);
       break;
-    case 17:
+    case 16:
       T0=params[i][1];
       break;
+    case 17:
+      alpha0=params[i][1];
+      break;
     case 18:
-      alpha=params[i][1];
+      alpha1=params[i][1];
       break;
     case 19:
-      Debye_approx = params[i][1]>0 ? true : false;
+      xi=params[i][1];
       break;
     case 20:
-      break;		// thermal_type has to be 8
+      cp_a=params[i][1];
+      break;
     case 21:
-      at1 = params[i][1];
+      cp_b=params[i][1];
       break;
     case 22:
-      at2 = params[i][1];
+      cp_c=params[i][1];
       break;
     case 23:
-      at3 = params[i][1];
+      Debye_approx = params[i][1]>0 ? true : false;
       break;
     case 24:
-      at4 = params[i][1];
-      break;
+      break;		// thermal_type has to be 8
     case 25:
-      ap1 = params[i][1];
+      at1 = params[i][1];
       break;
     case 26:
-      ap2 = params[i][1];
+      at2 = params[i][1];
       break;
     case 27:
-      ap3 = params[i][1];
+      at3 = params[i][1];
       break;
     case 28:
+      at4 = params[i][1];
+      break;
+    case 29:
+      ap1 = params[i][1];
+      break;
+    case 30:
+      ap2 = params[i][1];
+      break;
+    case 31:
+      ap3 = params[i][1];
+      break;
+    case 32:
       ap4 = params[i][1];
       break;
     default:
@@ -403,30 +427,27 @@ void EOS::modifyEOS(double params[][2], int length)  // modify the constructed E
       P0=params[i][1];
       break;
     case 7:
-      cp=params[i][1];
-      break;
-    case 8:
       Theta0=params[i][1];
       break;
-    case 9:
+    case 8:
       gamma0=params[i][1];
       break;
-    case 10:
+    case 9:
       beta=params[i][1];
       break;
-    case 11:
+    case 10:
       gammainf=params[i][1];
       break;
-    case 12:
+    case 11:
       gamma0p=params[i][1];
       break;
-    case 13:
+    case 12:
       e0=params[i][1];
       break;
-    case 14:
+    case 13:
       g=params[i][1];
       break;
-    case 15:
+    case 14:
       if(eqntype>=8)		// RTpress style
       {
 	cout<<"Error: The number of atoms of a RTpress style EOS is not allowed to be modified."<<endl;
@@ -434,43 +455,58 @@ void EOS::modifyEOS(double params[][2], int length)  // modify the constructed E
       }
       n=round(params[i][1]);
       break;
-    case 16:
+    case 15:
       Z=round(params[i][1]);
       break;
-    case 17:
+    case 16:
       T0=params[i][1];
       break;
+    case 17:
+      alpha0=params[i][1];
+      break;
     case 18:
-      alpha=params[i][1];
+      alpha1=params[i][1];
       break;
     case 19:
-      Debye_approx = params[i][1]>0 ? true : false;
+      xi=params[i][1];
       break;
     case 20:
-      thermal_type = params[i][1];
+      cp_a=params[i][1];
       break;
     case 21:
-      at1 = params[i][1];
+      cp_b=params[i][1];
       break;
     case 22:
-      at2 = params[i][1];
+      cp_c=params[i][1];
       break;
     case 23:
-      at3 = params[i][1];
+      Debye_approx = params[i][1]>0 ? true : false;
       break;
     case 24:
-      at4 = params[i][1];
+      thermal_type = params[i][1];
       break;
     case 25:
-      ap1 = params[i][1];
+      at1 = params[i][1];
       break;
     case 26:
-      ap2 = params[i][1];
+      at2 = params[i][1];
       break;
     case 27:
-      ap3 = params[i][1];
+      at3 = params[i][1];
       break;
     case 28:
+      at4 = params[i][1];
+      break;
+    case 29:
+      ap1 = params[i][1];
+      break;
+    case 30:
+      ap2 = params[i][1];
+      break;
+    case 31:
+      ap3 = params[i][1];
+      break;
+    case 32:
       ap4 = params[i][1];
       break;
 
@@ -494,7 +530,7 @@ void EOS::modifyEOS(double params[][2], int length)  // modify the constructed E
     else
       thermal_type = 5;
   }
-  else if (thermal_type!=1 && thermal_type!=2 && thermal_type!=4 && gsl_finite(cp) && gsl_finite(alpha) && gsl_finite(T0)) // thermal type not specified and have enough information to calculate using thermal expansion
+  else if (thermal_type!=1 && thermal_type!=2 && thermal_type!=4 && gsl_finite(cp(300)) && gsl_finite(alpha(10,300)) && gsl_finite(T0)) // thermal type not specified and have enough information to calculate using thermal expansion
     thermal_type = 9;
 
   
@@ -535,30 +571,27 @@ void EOS::modifyEOS(int index, double value)	     // modify one value of the EOS
     P0=value;
     break;
   case 7:
-    cp=value;
-    break;
-  case 8:
     Theta0=value;
     break;
-  case 9:
+  case 8:
     gamma0=value;
     break;
-  case 10:
+  case 9:
     beta=value;
     break;
-  case 11:
+  case 10:
     gammainf=value;
     break;
-  case 12:
+  case 11:
     gamma0p=value;
     break;
-  case 13:
+  case 12:
     e0=value;
     break;
-  case 14:
+  case 13:
     g=value;
     break;
-  case 15:
+  case 14:
     if(eqntype>=8)		// RTpress style
     {
       cout<<"Error: The number of atoms of a RTpress style EOS is not allowed to be modified."<<endl;
@@ -566,43 +599,58 @@ void EOS::modifyEOS(int index, double value)	     // modify one value of the EOS
     }
     n=round(value);
     break;
-  case 16:
+  case 15:
     Z=round(value);
     break;
-  case 17:
+  case 16:
     T0=value;
     break;
+  case 17:
+    alpha0=value;
+    break;
   case 18:
-    alpha=value;
+    alpha1=value;
     break;
   case 19:
-    Debye_approx = value>0 ? true : false;
+    xi=value;
     break;
   case 20:
-    thermal_type = value;
+    cp_a=value;
     break;
   case 21:
-    at1 = value;
+    cp_b=value;
     break;
   case 22:
-    at2 = value;
+    cp_c=value;
     break;
   case 23:
-    at3 = value;
+    Debye_approx = value>0 ? true : false;
     break;
   case 24:
-    at4 = value;
+    thermal_type = value;
     break;
   case 25:
-    ap1 = value;
+    at1 = value;
     break;
   case 26:
-    ap2 = value;
+    at2 = value;
     break;
   case 27:
-    ap3 = value;
+    at3 = value;
     break;
   case 28:
+    at4 = value;
+    break;
+  case 29:
+    ap1 = value;
+    break;
+  case 30:
+    ap2 = value;
+    break;
+  case 31:
+    ap3 = value;
+    break;
+  case 32:
     ap4 = value;
     break;
   
@@ -625,7 +673,7 @@ void EOS::modifyEOS(int index, double value)	     // modify one value of the EOS
     else
       thermal_type = 5;
   }
-  else if (thermal_type!=1 && thermal_type!=2 && thermal_type!=4 && gsl_finite(cp) && gsl_finite(alpha) && gsl_finite(T0)) // thermal type not specified and have enough information to calculate using thermal expansion
+  else if (thermal_type!=1 && thermal_type!=2 && thermal_type!=4 && gsl_finite(cp(300)) && gsl_finite(alpha(10,300)) && gsl_finite(T0)) // thermal type not specified and have enough information to calculate using thermal expansion
     thermal_type = 9;
   
   if (eqntype >= 8)		// RTpress EOS style
@@ -747,12 +795,25 @@ void EOS::DebyeT(double x, double &gamma, double &Theta)  // return the Grueneis
 
 double EOS::Pth(double V, double T)
 // calculate the thermal pressure in GPa, ref. Bouchet et al. 2013 PRB 87, 094102, Shim & Duffy, 2000, American Mineralogist
+// Or RTpress style Pth.
 {
   if (!gsl_finite(V0) || thermal_type < 2 || thermal_type == 3)  // don't have thermal pressure data
     return 0;
 
   if ((thermal_type == 2 && !gsl_finite(gamma0)) || thermal_type == 9)
     return 0;
+
+  if (gsl_finite(T) && getthermal() == 8) // RTpress style
+  {
+    double cf = 1E-10;
+// conversion factor from erg/cm^3 to GPa
+    double T_OS = TOS(V);
+    double fTp_OS = fTp(T_OS);
+    double bVpV = bVp(V);	// in  erg/cm^3 (microbar)
+
+    return - cf*bVpV*fT(T) + cf*gamma0S(V)*(T-T0)/V*Cv(V,T_OS) + cf*bVpV/(beta-1)*(T*(fTp(T)-fTp_OS) - T0*(fTp(T0)-fTp_OS));
+  }
+
   // set up default parameters for n if not provided by the input data.
   if (n<0)
     n = 1;
@@ -911,9 +972,9 @@ double EOS::density(double P, double T, double rho_guess)
 
     gsl_root_fdfsolver_free (s);
 
-    if(thermal_type == 9)	// thermal expansion
+    if(thermal_type == 9 && T>T0)	// thermal expansion
       // convert alpha to K^-1
-      return rho*exp(-1E-6*alpha*(T-T0));
+      return rho*exp(-1E-6*pow(1+K0p*P/K0, -xi)*(alpha0*(T-T0)+0.5*alpha1*(sq(T)-9E4)));
     else
       return rho;
   }
@@ -1072,8 +1133,7 @@ double EOS::gamma (double V, double T)
 {
   if (!gsl_finite(gamma0))
   {
-    if (verbose)
-      cout<<"Warning: gamma0 of phase "<<phasetype<<" is not available.  Thermal type is "<<thermal_type<<". Can't calculate Grueneisen parameter at V="<<V<<" T="<<T<<endl;
+    cout<<"Error: gamma0 of phase "<<phasetype<<" is not available.  Thermal type is "<<thermal_type<<". Can't calculate Grueneisen parameter at V="<<V<<" T="<<T<<endl;
     return numeric_limits<double>::quiet_NaN();
   }
   
@@ -1092,8 +1152,48 @@ double EOS::gamma (double V, double T)
   return gammainf + (gamma0-gammainf)*pow(V/V0,beta);
 }
 
+double EOS::cp(double T)
+// specific heat capacity in J/g/K at constant pressure
+{
+  if (!gsl_finite(cp_a) && cp_b==0 && cp_c==0)
+    return numeric_limits<double>::quiet_NaN();
+
+  if (!gsl_finite(cp_a))
+    return cp_b*T - cp_c/sq(T);
+  else
+    return cp_a + cp_b*T - cp_c/sq(T);
+}
+
+double EOS::alpha (double P, double T)
+// coefficient of thermal expansion in K^-1. Input P in GPa, T in K
+{
+  if (!gsl_finite(alpha0) && alpha1==0)
+    return numeric_limits<double>::quiet_NaN();
+
+  else if (K0p<0 || K0<0 || P<0)
+  {
+    if (verbose)
+      cout<<"Warning: thermal expansion of phase "<<phasetype<<" is not available because some physical parameters are negative, which is nonphysical.  Thermal type is "<<thermal_type<<"."<<endl;
+    return numeric_limits<double>::quiet_NaN();
+  }
+  
+  double alphaP0;		// alpha at P=0
+  if (!gsl_finite(alpha0))
+  {
+    alphaP0 = alpha1*T;
+  }
+  else
+  {
+    if (T>T0)
+      alphaP0 = alpha0 + alpha1*T;
+    else				// avoid alpha becomes negative at low temperature
+      alphaP0 = alpha0 + alpha1*T0;
+  }
+  return 1E-6 * alphaP0 * pow(1+K0p*P/K0, -xi);
+}
+
 double EOS::Press(double rho, double T)
-// pressure in GPa (Eq. 6, 13, 14), take density in g/cm^3
+// pressure in GPa (Eq. 6, 13, 14) in Wolf&Bower 2018, take density in g/cm^3. For thermal expansion representation, this return the pressure at T0.
 {
   double P;
   double V = volume(rho);	// volume in cm^3/mol
@@ -1129,18 +1229,7 @@ double EOS::Press(double rho, double T)
     exit(1);
   };
 
-  if (gsl_finite(T) && getthermal() == 8) // RTpress style
-  {
-    double cf = 1E-10;
-// conversion factor from erg/cm^3 to GPa
-    double T_OS = TOS(V);
-    double fTp_OS = fTp(T_OS);
-    double bVpV = bVp(V);	// in  erg/cm^3 (microbar)
-
-    P += - cf*bVpV*fT(T) + cf*gamma0S(V)*(T-T0)/V*Cv(V,T_OS) + cf*bVpV/(beta-1)*(T*(fTp(T)-fTp_OS) - T0*(fTp(T0)-fTp_OS));
-  }
-
-  else if (gsl_finite(T) && (getthermal() > 4 || getthermal() == 2))
+  if (gsl_finite(T) && (getthermal() > 4 || getthermal() == 2)) // Pth = 0 if getthermal == 9
 // thermal pressure
     P+= Pth(V,T);
 
@@ -1197,8 +1286,8 @@ double EOS::pSpT_V(double V, double T)
 }
 
 
-double EOS::dTdV_S(double V, double T)
-  // adiabatic temperature gradient in K mol/cm^3, take volume in cm^3 / mol
+double EOS::dTdV_S(double V, double P, double T)
+  // adiabatic temperature gradient in K mol/cm^3, take volume in cm^3 / mol, P in GPa
 {
   if (thermal_type == 1)	// has external entropy
     // dT/dV_S = - (dS/dV_T) / (dS/dT_V)
@@ -1217,11 +1306,14 @@ double EOS::dTdV_S(double V, double T)
 
   if (thermal_type == 9)	// thermal expansion
   {
-    if (!gsl_finite(cp) || !gsl_finite(alpha) || !gsl_finite(T0) || !gsl_finite(mmol))
+    if (!gsl_finite(cp(300)) || !gsl_finite(alpha(10,300)) || !gsl_finite(mmol))
+    {
       cout<<"Error: Information of phase "<<phasetype<<" is not enough to calculate temperature gradient using the thermal expension method."<<endl;
-
-    // convert alpha to K^-1, cp to GPa cm^3 g^-1 K^-1
-    return (1E-6*alpha*T*K0)/(mmol*(sq(1E-6*alpha)*T*K0*V/mmol-1E-3*cp));
+      return 0;
+    }
+    double a=alpha(P,T);
+    // cp to GPa cm^3 g^-1 K^-1
+    return (a*T*K0)/(mmol*(sq(a)*T*K0*V/mmol-1E-3*cp(T)));
   }
   
   return -gamma(V,T)*T/V;
@@ -1277,13 +1369,16 @@ double EOS::pPpT_rho(double rho, double T)
 }
 
 
-double EOS::dTdm(double m, double r, double rho, double T)
-  // adiabatic temperature gradient in K/g
+double EOS::dTdm(double m, double r, double rho, double P, double T)
+  // adiabatic temperature gradient in K/g, P in cgs
 {
   if (eqntype == 6)		// ideal gas
   {
     if (!gsl_finite(mmol))
+    {
       cout<<"Error: The mean molecular weight of "<<phasetype<<" unknown."<<endl;
+      return 0;
+    }
 
     double gamma = adiabatic_index();
     return - (gamma-1)*mp*mmol*G*m/(gamma*kb*rho*4*pi*pow(r,4));
@@ -1291,15 +1386,17 @@ double EOS::dTdm(double m, double r, double rho, double T)
 
   else if (thermal_type == 9)	// thermal expension
   {
-    if (!gsl_finite(cp) || !gsl_finite(alpha) || !gsl_finite(T0))
+    if (!gsl_finite(cp(300)) || !gsl_finite(alpha(10,300)))
+    {
       cout<<"Error: Information of phase "<<phasetype<<" is not enough to calculate temperature gradient using the thermal expension method."<<endl;
+      return 0;
+    }
 
-    // convert alpha to K^-1 and cp to erg g^-1 K^-1
-    return -1E-13*(alpha*T*G*m)/(4*pi*pow(r,4)*rho*cp);
+    return -1E-7*(alpha(P/1E10,T)*T*G*m)/(4*pi*pow(r,4)*rho*cp(T));
   }
   
   double V = volume(rho);
-  double dTdV = dTdV_S(V, T);
+  double dTdV = dTdV_S(V, P/1E10, T);
   if (r<1)		// At the center of the planet where dTdm has a 0/0 limit
   {
     if (m>400 && verbose)
@@ -1323,7 +1420,7 @@ double EOS::dTdP_S(double P, double T, double &rho_guess)
 
   rho_guess = density(P*1E10, T, rho_guess);
   double V = volume(rho_guess);
-  double dTdV = dTdV_S(V, T);
+  double dTdV = dTdV_S(V, P, T);
 
   return -V*dTdV/(rho_guess*pPprho_T(rho_guess,T));
 }
@@ -1428,14 +1525,14 @@ double EOS::density(double P1, double T1, double rho, double P2, double &T2)
       return numeric_limits<double>::quiet_NaN();
     }
 
-    else if (thermal_type == 9 && (!gsl_finite(cp) || !gsl_finite(alpha) || !gsl_finite(T0) || !gsl_finite(mmol)))
+    else if (thermal_type == 9 && (!gsl_finite(cp_a) || !gsl_finite(alpha0) || !gsl_finite(T0) || !gsl_finite(mmol)))
     {
       cout<<"Error: Information of phase "<<phasetype<<" is not enough to calculate temperature gradient using the thermal expension method."<<endl;
       T2 = numeric_limits<double>::quiet_NaN();
       return numeric_limits<double>::quiet_NaN();
     }
     
-    double dTdV = dTdV_S(V0, T0);
+    double dTdV = dTdV_S(volume(rho), P1, T1);
 
     int iter = 0, max_iter = 100;
     const gsl_root_fdfsolver_type *TPL = gsl_root_fdfsolver_newton;
@@ -1460,6 +1557,8 @@ double EOS::density(double P1, double T1, double rho, double P2, double &T2)
 
       status = gsl_root_fdfsolver_iterate (s);
       rho1 = rho2;
+      dTdV = dTdV_S(volume(rho1), P1, T1);
+      params.x[3] = dTdV;
       rho2 = gsl_root_fdfsolver_root (s);
       if (rho2<0.95*rho1)// limit the step size of each iteration to increase stability.
       {
