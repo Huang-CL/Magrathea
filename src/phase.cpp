@@ -321,15 +321,24 @@ EOS* find_water_phase(double P, double T)
   //   return Ice_Seager;
 
   else if(P < 5.10)		// liquid water or Ice VII.  The melting curve is so uncertain.  Can't find any liquid water EOS at this temperature.  Assuming all ice above 2.21 GPa
-    //return IceVII;
-    //return IceVII_Bezacier;
-    return IceVII_FFH2004T;
-
-  else if(P < 30.9)		// liquid water or Ice VII'.  
-    //return IceVIIp;
-    //return IceVII_Bezacier;
-    return IceVII_FFH2004T;
-  
+  {
+    if(T>1200)			// A dummy melting curve to avoid ice vii EOS extrapolated to temperature too high.
+      return Water_sc_dummy;
+    else
+      //return IceVII;
+      return IceVII_Bezacier;
+      //return IceVII_FFH2004T;
+  }
+    
+  else if(P < 30.9)		// liquid water or Ice VII'.
+  {
+    if(T>1200)			// A dummy melting curve to avoid ice vii EOS extrapolated to temperature too high.
+      return Water_sc_dummy;
+    else
+      //return IceVIIp;
+      return IceVII_Bezacier;
+      //return IceVII_FFH2004T;
+  }  
   else				// liquid water or Ice X.  No reliable data for the superionic state.
     return IceX;
 }

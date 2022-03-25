@@ -195,6 +195,11 @@ double Water_array[][2] = {{0,0}, {1,18.047}, {2,2.18}, {5,18.01528}};
 EOS *Water = new EOS("Water (Valencia)", Water_array, sizeof(Water_array)/2/sizeof(Water_array[0][0]));
 
 // -----------------------------------
+// Dummy for supercritical water.  Used for 2.216GPa<P<30.9GPa and T>1200K. 
+EOS *Water_sc_dummy = new EOS("Water supercritical Dummy", Water_array, sizeof(Water_array)/2/sizeof(Water_array[0][0]));
+
+
+// -----------------------------------
 // Ice Ih, Feistel & Wagner 2006, Acuna et al. 2021
 
 double IceIh_array[][2] = {{0,0}, {1,19.56}, {2,9.5}, {3,5.3}, {5,18.01528}, {20,1.913}};
