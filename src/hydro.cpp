@@ -356,7 +356,7 @@ hydro::hydro(double Rp, vector<PhaseDgm> &Comp_in, vector<double> Mass_Comp, vec
 	return;
       }
 
-      if (new_Phase != Phase && m < mmax)
+      if (new_Phase != Phase)
 	// cross phase boundary but doesn't enter new composition
       {
 	if ((M[0]-Mtot+m)>hmax)	// Last step size too large
@@ -887,7 +887,7 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
 	return;
       }
       
-      if (new_Phase != Phase && m < mmax) 	// cross phase boundary but doesn't enter new composition
+      if (new_Phase != Phase) 	// cross phase boundary but doesn't enter new composition
       {
 	if (m-M.back()>hmax) // the last step size is two large.
 	{
@@ -1193,7 +1193,7 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
 	return;
       }
       
-      if (new_Phase != Phase && m < mmax) // cross phase boundary but doesn't enter new composition
+      if (new_Phase != Phase) // cross phase boundary but doesn't enter new composition
       {
 	if ((M[ninner]-Mtot+m)>hmax)	//the last step size is two large.
 	{

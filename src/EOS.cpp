@@ -974,7 +974,7 @@ double EOS::density(double P, double T, double rho_guess)
 
     if(thermal_type == 9 && T>T0)	// thermal expansion
       // convert alpha to K^-1
-      return rho*exp(-1E-6*pow(1+K0p*P/K0, -xi)*(alpha0*(T-T0)+0.5*alpha1*(sq(T)-9E4)));
+      return rho*exp(-1E-6*pow(1+K0p*P/K0, -xi)*(alpha0*(T-T0)+0.5*alpha1*(sq(T)-sq(T0))));
     else
       return rho;
   }
