@@ -1,4 +1,5 @@
 #include "phase.h"
+//Conditionals for Phase Diagrams in each layer begin LINE 250
 
 PhaseDgm::PhaseDgm(string Comp_name, EOS* (*f)(double, double), int k, EOS** phase_name, double *start_pressure)
 {
@@ -45,7 +46,6 @@ PhaseDgm::~PhaseDgm()
   if(n>1)
     delete[] start_P;
 }
-
 
 void PhaseDgm::set_phase_highP(int k, double *start_pressure, EOS** phase_name)
   // start pressure is an array with dimension k-1.  The first phase will replace the one with the same name in the phase diagram.
@@ -233,8 +233,8 @@ EOS* PhaseDgm::find_phase_boundary(double Pl, double Pu, double Tl, double Tu, b
   return new_phase;
 }
 
+// Phase curve function in Dunaeva et al. 2010, input P in GPa, return T
 double dunaeva_phase_curve(double P, double a, double b, double c, double d, double e)
-// Phase curve function in Dunaeva et al.2010, input P in GPa, return T
 {
   P *= 1E4;			// convert P from GPa to bar
   if (P <= 0)
@@ -245,18 +245,19 @@ double dunaeva_phase_curve(double P, double a, double b, double c, double d, dou
   return a + b*P + c*log(P) + d/P + e*sqrt(P);
 }
   
-
+// ---------------------------------
+// Phase Diagram for Hydrosphere
 EOS* find_water_phase(double P, double T)
 // input P in cgs
 {
   P /= 1E10;			// convert microbar to GPa
   double Tt1, Tt2;
-  //return Ice_Seager;
   if (P <= 0 || T <= 0)
   {
     return NULL;
   }
-  if( P < 0.208566 )		// liquid water or Ice Ih
+  //Default Hydrosphere
+  if( P < 0.208566 )		// liquid water or Ice Ih (Dunaeva et al. 2010)
   {
     Tt1 = dunaeva_phase_curve(P, 273.0159, -0.0132, -0.1577, 0, 0.1516);
     if (!gsl_finite(Tt1))
@@ -299,51 +300,37 @@ EOS* find_water_phase(double P, double T)
     if(T > Tt1)
       return Water;
     else if(T > Tt2)
-      //return IceVI_ExoPlex;
       return IceVI_Bezacier;
+      
     else
       return IceVII_Bezacier;
-      //return IceVII_FFH2004;
+      //return IceVII_FFH2004;  // Examples of choosing other EOSs
       //return IceVII;
       //return IceZeng2013FFH;
   }
 
-  // else
-  //   return IceVII_FFH2004;
-
-  // else if(P < 37.4)
-  //   return IceZeng2013FFH;
-
-  // else if(P < 8892)
-  //   return IceZeng2013FMNR;
-
-  // else
-  //   return Ice_Seager;
-
-  else if(P < 5.10)		// liquid water or Ice VII.  The melting curve is so uncertain.  Can't find any liquid water EOS at this temperature.  Assuming all ice above 2.21 GPa
+  else if(P < 5.10)		// liquid water or Ice VII.
   {
-    if(T>1200)			// A dummy melting curve to avoid ice vii EOS extrapolated to temperature too high.
+    if(T>1200)			// A dummy melting curve to avoid ice VII EOS extrapolated to temperature too high.
       return Water_sc_dummy;
     else
-      //return IceVII;
       return IceVII_Bezacier;
-      //return IceVII_FFH2004T;
   }
     
   else if(P < 30.9)		// liquid water or Ice VII'.
   {
-    if(T>1200)			// A dummy melting curve to avoid ice vii EOS extrapolated to temperature too high.
+    if(T>1200)			// A dummy melting curve to avoid Ice VII EOS extrapolated to temperature too high.
       return Water_sc_dummy;
     else
-      //return IceVIIp;
+      //return IceVIIp;         //Region of possible transitional Ice VII' reported in Grande not used in default
       return IceVII_Bezacier;
-      //return IceVII_FFH2004T;
   }  
-  else				// liquid water or Ice X.  No reliable data for the superionic state.
+  else				// liquid water or Ice X. The melting curve is so uncertain. Assuming all ice above 30.9 GPa.
     return IceX;
 }
 
-
+// ---------------------------------
+// Phase Diagram for Core
 EOS* find_Fe_phase(double P, double T)
 {
   if (P <= 0 || T <= 0)
@@ -353,18 +340,38 @@ EOS* find_Fe_phase(double P, double T)
 
   P /= 1E10;			// convert microbar to GPa
 
-  if( T > 12.8*P + 2424 && T > 13.7*P + 2328)	// melting curve from Dorogokupets et al. 2017, Scientific Reports. fcc-Fe melting curve slope and hcp-Fe slope, triple point at 106.5 GPa, 3787 K.
+  // Default Core
+  if( T > 12.8*P + 2424 && T > 13.7*P + 2328)   // melting curve from Dorogokupets et al. 2017, Scientific Reports. fcc and hcp Fe melting curve.
     return Fe_liquid;
-    //return Fe_Seager;
   else
-    return Fe_hcp3;		// use hcp3 for both fcc and hcp.
-    //return Fe_Seager;
-    //return Fe_hcp2;
+    return Fe_hcp;             // use hcp Iron for all regions.
 
-  // else
-  //   return Fe_Dummy;
+  //Alternative Core Phase Diagram with fcc and bcc iron
+  //if(T>575+18.7*P+0.213*pow(P,2)-0.000817*pow(P,3) && P<98.5) // Anzellini et al. 2013
+  //{
+  //  if(T<1991*pow((((P-5.2)/27.39)+1),1/2.38) && P<98.5)
+  //    if(T<-41.1*P+1120)	
+  //      return Fe_bcc;
+  //    else
+  //      return Fe_fcc;
+  //  else
+  //    return Fe_liquid;
+  //}
+  //else
+  //{
+  //  if(T<3712*pow((((P-98.5)/161.2)+1),1/1.72))
+  //    if(T<-61.2*P+1266)     // Dorogokupets et al. 2017
+  //      return Fe_bcc;
+  //    else	
+  //      return Fe_hcp;
+  //  else
+  //    return Fe_liquid;
+  //}
 }
-  
+
+
+// ---------------------------------
+// Phase Diagram for Mantle 
 EOS* find_Si_phase(double P, double T)
 {
   if (P <= 0 || T <= 0)
@@ -373,7 +380,7 @@ EOS* find_Si_phase(double P, double T)
   }
 
   P /= 1E10;			// convert microbar to GPa
-
+  // Default Mantle
   if(P > 112.5 + 7E-3*T)	// Phase transfer curve from Ono & Oganov 2005, Earth Planet. Sci. Lett. 236, 914
     return Si_PPv_Sakai;
   else if (T > 1830*pow(1+P/4.6, 0.33)) // Melting curve from Belonoshko et al. 2005 Eq. 2
@@ -381,36 +388,39 @@ EOS* find_Si_phase(double P, double T)
   else
     return Si_Pv;
 
+  // Detailed Upper Mantle
+  //if(P > 112.5 + 7E-3*T)      // Phase transfer curve from Ono & Oganov 2005, Earth Planet. Sci. Lett. 236, 914
+  //  return Si_PPv_Sakai;
+  //else if (T > 1830*pow(1+P/4.6, 0.33)) // Melting curve from Belonoshko et al. 2005 Eq. 2
+  //  return Si_Liquid_Wolf;
+  //else if (P > 24.3+(-2.12E-4*T)+(-3.49E-7*pow(T, 2))) // Dorogokupets et al. 2015
+  //    return Pv_Doro;
+  //else if (P > 8.69+6.05E-3*T)
+  //    return Rwd;
+  //else if (P > 9.45+2.76E-3*T)
+  //    return Wds;
+  //else
+  //  return Fo;
 
-  // if (T > 1830*pow(1+P/4.6, 0.33)) // Melting curve from Belonoshko et al. 2005 Eq. 2
-  //   return Si_Liquid_Wolf;
-  // else if(P > 112.5 + 7E-3*T)	// Phase transfer curve from Ono & Oganov 2005, Earth Planet. Sci. Lett. 236, 914
-  //   return Si_PPv_Sakai;
-  //   //return Si_Pv_Shim;
-  // else
-  //   return Si_Pv;
-  //   //return Si_Pv_Shim;
-
-  // if(P > 3500)
-  //   return Si_Seager;
-  // else if(P > 23.83)
-  //   return Si_BM2fit;
-  // else
-  //   return Si_PREM;
-
-  // else
-  //   return Si_Dummy;
+  // PREM Mantle
+  //if(P > 3500)
+  //  return Si_Seager;
+  //else if(P > 23.83)
+  //  return Si_BM2fit;
+  //else
+  //  return Si_PREM;
 }
 
+// ---------------------------------
+// Phase Diagram for Atmosphere
 EOS* find_gas_phase(double P, double T)
-// Isothermal gas for P less than 100 bar, the radiative/convective boundary (Nixon & Madhusudhan 2021). Adiabatic idea gas for P > 100 bar. 
+ 
 {
   if (P <= 0 || T <= 0)
   {
     return NULL;
   }
-  // else if (T > 500)
-  //   return watervapor;
+  // Isothermal gas for P less than 100 bar, the radiative/convective boundary (Nixon & Madhusudhan 2021). Adiabatic idea gas for P > 100 bar.
   else if (P < 1E7)
     return Gas_iso;
   else
@@ -433,7 +443,7 @@ EOS* find_phase(double m, double MC, double MM, double MW, double MG, double P, 
     else if(m < (MM+MC)*ME)		// silicon mantle
       return Si.find_phase(P,T);
 
-    else if(m < (MM+MC+MW)*ME)		// water crust
+    else if(m < (MM+MC+MW)*ME)		// hydrosphere
       return water.find_phase(P,T);
 
     else				// return the outermost existing layer 
@@ -456,7 +466,7 @@ EOS* find_phase(double m, double MC, double MM, double MW, double MG, double P, 
     else if(m <= (MM+MC)*ME)		// silicon mantle
       return Si.find_phase(P,T);
 
-    else if(m <= (MM+MC+MW)*ME)		// water crust
+    else if(m <= (MM+MC+MW)*ME)		// hydrosphere
       return water.find_phase(P,T);
 
     else				// return the outermost existing layer 
