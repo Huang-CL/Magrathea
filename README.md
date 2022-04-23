@@ -1,6 +1,6 @@
 # MAGRATHEA #
 
-![Header](magratheahead.jpg)
+![Header](plot/magratheahead.jpg)
 
 **Excerpt from The Hitchhiker's Guide to the Galaxy, Page 634784, Section 5a, Entry: MAGRATHEA**
 
