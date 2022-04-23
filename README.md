@@ -39,11 +39,13 @@ If an error message like "error while loading shared libraries: libgsl.so.23: ca
 ## Quick Start ##
 
 Installation:
+
 1. Clone the repository: `git clone https://github.com/Huang-CL/Magrathea.git`.
 2. If the gsl library is not installed globally (under /usr/local/ or equivalent), edit `Makefile` to include the actual path toward the gsl headers (e.g. `~/include` or `~/gsl/include`) and gsl library (e.g. `~/lib` or `~/gsl/lib`) following `-I` in `CFLAGS` and `-L` in `LDFLAGS`.  Note: The path after `-I` should end with `/include`, not `/include/gsl`.
 3. Run `make -B` inside the code's directory. (After the first compilation use `make` to compile the code.)
 
 Running a planet:
+
 4. Open src/main.cpp in a text editor.
 5. Line 29: set `input_mode=0` other options listed below the line.
 6. Line 42*: set mass of the core, mantle, hydrosphere, and atmosphere in Earth-masses. Ex. Mcomp={0.3,0.7,0,0}
@@ -52,7 +54,7 @@ Running a planet:
 9. Compile changed file with `make`.
 9. Run MAGRATHEA with `./planet`.
 
-*We promise that the primary input parameters occuring on Line 42 was only a coincedence and does not revel the Ultimate Question.
+*We promise that the primary input parameters occuring on Line 42 was only a coincedence and does not reveal the Ultimate Question.
 
 ## Capability and Output ##
 
@@ -217,18 +219,23 @@ Python plotting scripts are included in the directory `plot`. Scripts are writte
 ## Don't Panic (FAQ) ##
 
 **Who do I talk to?**
+
 Find our emails on our websites:
 Chenliang Huang, University of Arizona [website](https://www.lpl.arizona.edu/~huangcl/)
+
 David R. Rice, University of Nevada, Las Vegas [website](https://www.physics.unlv.edu/~drice986/)
 
-**I don't see the EOS/functionality I want**
+**Where is the EOS/functionality I want?**
+
 Open an issue with details of what you need. Future work includes implementing additional core alloys, more phases of water, a
 thermodynamic Ice X, and atmosphere EOSs. 
 
 **What if I need to model a planet, but I'm currently being tortured by Vogon poetry?**
+
 We are open to collaborations! Emails found on websites above.
 
 **Where does the name MAGRATHEA come from?**
+
 Magrathea is a fictional planet in Douglas Adams's *The Hitchiker's Guide to the Galaxy*: 
 
 "for all the richest and most successful merchants life inevitably became rather dull and niggly, and they began to imagine that this was therefore the fault of the worlds they'd settled on... And thus were created the conditions for a staggering new form of specialist industry: custom-made luxury planet building. The home of this industry was the planet Magrathea, where hyperspatial engineers sucked matter through white holes in space to form it into dream planets- gold planets, platinum planets, soft rubber planets with lots of earthquakes- all lovingly made to meet the exacting standards that the Galaxy's richest men naturally came to expect.
