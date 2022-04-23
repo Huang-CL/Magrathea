@@ -192,7 +192,6 @@ Example:
      		return Si_Pv;
  	}
 
-
 ### Useful unit conversions ###
 
 The input parameters required to create an EOS in the program are typically in cgs units. However, the EOS measurement/calculation article may list their result in different units. Thus, the following unit conversions maybe helpful.
@@ -249,6 +248,6 @@ But so successful was this venture that Magrathea itself soon became the richest
 
 Magrathea itself disappeared and its memory soon passed into the obscurity of legend. In these enlightened days of course, no one believes a word of it."
 
-
+---
 
 *MAGRATHEA is supported by the [Nevada Center for Astrophysics](https://www.physics.unlv.edu/~bzhang/NCfA.html), University of Nevada, Las Vegas's [Physics & Astronomy Department](https://www.physics.unlv.edu/) and [Star & Planet Formation Group](https://unlv-spfg.github.io/), and University of Arizona's [Lunar and Planetary Laboratory](https://www.lpl.arizona.edu/)*
