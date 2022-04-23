@@ -202,7 +202,7 @@ hydro::hydro(double Rp, vector<PhaseDgm> &Comp_in, vector<double> Mass_Comp, vec
   if (!Phase)
   {
     if (verbose)
-      cout<<"Warning: Can't find density for "<<Phase->getEOS()<<" at outer boundary in the first round of mode 1 integration with initial radius Rp="<<Rp<<endl;
+      cout<<"Warning: Can't find density for "<<Phase->getEOS()<<" at outer boundary in the first round of mode 0 integration with initial radius Rp="<<Rp<<endl;
     rb.clear();
     P.clear();
     M.clear();
@@ -219,7 +219,7 @@ hydro::hydro(double Rp, vector<PhaseDgm> &Comp_in, vector<double> Mass_Comp, vec
   if (!gsl_finite(rhot)) //Failed to find the density
   {
     if (verbose)
-      cout<<"Warning: Can't find density for "<<Phase->getEOS()<<" at outer boundary in the first round of mode 1 integration with initial radius Rp="<<Rp<<endl;
+      cout<<"Warning: Can't find density for "<<Phase->getEOS()<<" at outer boundary in the first round of mode 0 integration with initial radius Rp="<<Rp<<endl;
     rb.clear();
     P.clear();
     M.clear();
@@ -257,7 +257,7 @@ hydro::hydro(double Rp, vector<PhaseDgm> &Comp_in, vector<double> Mass_Comp, vec
     {
       if (verbose)
       {
-	cout<<"Warning: Can't find the phase for component: "<<Comp[i].getname()<<" in mode 1 first round integration at location: r="<<y[0]<<"cm, m="<<(Mtot-m)/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<"K, Component masses ";
+	cout<<"Warning: Can't find the phase for component: "<<Comp[i].getname()<<" in mode 0 first round integration at location: r="<<y[0]<<"cm, m="<<(Mtot-m)/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<"K, Component masses ";
 	for (int j=0; j < int(M_Comp.size()); j++)
 	  cout<<M_Comp[j]<<", ";
 	cout<<endl;
@@ -295,7 +295,7 @@ hydro::hydro(double Rp, vector<PhaseDgm> &Comp_in, vector<double> Mass_Comp, vec
 	if (status == GSL_FAILURE && y[0] > 1E-4 * Rp)
 	{
 	  if (verbose)
-	    cout<<"Warning: In the first round integration of mode 1, at radius "<<y[0]<<"cm, mass "<<(Mtot - m)/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. The solver failed because the required step size reaches machine precision.  This may caused by the EOS diverges at high pressure and high temperature, e.g. Bezacier's ice EOS. Solve this by changing the phase setting to guarantee Bezacier ice EOS is not ice EOS used for the highest ice pressure.  It may also caused by the discontinuity in density.  Try to resolve the error by reducing the ODE integration control accuracy requirement (larger ode_eps_rel0)."<<endl;
+	    cout<<"Warning: In the first round integration of mode 0, at radius "<<y[0]<<"cm, mass "<<(Mtot - m)/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. The solver failed because the required step size reaches machine precision.  This may caused by the EOS diverges at high pressure and high temperature, e.g. Bezacier's ice EOS. Solve this by changing the phase setting to guarantee Bezacier ice EOS is not ice EOS used for the highest ice pressure.  It may also caused by the discontinuity in density.  Try to resolve the error by reducing the ODE integration control accuracy requirement (larger ode_eps_rel0)."<<endl;
 	}
 	else if (status == GSL_FAILURE)
 	  // If the radius is very small when the pressure is about to diverge, the mass to small that in each step may exceed the precision of float number.  In this case, the integration can be considered as finished.
@@ -303,7 +303,7 @@ hydro::hydro(double Rp, vector<PhaseDgm> &Comp_in, vector<double> Mass_Comp, vec
 	else if (status == GSL_EBADFUNC)
 	{
 	  if (verbose)
-	    cout<<"Warning: In the first round integration of mode 1, at radius "<<y[0]<<"cm, mass "<<(Mtot - m)/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. The solver failed to calculate the density or derivative. "<<endl;
+	    cout<<"Warning: In the first round integration of mode 0, at radius "<<y[0]<<"cm, mass "<<(Mtot - m)/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. The solver failed to calculate the density or derivative. "<<endl;
 	  if (h/ME>1E-13)
 	  {
 	    h/=2;
@@ -314,7 +314,7 @@ hydro::hydro(double Rp, vector<PhaseDgm> &Comp_in, vector<double> Mass_Comp, vec
 	}
 	else
 	  if (verbose)
-	    cout<<"Warning: In the first round integration of mode 1, at radius "<<y[0]<<"cm, mass "<<(Mtot - m)/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. Error code: "<<gsl_strerror (status)<<' '<<status<<endl;
+	    cout<<"Warning: In the first round integration of mode 0, at radius "<<y[0]<<"cm, mass "<<(Mtot - m)/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. Error code: "<<gsl_strerror (status)<<' '<<status<<endl;
 
 	rb.clear();
 	P.clear();
@@ -337,7 +337,7 @@ hydro::hydro(double Rp, vector<PhaseDgm> &Comp_in, vector<double> Mass_Comp, vec
       {
 	if (verbose)
 	{
-	  cout<<"Warning: Can't find the phase for component: "<<Comp[i].getname()<<" in mode 1 first round integration at location: r="<<y[0]<<" m="<<(Mtot-m)/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<" Component masses ";
+	  cout<<"Warning: Can't find the phase for component: "<<Comp[i].getname()<<" in mode 0 first round integration at location: r="<<y[0]<<" m="<<(Mtot-m)/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<" Component masses ";
 	  for (int j=0; j < int(M_Comp.size()); j++)
 	    cout<<M_Comp[j]<<", ";
 	  cout<<endl;
@@ -393,7 +393,7 @@ hydro::hydro(double Rp, vector<PhaseDgm> &Comp_in, vector<double> Mass_Comp, vec
 	    {
 	      if (verbose)
 	      {
-		cout<<"Warning: Failed in a phase transition for component: "<<Comp[i].getname()<<" in mode 1 first round integration at location: r="<<y[0]<<" m="<<(Mtot-m)/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<" Component masses ";
+		cout<<"Warning: Failed in a phase transition for component: "<<Comp[i].getname()<<" in mode 0 first round integration at location: r="<<y[0]<<" m="<<(Mtot-m)/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<" Component masses ";
 		for (int j=0; j < int(M_Comp.size()); j++)
 		  cout<<M_Comp[j]<<", ";
 		cout<<endl;
@@ -501,7 +501,7 @@ hydro::hydro(double Pc, double MCin, double MMin, double MWin, double P0, double
   if (!Phase)
   {
     if (verbose)
-      cout<<"Warning: Can't find the phase at center with mode 2 with Pc="<<Pc<<endl;
+      cout<<"Warning: Can't find the phase at center with mode 1 with Pc="<<Pc<<endl;
 
     rb.clear();
     P.clear();
@@ -517,7 +517,7 @@ hydro::hydro(double Pc, double MCin, double MMin, double MWin, double P0, double
   if (!gsl_finite(rho[0])) //Failed to find the density
   {
     if (verbose)
-      cout<<"Warning: Can't find density for "<<Phase->getEOS()<<" at center with mode 2 with Pc="<<Pc<<endl;
+      cout<<"Warning: Can't find density for "<<Phase->getEOS()<<" at center with mode 1 with Pc="<<Pc<<endl;
 
     rb.clear();
     P.clear();
@@ -540,7 +540,7 @@ hydro::hydro(double Pc, double MCin, double MMin, double MWin, double P0, double
   if (!Phase)
   {
     if (verbose)
-      cout<<"Warning: Can't find the phase after first step with mode 2 with Pc="<<Pc<<endl;
+      cout<<"Warning: Can't find the phase after first step with mode 1 with Pc="<<Pc<<endl;
     
     rb.clear();
     P.clear();
@@ -558,7 +558,7 @@ hydro::hydro(double Pc, double MCin, double MMin, double MWin, double P0, double
   if (!gsl_finite(rho.back())) //Failed to find the density
   {
     if (verbose)
-      cout<<"Warning: Can't find density for "<<Phase->getEOS()<<" after first step with mode 2 with Pc="<<Pc<<endl;
+      cout<<"Warning: Can't find density for "<<Phase->getEOS()<<" after first step with mode 1 with Pc="<<Pc<<endl;
     
     rb.clear();
     P.clear();
@@ -592,12 +592,12 @@ hydro::hydro(double Pc, double MCin, double MMin, double MWin, double P0, double
       if (status == GSL_FAILURE)
       {
 	if (verbose)
-	  cout<<"Warning: In the mode 2 integration, at radius "<<y[0]<<", mass "<<m/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, no solution can be found.  The final step size is "<<h/ME<<" MEarth. The solver failed because the required step size reaches machine precision. This may caused by the EOS diverges at high pressure and high temperature, e.g. Bezacier's ice EOS. Solve this by changing the phase setting to guarantee Bezacier ice EOS is not ice EOS used for the highest ice pressure.  It may also caused by the discontinuity in density.  Try to resolve the error by reducing the ODE integration control accuracy requirement (larger ode_eps_rel2)."<<endl;
+	  cout<<"Warning: In the mode 1 integration, at radius "<<y[0]<<", mass "<<m/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, no solution can be found.  The final step size is "<<h/ME<<" MEarth. The solver failed because the required step size reaches machine precision. This may caused by the EOS diverges at high pressure and high temperature, e.g. Bezacier's ice EOS. Solve this by changing the phase setting to guarantee Bezacier ice EOS is not ice EOS used for the highest ice pressure.  It may also caused by the discontinuity in density.  Try to resolve the error by reducing the ODE integration control accuracy requirement (larger ode_eps_rel2)."<<endl;
       }
       else if (status == GSL_EBADFUNC)
       {
 	if (verbose)
-	  cout<<"Warning: In the mode 2 integration, at radius "<<y[0]<<", mass "<<m/ME<<", pressure "<<y[1]/1E10<<"GPa, no solution can be found.  The final step size is "<<h/ME<< " MEarth. The solver failed to calculate the density or derivative."<<endl;
+	  cout<<"Warning: In the mode 1 integration, at radius "<<y[0]<<", mass "<<m/ME<<", pressure "<<y[1]/1E10<<"GPa, no solution can be found.  The final step size is "<<h/ME<< " MEarth. The solver failed to calculate the density or derivative."<<endl;
 	if (h/ME>1E-13)
 	{
 	  h/=2;
@@ -609,7 +609,7 @@ hydro::hydro(double Pc, double MCin, double MMin, double MWin, double P0, double
       else
       {
 	if (verbose)
-	  cout<<"Warning: In the mode 2 integration, at radius "<<y[0]<<", mass "<<m/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, no solution can be found.  The final step size is "<<h/ME<<" MEarth. Error code: "<<gsl_strerror (status)<<' '<<status<<endl;
+	  cout<<"Warning: In the mode 1 integration, at radius "<<y[0]<<", mass "<<m/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, no solution can be found.  The final step size is "<<h/ME<<" MEarth. Error code: "<<gsl_strerror (status)<<' '<<status<<endl;
       }
 
       rb.clear();
@@ -703,7 +703,7 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
   if (!Phase)
   {
     if (verbose)
-      cout<<"Warning: Can't find the phase for component: "<<Comp[i].getname()<<" at the center in the second round of mode 1 integration with initial Pc="<<Pc/1E10<<"GPa, Tc="<<Tc<<endl;
+      cout<<"Warning: Can't find the phase for component: "<<Comp[i].getname()<<" at the center in the second round of mode 0 integration with initial Pc="<<Pc/1E10<<"GPa, Tc="<<Tc<<endl;
     rb.clear();
     P.clear();
     M.clear();
@@ -717,7 +717,7 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
   if (!gsl_finite(rhot)) //Failed to find the density
   {
     if (verbose)
-      cout<<"Warning: Can't find the density for "<<Phase->getEOS()<<" at the center in the second round of mode 1 integration with initial Pc="<<Pc/1E10<<"GPa, Tc="<<Tc<<endl;
+      cout<<"Warning: Can't find the density for "<<Phase->getEOS()<<" at the center in the second round of mode 0 integration with initial Pc="<<Pc/1E10<<"GPa, Tc="<<Tc<<endl;
     rb.clear();
     P.clear();
     M.clear();
@@ -750,7 +750,7 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
   if (!gsl_finite(rhot) || !gsl_finite(Tt)) //Failed to find the density or temperature
   {
     if (verbose)
-      cout<<"Warning: Can't find the density or temperature after the first step in the second round of mode 1 integration with initial Pc="<<Pc/1E10<<"GPa, Tc="<<Tc<<endl;
+      cout<<"Warning: Can't find the density or temperature after the first step in the second round of mode 0 integration with initial Pc="<<Pc/1E10<<"GPa, Tc="<<Tc<<endl;
     rb.clear();
     P.clear();
     M.clear();
@@ -788,7 +788,7 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
     {
       if (verbose)
       {
-	cout<<"Warning: Can't find the phase for component: "<<Comp[i].getname()<<" in mode 1 second round inside-out integration at location: r="<<y[0]<<" m="<<m/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<" Component masses ";
+	cout<<"Warning: Can't find the phase for component: "<<Comp[i].getname()<<" in mode 0 second round inside-out integration at location: r="<<y[0]<<" m="<<m/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<" Component masses ";
 	for (int j=0; j < int(M_Comp.size()); j++)
 	  cout<<M_Comp[j]<<", ";
 	cout<<endl;
@@ -828,12 +828,12 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
 	if (status == GSL_FAILURE)
 	{
 	  if (verbose)
-	    cout<<"Warning: In the second round of mode 1 inside-out integration, at radius "<<y[0]<<", mass "<<m/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. The solver failed because the required step size reaches machine precision. This may caused by the EOS diverges at high pressure and high temperature, e.g. Bezacier's ice EOS. Solve this by changing the phase setting to guarantee Bezacier ice EOS is not ice EOS used for the highest ice pressure.  It may also caused by the discontinuity in density.  Try to resolve the error by reducing the ODE integration control accuracy requirement (larger ode_eps_rel1)."<<endl;
+	    cout<<"Warning: In the second round of mode 0 inside-out integration, at radius "<<y[0]<<", mass "<<m/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. The solver failed because the required step size reaches machine precision. This may caused by the EOS diverges at high pressure and high temperature, e.g. Bezacier's ice EOS. Solve this by changing the phase setting to guarantee Bezacier ice EOS is not ice EOS used for the highest ice pressure.  It may also caused by the discontinuity in density.  Try to resolve the error by reducing the ODE integration control accuracy requirement (larger ode_eps_rel1)."<<endl;
 	}
 	else if (status == GSL_EBADFUNC)
 	{
 	  if (verbose)
-	    cout<<"Warning: In the second round of mode 1 inside-out integration, at radius "<<y[0]<<", mass "<<m/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. The solver failed to calculate the density or derivative. "<<endl;
+	    cout<<"Warning: In the second round of mode 0 inside-out integration, at radius "<<y[0]<<", mass "<<m/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. The solver failed to calculate the density or derivative. "<<endl;
 	  if (h/ME>1E-13)
 	  {
 	    h/=2;
@@ -845,7 +845,7 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
 	else
 	{
 	  if (verbose)
-	    cout<<"Warning: In the second round of mode 1 inside-out integration, at radius "<<y[0]<<", mass "<<m/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. Error code: "<<gsl_strerror (status)<<endl;
+	    cout<<"Warning: In the second round of mode 0 inside-out integration, at radius "<<y[0]<<", mass "<<m/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. Error code: "<<gsl_strerror (status)<<endl;
 	}
 	
 	rb.clear();
@@ -869,7 +869,7 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
       {
 	if (verbose)
 	{
-	  cout<<"Warning: Can't find the phase for component: "<<Comp[i].getname()<<" in mode 1 second round inside-out integration at location: r="<<y[0]<<" m="<<m/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<" Component masses ";
+	  cout<<"Warning: Can't find the phase for component: "<<Comp[i].getname()<<" in mode 0 second round inside-out integration at location: r="<<y[0]<<" m="<<m/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<" Component masses ";
 	  for (int j=0; j < int(M_Comp.size()); j++)
 	    cout<<M_Comp[j]<<", ";
 	  cout<<endl;
@@ -923,7 +923,7 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
 	    {
 	      if (verbose)
 	      {
-		cout<<"Warning: Failed in a phase transition for component: "<<Comp[i].getname()<<" in mode 1 second round inside-out integration at location: r="<<y[0]<<" m="<<m/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<" Component masses ";
+		cout<<"Warning: Failed in a phase transition for component: "<<Comp[i].getname()<<" in mode 0 second round inside-out integration at location: r="<<y[0]<<" m="<<m/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<" Component masses ";
 		for (int j=0; j < int(M_Comp.size()); j++)
 		  cout<<M_Comp[j]<<", ";
 		cout<<endl;
@@ -1043,7 +1043,7 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
   if (!Phase)
   {
     if (verbose)
-      cout<<"Warning: Can't find density at the surface in the second round of mode 1 integration with initial Rp="<<Rp<<endl;
+      cout<<"Warning: Can't find density at the surface in the second round of mode 0 integration with initial Rp="<<Rp<<endl;
     rb.clear();
     P.clear();
     M.clear();
@@ -1057,7 +1057,7 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
   if (!gsl_finite(rhot)) //Failed to find the density
   {
     if (verbose)
-      cout<<"Warning: Can't find density at the surface in the second round of mode 1 integration with initial Rp="<<Rp<<endl;
+      cout<<"Warning: Can't find density at the surface in the second round of mode 0 integration with initial Rp="<<Rp<<endl;
     rb.clear();
     P.clear();
     M.clear();
@@ -1095,7 +1095,7 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
     {
       if (verbose)
       {
-	cout<<"Warning: Can't find the phase for component: "<<Comp[i].getname()<<" in mode 1 second round outside-in integration at location: r="<<y[0]<<" m="<<(Mtot-m)/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<" Component masses ";
+	cout<<"Warning: Can't find the phase for component: "<<Comp[i].getname()<<" in mode 0 second round outside-in integration at location: r="<<y[0]<<" m="<<(Mtot-m)/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<" Component masses ";
 	for (int j=0; j < int(M_Comp.size()); j++)
 	  cout<<M_Comp[j]<<", ";
 	cout<<endl;
@@ -1134,12 +1134,12 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
 	if (status == GSL_FAILURE)
 	{
 	  if (verbose)
-	    cout<<"Warning: In the second round of mode 1 outside-in integration, at radius "<<y[0]<<", mass "<<(Mtot - m)/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. The solver failed because the required step size reaches machine precision. This may caused by the EOS diverges at high pressure and high temperature, e.g. Bezacier's ice EOS. Solve this by changing the phase setting to guarantee Bezacier ice EOS is not ice EOS used for the highest ice pressure.  It may also caused by the discontinuity in density. Try to resolve the error by reducing the ODE integration control accuracy requirement (larger ode_eps_rel1)."<<endl;
+	    cout<<"Warning: In the second round of mode 0 outside-in integration, at radius "<<y[0]<<", mass "<<(Mtot - m)/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. The solver failed because the required step size reaches machine precision. This may caused by the EOS diverges at high pressure and high temperature, e.g. Bezacier's ice EOS. Solve this by changing the phase setting to guarantee Bezacier ice EOS is not ice EOS used for the highest ice pressure.  It may also caused by the discontinuity in density. Try to resolve the error by reducing the ODE integration control accuracy requirement (larger ode_eps_rel1)."<<endl;
 	}
 	else if (status == GSL_EBADFUNC)
 	{
 	  if (verbose)
-	    cout<<"Warning: In the second round of mode 1 outside-in integration, at radius "<<y[0]<<", mass "<<(Mtot - m)/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. The solver failed to calculate the density or derivative. "<<endl;
+	    cout<<"Warning: In the second round of mode 0 outside-in integration, at radius "<<y[0]<<", mass "<<(Mtot - m)/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. The solver failed to calculate the density or derivative. "<<endl;
 	  if (h/ME>1E-13)
 	  {
 	    h/=2;
@@ -1151,7 +1151,7 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
 	else
 	{
 	  if (verbose)
-	    cout<<"Warning: In the second round of mode 1 outside-in integration, at radius "<<y[0]<<", mass "<<(Mtot - m)/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. Error code: "<<gsl_strerror (status)<<endl;
+	    cout<<"Warning: In the second round of mode 0 outside-in integration, at radius "<<y[0]<<", mass "<<(Mtot - m)/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. Error code: "<<gsl_strerror (status)<<endl;
 	}
 
 	gsl_odeiv2_evolve_free (e);
@@ -1175,7 +1175,7 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
       {
 	if (verbose)
 	{
-	  cout<<"Warning: Can't find the phase for component: "<<Comp[i].getname()<<" in mode 1 second round outside-in integration at location: r="<<y[0]<<" m="<<(Mtot-m)/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<" Component masses ";
+	  cout<<"Warning: Can't find the phase for component: "<<Comp[i].getname()<<" in mode 0 second round outside-in integration at location: r="<<y[0]<<" m="<<(Mtot-m)/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<" Component masses ";
 	  for (int j=0; j < int(M_Comp.size()); j++)
 	    cout<<M_Comp[j]<<", ";
 	  cout<<endl;
@@ -1229,7 +1229,7 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
 	    {
 	      if (verbose)
 	      {
-		cout<<"Warning: Failed in a phase transition for component: "<<Comp[i].getname()<<" in mode 1 second round outside-in integration at location: r="<<y[0]<<" m="<<(Mtot-m)/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<" Component masses ";
+		cout<<"Warning: Failed in a phase transition for component: "<<Comp[i].getname()<<" in mode 0 second round outside-in integration at location: r="<<y[0]<<" m="<<(Mtot-m)/ME<<"MEarth, P="<<y[1]/1E10<<"GPa, T="<<y[2]<<" Component masses ";
 		for (int j=0; j < int(M_Comp.size()); j++)
 		  cout<<M_Comp[j]<<", ";
 		cout<<endl;
@@ -1469,7 +1469,7 @@ hydro* Rloop(vector<PhaseDgm> &Comp, vector<double> M_Comp, vector<double> ave_r
   
   if (int(M_Comp.size()) != n_Comp || int(ave_rho.size()) != n_Comp || int(Tgap.size()) != n_Comp)
   {
-    cout<<"Error: The array lengthes provided to Rloop (first round integration in mode 1) do not match."<<endl;
+    cout<<"Error: The array lengthes provided to Rloop (first round integration in mode 0) do not match."<<endl;
     return NULL;
   }
 
@@ -1658,7 +1658,7 @@ hydro* fitting_method(vector<PhaseDgm> &Comp, vector<double> M_Comp, vector<doub
   int n_Comp = int(M_Comp.size());
   if (int(M_Comp.size()) != n_Comp || int(ave_rho.size()) != n_Comp || int(Tgap.size()) != n_Comp)
   {
-    cout<<"Error: The array lengthes provided to two branch fitting (second round integration in mode 1) do not match."<<endl;
+    cout<<"Error: The array lengthes provided to two branch fitting (second round integration in mode 0) do not match."<<endl;
     return NULL;
   }
   else if (n_Comp > 100 && verbose)
@@ -1906,14 +1906,14 @@ hydro* getmass(double MC, double MM, double MW, double P0)
 	if (params.x[5]<0)
 	  // planet structure integration was failed.
 	{
-	  cout<<"Error: Failed to conduct the mode 2 inside-out integration for (MC/MM/MW in ME) "<<MC<<' '<<MM<<' '<<MW<<'.'<<endl;
+	  cout<<"Error: Failed to conduct the mode 1 inside-out integration for (MC/MM/MW in ME) "<<MC<<' '<<MM<<' '<<MW<<'.'<<endl;
 	  gsl_root_fsolver_free (s);
 	  return NULL;
 	}
 
 	if (iter >= max_iter)
 	{
-	  cout<<"Error: Can't find central pressure upper limit within limited steps for mode 2 inside-out iteration for (MC/MM/MW in ME) "<<MC<<' '<<MM<<' '<<MW<<'.'<<endl;
+	  cout<<"Error: Can't find central pressure upper limit within limited steps for mode 1 inside-out iteration for (MC/MM/MW in ME) "<<MC<<' '<<MM<<' '<<MW<<'.'<<endl;
 	  gsl_root_fsolver_free (s);
 	  return NULL;
 	}
@@ -1932,13 +1932,13 @@ hydro* getmass(double MC, double MM, double MW, double P0)
 	if (params.x[5]<0)
 	  // planet structure integration was failed.
 	{
-	  cout<<"Error: Failed to conduct the mode 2 inside-out integration for (MC/MM/MW in ME) "<<MC<<' '<<MM<<' '<<MW<<'.'<<endl;
+	  cout<<"Error: Failed to conduct the mode 1 inside-out integration for (MC/MM/MW in ME) "<<MC<<' '<<MM<<' '<<MW<<'.'<<endl;
 	  gsl_root_fsolver_free (s);
 	  return NULL;
 	}
 	if (iter >= max_iter)
 	{
-	  cout<<"Error: Can't find central pressure lower limit within limited steps for mode 2 inside-out iteration for (MC/MM/MW in ME) "<<MC<<' '<<MM<<' '<<MW<<'.'<<endl;
+	  cout<<"Error: Can't find central pressure lower limit within limited steps for mode 1 inside-out iteration for (MC/MM/MW in ME) "<<MC<<' '<<MM<<' '<<MW<<'.'<<endl;
 	  gsl_root_fsolver_free (s);
 	  return NULL;
 	}
@@ -1948,13 +1948,13 @@ hydro* getmass(double MC, double MM, double MW, double P0)
   }
   else if (status == GSL_EINVAL)
   {
-    cout<<"Error: The lower pressure bound "<<P_lo<<" is larger than upper pressure bound "<<P_hi<<" when conducting the mode 2 integration for (MC/MM/MW in ME) "<<MC<<' '<<MM<<' '<<MW<<'.'<<endl;
+    cout<<"Error: The lower pressure bound "<<P_lo<<" is larger than upper pressure bound "<<P_hi<<" when conducting the mode 1 integration for (MC/MM/MW in ME) "<<MC<<' '<<MM<<' '<<MW<<'.'<<endl;
     gsl_root_fsolver_free (s);
     return NULL;
   }
   else if (status != GSL_SUCCESS)
   {
-    cout<<"Error: Failed to set up the radius solver for the mode 2 integration for (MC/MM/MW in ME) "<<MC<<' '<<MM<<' '<<MW<<'.'<<endl;
+    cout<<"Error: Failed to set up the radius solver for the mode 1 integration for (MC/MM/MW in ME) "<<MC<<' '<<MM<<' '<<MW<<'.'<<endl;
     gsl_root_fsolver_free (s);
     return NULL;
   }
@@ -1967,7 +1967,7 @@ hydro* getmass(double MC, double MM, double MW, double P0)
     if (params.x[5]<0)
       // planet structure integration was failed.
     {
-      cout<<"Error: Failed to conduct the mode 2 inside-out integration for (MC/MM/MW in ME) "<<MC<<' '<<MM<<' '<<MW<<'.'<<endl;
+      cout<<"Error: Failed to conduct the mode 1 inside-out integration for (MC/MM/MW in ME) "<<MC<<' '<<MM<<' '<<MW<<'.'<<endl;
       gsl_root_fsolver_free (s);
       return NULL;
     }

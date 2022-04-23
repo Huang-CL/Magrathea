@@ -79,17 +79,19 @@ Uses the `getmass()` function which assumes an isothermal planet. This function 
 
 ### input_mode=6 ###
 
-This mode is for bulk inputs of planets using the solver from `input_mode=0` or 1. Requires a space separated file with a table of total mass in Earth-masses and fraction of mass in each layer.
+This mode is for bulk inputs of planets using the solver from `input_mode=0` or 1. Requires a space separated file, where each raw of the table lists the parameters of a planetary model, including the total mass in Earth-masses and fraction of mass in each layer.
 
 Example input file:
+
     Mass  fCore  fMantle  fWater
     2     0.2    0.4      0.4
     1.5   0.5    0.39     0.1
-Any remaining mass will be put into the atmosphere (i.e. 0.01% for the second planet).
+	
+Any remaining mass will be put into the atmosphere (i.e. 1% for the second planet).  Example input files can also be found under [run](run/).
 
 After setting the input_mode, `main.cpp` does not need to be edited. The user will be prompted after running the command `.\planet` for which solver to use, the temperature, and input and output file names.
 
-MAGRATHEA will generate an output file with mass of core, mantle, water, and atmosphere and the radius of the core, mantle, water, and planet for each line in the input file.
+MAGRATHEA will generate an output file with mass of core, mantle, water, and atmosphere and the radius of the core, mantle, water, and planet for each line in the input file.  If the solution crosses the part of the phase diagram that the code has not been fully implemented, "Dummy EOS used" is added to the end of the raw.  If the solver cannot find the solution that meets the required accuracy with the given number of iteration, "Solution did not converge" is added.  "No solution found" is also possible in the output if the solver failed to find a solution.
 
 ### input_mode=7 ###
 

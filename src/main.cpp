@@ -11,9 +11,9 @@ const double T_eps_rel = 1E-11;	// relative error tolerance of the temperature s
 const double ode_eps_rel0 = 1E-7; // relative error tolerance for first round ode integrator (1E-7) used in mode 0
 const double ode_eps_rel1 = 1E-10; // relative error tolerance for second round ode integrator (1E-10) used in mode 0
 int fit_iter;
-const double R_eps_rel = 2E-5; // relative error tolerance in mode 1 first round radius determination (5E-5).  Should be around sqrt(ode_eps_rel0).
-const double ode_eps_rel2 = 1E-10; // relative error tolerance for ode integrator (1E-10) used in mode 2
-const double P_eps_rel = 1E-10;	// relative error tolerance in mode 2 central pressure determination (1E-10).  Should not be more restrict than ode_eps_rel.
+const double R_eps_rel = 2E-5; // relative error tolerance in mode 0 first round radius determination (5E-5).  Should be around sqrt(ode_eps_rel0).
+const double ode_eps_rel2 = 1E-10; // relative error tolerance for ode integrator (1E-10) used in mode 1
+const double P_eps_rel = 1E-10;	// relative error tolerance in mode 1 central pressure determination (1E-10).  Should not be more restrict than ode_eps_rel.
 const double fit_eps_rel = 1E-4; // the relative error tolerance at the fitting point in mode 0 round 2 (1E-4). Should be four orders of magnitudes larger than ode_eps_rel1.
 vector<double> ave_rho = {15, 5, 2, 1E-3};// Assuming the density of the core is 15, mantle is 5, water is 2, and gas is 1E-3.
 const bool verbose = false;		  // Whether print warnings.
@@ -149,11 +149,12 @@ int main()
     double deltat;
     // read in a file with a table of mass fractions in the unit of earth's mass.  Calculate the radius of such planets and write in a file.
 
-    // Example input file
-    // Mass, fCore, fMantle, fWater
-    // 2     0.2    0.4      0.4
-    // 1.5   0.5    0.4      0.1
-
+    /*
+    Example input file
+    Mass, fCore, fMantle, fWater
+    2     0.2    0.4      0.4
+    1.5   0.5    0.4      0.1
+    */
     // Tgap and File names are prompted in command line for user entry
 
     string filename;
