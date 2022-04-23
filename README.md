@@ -235,6 +235,10 @@ thermodynamic Ice X, and atmosphere EOSs.
 
 We are open to collaborations! Emails found on websites above.
 
+**Where do I find other codes for exoplanet modeling?**
+
+MAGRATHEA and many other useful exoplanet-related codes are archived on NASA's [Exoplanet Modeling and Analysis Center](https://emac.gsfc.nasa.gov/).
+
 **Where does the name MAGRATHEA come from?**
 
 Magrathea is a fictional planet in Douglas Adams's *The Hitchiker's Guide to the Galaxy*: 
