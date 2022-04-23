@@ -1,6 +1,6 @@
 This directory contains example input files to run MAGRATHEA.
 
-*inputecore.txt* is an input file for `input_mode=6` 100% core planets with masses from 1 to 10 Earth masses.
+*inputcore.txt* is an input file for `input_mode=6` 100% core planets with masses from 1 to 10 Earth masses.
 
 *inputternary.txt* is an input file for `input_mode=6` containing 5151 planets of 1 Earth-mass with integer percentages of mass in each of three layers. 
 

@@ -1,5 +1,7 @@
 # MAGRATHEA #
 
+![Header](plot/magratheahead.jpg)
+
 **Excerpt from The Hitchhiker's Guide to the Galaxy, Page 634784, Section 5a, Entry: MAGRATHEA**
 
 Planet interior structure code for astronomers, planetary scientists, mice, and more. 
@@ -54,7 +56,7 @@ Running a planet:
 9. Compile changed file with `make`.
 9. Run MAGRATHEA with `./planet`.
 
-*We promise that the primary input parameters occuring on Line 42 were only a coincedence and do not reveal the Ultimate Question.
+*We promise that the primary input parameters occuring on Line 42 is only a coincedence and does not reveal the Ultimate Question.
 
 ## Capability and Output ##
 
@@ -192,7 +194,6 @@ Example:
      		return Si_Pv;
  	}
 
-
 ### Useful unit conversions ###
 
 The input parameters required to create an EOS in the program are typically in cgs units. However, the EOS measurement/calculation article may list their result in different units. Thus, the following unit conversions maybe helpful.
@@ -235,6 +236,10 @@ thermodynamic Ice X, and atmosphere EOSs.
 
 We are open to collaborations! Emails found on websites above.
 
+**Where do I find other codes for exoplanet modeling?**
+
+MAGRATHEA and many other useful exoplanet-related codes are archived on NASA's [Exoplanet Modeling and Analysis Center](https://emac.gsfc.nasa.gov/).
+
 **Where does the name MAGRATHEA come from?**
 
 Magrathea is a fictional planet in Douglas Adams's *The Hitchiker's Guide to the Galaxy*: 
@@ -245,5 +250,6 @@ But so successful was this venture that Magrathea itself soon became the richest
 
 Magrathea itself disappeared and its memory soon passed into the obscurity of legend. In these enlightened days of course, no one believes a word of it."
 
+---
 
-
+*MAGRATHEA is supported by the [Nevada Center for Astrophysics](https://www.physics.unlv.edu/~bzhang/NCfA.html), University of Nevada, Las Vegas's [Physics & Astronomy Department](https://www.physics.unlv.edu/) and [Star & Planet Formation Group](https://unlv-spfg.github.io/), and University of Arizona's [Lunar and Planetary Laboratory](https://www.lpl.arizona.edu/)*
