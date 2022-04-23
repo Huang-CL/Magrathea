@@ -17,7 +17,7 @@ See a [list of works](citations.md) that use MAGRATHEA and [instructions on how 
 We encourage the community to contribute and use MAGRATHEA for their interior modeling needs.
 
  <p align="center">
-<img width = "600" src="https://github.com/Huang-CL/Magrathea/plot/funplanets.png"/>
+<img width = "600" src="https://github.com/DavidRRice/Magrathea/plot/funplanets.png"/>
  </p>
 
 ## Prerequisite ##
