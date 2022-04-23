@@ -56,7 +56,7 @@ Running a planet:
 9. Compile changed file with `make`.
 9. Run MAGRATHEA with `./planet`.
 
-*We promise that the primary input parameters occuring on Line 42 were only a coincedence and do not reveal the Ultimate Question.
+*We promise that the primary input parameters occuring on Line 42 is only a coincedence and does not reveal the Ultimate Question.
 
 ## Capability and Output ##
 
