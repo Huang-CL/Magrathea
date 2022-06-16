@@ -81,7 +81,7 @@ Uses the `getmass()` function which assumes an isothermal planet. This function 
 
 ### input_mode=6 ###
 
-This mode is for bulk inputs of planets using the solver from `input_mode=0` or 1. Requires a space separated file, where each raw of the table lists the parameters of a planetary model, including the total mass in Earth-masses and fraction of mass in each layer.
+This mode is for bulk inputs of planets using the solver from `input_mode=0` or 1. Requires a space separated file, where each row of the table lists the total mass in Earth-masses and fraction of mass in each layer for a planet.
 
 Example input file:
 
