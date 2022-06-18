@@ -1,6 +1,6 @@
 This directory contains example input files to run MAGRATHEA.
 
-*inputcore.txt*, *inputmantle.txt* and *inputwater.txt* are input files for `input_mode=6` single layer planets with masses from 0.1 to 4.0 Earth masses. File generated with massradiusinput.py.
+*inputcore.txt*, *inputmantle.txt* and *inputwater.txt* are input files for `input_mode=6` single layer planets with masses from 0.1 to 4.0 Earth masses. Files generated with *massradiusinput.py*.
 
 *inputternary.txt* is an input file for `input_mode=6` containing 5151 planets of 1 Earth-mass with integer percentages of mass in each of three layers. 
 
