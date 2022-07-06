@@ -7,14 +7,14 @@ Created on Fri Jun 17 18:14:12 2022
 """
 
 
-filename='water' #Give Descriptive file name
+filename='core' #Give Descriptive file name
 minmass=0.1  #Minimal mass
 maxmass=4  #Maximum mass
-mstep=0.1 #Number of data points
+mstep=0.1 #Step in mass
 
-fcore=.325  #fraction mass for core, mantle, water. 1-fcore-fmantle-fwater=fatmosphere
-fmantle=.675
-fwater=0
+fcore=1.0  #fraction mass for core, mantle, water. 1-fcore-fmantle-fwater=fatmosphere
+fmantle=0.0
+fwater=0.0
 
 
 f=open('input'+filename+'.txt','w')
@@ -22,7 +22,7 @@ f.write('Mass, fCore, fMantle, fWater\n')
 
 mass=minmass
 while mass<=maxmass:
-    f.write(str(mass)+' '+ str(mass*fcore) +' '+ str(mass*fmantle) +' '+ str(mass*fwater) +'\n')
+    f.write(str(mass)+' '+ str(fcore) +' '+ str(fmantle) +' '+ str(fwater) +'\n')
     mass=round(mass+mstep,12)
     
 f.close()
