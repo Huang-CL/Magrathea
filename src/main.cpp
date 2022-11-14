@@ -44,7 +44,7 @@ int main()
     cout<<count_shoot<<' '<<count_step<<endl;
     if (!planet)
     {
-      for (uint i=0; i < Mcomp.size(); i++)
+      for (unsigned int i=0; i < Mcomp.size(); i++)
 	cout<<Mcomp[i]<<", ";
       cout<<"\t No solution found."<<endl;
     }
