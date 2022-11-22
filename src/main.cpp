@@ -228,7 +228,7 @@ int main()
     }
     gettimeofday(&start_time,NULL);
   
-    fout<<"MCore, MMantle, MWater, MGas, RCore, RMantle, RWater, RPlanet"<<endl;
+    fout<<"MCore\t MMantle\t MWater\t MGas\t RCore\t RMantle\t RWater\t RPlanet"<<endl;
     cout<<"Percentage completed:"<<endl;
     for(int i=0; i<nline; i++)
     {
@@ -339,7 +339,7 @@ int main()
       return 1;
     }
 
-    fout<<"MPlanet, MCore, MMantle, MWater, RCore, RMantle, RWater, RPlanet, RPosterior"<<endl;
+    fout<<"MPlanet\t MCore\t MMantle\t MWater\t RCore\t RMantle\t RWater\t RPlanet\t RPosterior"<<endl;
 //    #pragma omp parallel for schedule(dynamic) num_threads(3) private(planet, Rs)   
     for(int i=0; i<nline; i++) // Loop for each posterior
     {
