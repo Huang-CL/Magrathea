@@ -914,7 +914,7 @@ double EOS::density(double P, double T, double rho_guess)
     if(rho_guess < 0.5 || !gsl_finite(rho_guess) || dP_EOS(rho_guess, &params) < 0)	// rho_guess will be set to negative if it is unknown. Ideal gas doesn't need a rho_guess.
       // if rho_guess is too small, dP/drho can be negative, and the solver may be tricked to the unphysical branch of the solution.
     {
-      rho_guess = density(V0) + P/1E13;
+      rho_guess = density(V0) + P/1E3;
     }
 
     int iter = 0, max_iter = 100;

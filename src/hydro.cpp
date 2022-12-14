@@ -1613,6 +1613,7 @@ hydro* Rloop(vector<PhaseDgm> &Comp, vector<double> M_Comp, vector<double> ave_r
 
   gsl_root_fsolver_free (s);
 
+  Rp = R_hi;
   hydro *temp=new hydro(R_hi, Comp, M_Comp, Tgap, ode_eps_rel0, P0, isothermal); // Need the branch of solution that does not diverge at the center to get the central pressure and temperature
 
   Pc = temp -> getPc() * sqrt(1 + temp -> getRc() / Rp); // Make a correction to the pressure
