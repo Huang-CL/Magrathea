@@ -217,6 +217,12 @@ Within the directories `run` and `result` are example input files and output fil
 
 Python plotting scripts are included in the directory `plot`. Scripts are written for Python 3.6. Scripts may require matplotlib, numpy, astropy, python-ternary, regex, cmasher, and scipy.
 
+### 3D Representations of Planets ###
+
+Magrathea outputs can be imaged in the 3D open-source software Blender. Instructions and code are in https://github.com/DavidRRice/Blender-Magrathea.
+ <p align="center">
+<img width = "200" src="plot/planet1.png"/>
+ </p>
 
 ## Don't Panic (FAQ) ##
 
