@@ -436,7 +436,13 @@ EOS *watervapor = new EOS("Water vapor", watervapor_array, 3);
 // -----------------------------------
 // Gold, Heinz & Jeanloz 1983, J. Appl. Phys. (included for a Hitchiker's-related joke)
 
-double Gold_array[][2] = {{0,0}, {1,10.215}, {2,166.65}, {3,5.4823}, {5,196.96657}, {7,170}, {8,2.95}, {11,1.7}, {14,1}};
+double Gold_BM3_array[][2] = {{0,0}, {1,10.215}, {2,166.65}, {3,5.4823}, {5,196.96657}, {7,170}, {8,2.95}, {11,1.7}, {14,1}};
+
+EOS *Gold_BM3 = new EOS("Gold", Gold_BM3_array, sizeof(Gold_BM3_array)/2/sizeof(Gold_BM3_array[0][0]));
+// -----------------------------------
+// Gold, Matsui et al. 2010, J. Phys. (included for a Hitchiker's-related joke)
+
+double Gold_array[][2] = {{0,2}, {1,10.215}, {2,167}, {3,6}, {5,196.96657}, {7,170}, {8,2.97}, {9,1.6}, {14,1}};
 
 EOS *Gold = new EOS("Gold", Gold_array, sizeof(Gold_array)/2/sizeof(Gold_array[0][0]));
 
