@@ -443,7 +443,7 @@ EOS *Gold = new EOS("Gold", Gold_array, sizeof(Gold_array)/2/sizeof(Gold_array[0
 // -----------------------------------
 // Platinum, Matsui et al. 2009, J. Appl. Phys. (included for a Hitchiker's-related joke)
 
-double Plat_array[][2] = {{0,2}, {1,10.03}, {2,273}, {3,5.20}, {5,195.084}, {7,230}, {8,2.7}, {9,1.1}, {14,1}};
+double Plat_array[][2] = {{0,2}, {1,9.0902}, {2,273}, {3,5.20}, {5,195.084}, {7,230}, {8,2.7}, {9,1.1}, {14,1}};
 
 EOS *Plat = new EOS("Plat", Plat_array, sizeof(Plat_array)/2/sizeof(Plat_array[0][0]));
 
