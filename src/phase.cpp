@@ -67,6 +67,7 @@ void PhaseDgm::set_phase_highP(int k, double *start_pressure, EOS** phase_name)
 }
 
 EOS* PhaseDgm::find_phase(double P, double T)
+// Pressure in microbar
 {
   if (P <= 0 || T <= 0)
   {
@@ -421,7 +422,7 @@ EOS* find_gas_phase(double P, double T)
     return NULL;
   }
   // Isothermal gas for P less than 100 bar, the radiative/convective boundary (Nixon & Madhusudhan 2021). Adiabatic idea gas for P > 100 bar.
-  else if (P < 1E7)
+  else if (P < 1E8)
     return Gas_iso;
   else
     return Gas;
