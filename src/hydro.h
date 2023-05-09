@@ -34,6 +34,8 @@ struct hydro			// pressure, density of each species, and maybe temperature again
   double getrhoc(){return rho[0];}		// return the center density
   double getTc(){return T[0];}			// return the center temperature
   int getsize(){return rb.size();}		// return the number of layers
+  int getLayer_from_r(double r) const;	        // return the layer index (from 0, count from bottom) by given the radius in cm. rb(l)<r<rb(l+1)
+  int getLayer_from_m(double m) const;	        // return the layer index (from 0, count from bottom) by given the mass in MEarth. M(l)<m*MEarth<M(l+1)
   vector<double> getRs();
   string checkdummy();		// Check if there is any Dummy EOS used in the profile
   void setstatus(int s);

@@ -1381,6 +1381,52 @@ void hydro::print(string outfile, bool debug)
   fout.close();
 }
 
+int hydro::getLayer_from_r(double r) const
+// return the layer index (from 0, count from bottom) by given the radius in cm. rb(l)<r<rb(l+1)
+{
+  int l=0,t=rb.size();
+  int m;
+
+  if(r>rb.back())
+    return rb.size();
+  else if(r<rb[0])
+    return -1;
+
+  while(t>l+1)
+  {
+    m=(l+t)>>1;
+    if(rb[m]<=r)
+      l=m;
+    else
+      t=m;
+  }
+  
+  return l;
+}
+
+int hydro::getLayer_from_m(double m) const
+// return the layer index (from 0, count from bottom) by given the mass in MEarth. M(l)<m*MEarth<M(l+1)
+{
+  int l=0,t=M.size();
+  int mid;
+
+  if(m>M.back())
+    return M.size();
+  else if(m<M[0])
+    return -1;
+
+  while(t>l+1)
+  {
+    mid=(l+t)>>1;
+    if(M[mid]<=m)
+      l=mid;
+    else
+      t=mid;
+  }
+  
+  return l;
+}
+
 vector<double> hydro::getRs()
 // return the radii of core, mantle, and water layer, and the total radius in the unit of earth radii.
 {
