@@ -1382,7 +1382,7 @@ void hydro::print(string outfile, bool debug)
 }
 
 int hydro::getLayer_from_r(double r) const
-// return the layer index (from 0, count from bottom) by given the radius in RE. rb(l)<r*RE<rb(l+1)
+// return the layer index (from 0, count from bottom) by given the radius in RE. rb(l)<=r*RE<rb(l+1)
 {
   r *= RE;
   int l=0,t=rb.size();
@@ -1406,7 +1406,7 @@ int hydro::getLayer_from_r(double r) const
 }
 
 int hydro::getLayer_from_m(double m) const
-// return the layer index (from 0, count from bottom) by given the mass in MEarth. M(l)<m*MEarth<M(l+1)
+// return the layer index (from 0, count from bottom) by given the mass in MEarth. M(l)<=m*MEarth<M(l+1)
 {
   m *= ME;
   int l=0,t=M.size();
@@ -1463,7 +1463,6 @@ vector<double> hydro::getTs()
     {
       layer = getLayer_from_r(Rs[i]);
       Ts.push_back(getT(layer));
-      cout<<Rs[i]<<' '<<layer<<' '<<getT(layer)<<endl;
     }
     return Ts;
   }

@@ -144,7 +144,7 @@ Examples:
 
 
 Index | Variable | Unit | Comment 
-------------- | ------------- | ------------- | -------------
+:---------: | :---------: | :----------: | -------------
 0 | EOS formula type | | Index in parentheses above 
 1 |	V0 | cm^3 mol^-1$ | Molar volume at reference point 
 2 |	K0 | GPa | Bulk modulus 
@@ -205,6 +205,51 @@ In the equations below, *m* is the number of formula units per unit cell. For ex
 * 1 &#8491;<sup>3</sup>/atom = 10<sup>-24</sup>nN<sub>A</sub> cm<sup>3</sup>/mol = 0.6022n cm<sup>3</sup>/mol.
 * 1 eV/atom = 1.602&times;10<sup>-12</sup>nN<sub>A</sub> erg/mol = 9.649&times;10<sup>11</sup>n erg/mol. 
 * 1 GPa = 10<sup>10</sup>&micro;bar = 0.01 Mbar.
+
+### Several functions can be used to obtain the calculated planetary parameters ###
+The functions in the table below can be used to obtain the calculated planetary parameters after a successful solving of planetary structure.
+
+
+Function | Output unit | Comment
+-------|:--------:|-----------
+`double totalM()` | g | return the total mass of a planet
+`double totalR()` | cm | return the total radius of a planet
+`int getLayer_from_r(double r)` |  | Input radius in the RE, return the layer index `l` (from 0, count from bottom), rb(l)<=r*R⊕<rb(l+1)
+`int getLayer_from_m(double m)` |  | Input mass in the ME, return the layer index `l` (from 0, count from bottom), M(l)<=m*M⊕<M(l+1)
+`double getP(int l)` | &micro;bar | return the pressure at layer `l`
+`double getM(int l)` | g | return the pressure at layer `l`
+`double getR(int l)` | cm | return the radius at layer `l`
+`double getrho(int l)` | g/ cm<sup>3</sup> | return the ensity at layer `l`
+`double getT(int l)` | K | return the temperature at layer `l`
+`int getsize()` |  | return the total number of layers
+`vector<double> getRs()` | R⊕ | Return the radii of core, mantle, and water layer, and the total radius in the unit of earth radii.
+`vector<double> getTs()` | K | Return the temperatures at the outer side of each component interfaces as well as planet surface 
+
+Example code:
+
+    vector<double> Tgap = {0, 0, 0, 300};
+    vector<double> Mcomp =  {1.0,0.5,0.1,0.00001}; 
+    planet=fitting_method(Comp, Mcomp, Tgap, ave_rho, P_surface, false);
+    if (planet)
+    {
+      int l = planet->getLayer_from_r(1);
+      cout<<"layer:"<<l<<" P="<<planet->getP(l)<<"microbar R="<<planet->getR(l)/RE<<"REarth  rho="<<planet->getrho(l)<<"g/cm^3"<<endl;
+      l = planet->getLayer_from_m(1);
+      cout<<"layer:"<<l<<" P="<<planet->getP(l)<<"microbar M="<<planet->getM(l)/ME<<"MEarth  rho="<<planet->getrho(l)<<"g/cm^3"<<endl;
+      vector<double> Rs = planet->getRs();
+      vector<double> Ts = planet->getTs();
+      for (int i=0; i<4; i++)
+	cout<<planet->getLayer_from_r(Rs[i])<<' '<<Rs[i]<<"REarth "<<Ts[i]<<'K'<<endl;
+    }
+
+Example output:
+
+	layer:605 P=1.21568e+11microbar R=0.998631REarth  rho=1.95656g/cm^3
+	layer:547 P=1.5147e+12microbar M=0.999971MEarth  rho=11.8156g/cm^3
+	547 0.726926REarth 630.97K
+	602 0.978419REarth 460.504K
+	682 1.07939REarth 300K
+	752 1.12843REarth 300K
 
 ### Print EOS into a table ###
 
