@@ -239,7 +239,7 @@ Example code:
       vector<double> Rs = planet->getRs();
       vector<double> Ts = planet->getTs();
       for (int i=0; i<4; i++)
-	cout<<planet->getLayer_from_r(Rs[i])<<' '<<Rs[i]<<"REarth "<<Ts[i]<<'K'<<endl;
+        cout<<planet->getLayer_from_r(Rs[i])<<' '<<Rs[i]<<"REarth "<<Ts[i]<<'K'<<endl;
     }
 
 Example output:
