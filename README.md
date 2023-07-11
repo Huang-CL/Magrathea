@@ -32,7 +32,7 @@ We encourage the community to contribute to and use MAGRATHEA for their interior
 
 should configure, build, and install the gsl package.  A few prerequisites, such as `g++`, `make`, `make-guile`, may need to be install following the error messages throughout the process. 
 
-On Ubuntu systems, the gsl package can also be installed from the Ubuntu repository using `sudo apt-get install libgsl23 libgsl-dev gsl-bin`. 
+On Ubuntu systems, the gsl package can also be installed from the Ubuntu repository using `sudo apt install libgsl27 libgsl-dev gsl-bin`. 
 
 On Windows systems, we suggest using WSL and following the above isntructions.
 
