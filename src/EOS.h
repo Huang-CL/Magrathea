@@ -100,7 +100,7 @@ struct EOS
   double density(double V) {return mmol/V;}
   // return density in g/cm^3
   double volume(double rho){return mmol/rho;}
-  // return volume in g/cm^3, take density in g/cm^3
+  // return volume in cm^3/mol, take density in g/cm^3
   double density(double P1, double T1, double rho_guess, double P2, double &T2);
   // Given the pressure (cgs), temperature, density of the previous step, the pressure of the next step, return the temperature and density at the new pressure. This solver doesn't conserve the entropy well enough. Only used as an approximation in the first integration step from the core of the planet where dTdm has 0/0 limit.
 
