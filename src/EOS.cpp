@@ -992,13 +992,13 @@ void EOS::printEOS()
     return;
   }
   fout<<"Pressure (GPa)\t Density (g/cm^3)"<<endl;
-  double rho_guess = 1, P = max(0.1,P0);
+  double rho_guess = 1, P = max(0.1*1e10,P0*1e10);
   for(int i = 0; i <= 100; i++ )
   {
-    if(P > 2000)
+    if(P > 2000*1e10)
       break;
     rho_guess = density(P,T0,rho_guess);
-    fout << P << "\t " << rho_guess << endl;
+    fout << P/1e10 << "\t " << rho_guess << endl;
     P *= 1.1;
   }
 }
