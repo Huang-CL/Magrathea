@@ -276,7 +276,7 @@ Magrathea outputs can be imaged in the 3D open-source software Blender. Instruct
 Find our emails on our websites:
 Chenliang Huang, Shanghai Astronomical Observatory [website](https://www.lpl.arizona.edu/~huangcl/)
 
-David R. Rice, University of Nevada, Las Vegas [website](https://davidrrice.github.io/)
+David R. Rice, ARCO, Open University of Israel [website](https://davidrrice.github.io/)
 
 **Where is the EOS/functionality I want?**
 
