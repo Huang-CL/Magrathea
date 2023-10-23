@@ -1,0 +1,11 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "run the makefile",
+            "command": "make",
+            "problemMatcher": [],
+        }
+    ],
+    "version": "2.0.0"
+}
