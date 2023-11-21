@@ -1352,7 +1352,10 @@ void hydro::print(string outfile, bool debug)
   int j=0;
   EOS *newPhase = Phaselist[0], *Phase=NULL;
 
-  fout<<"Index\t Radius (earth)"<<"\t "<<"P (GPa)"<<"\t "<<"M (earth)"<<"\t "<<"Density (g cm^-3)"<<"\t "<<"T (K)"<<"\t "<<"Phase"<<endl;
+  if (debug)
+    fout<<"Index\t Radius (earth)"<<"\t "<<"P (GPa)"<<"\t "<<"M (earth)"<<"\t "<<"Density (g cm^-3)"<<"\t "<<"T (K)"<<"\t "<<"S/R "<<"\t "<<"Phase"<<endl;
+  else
+    fout<<"Index\t Radius (earth)"<<"\t "<<"P (GPa)"<<"\t "<<"M (earth)"<<"\t "<<"Density (g cm^-3)"<<"\t "<<"T (K)"<<"\t "<<"Phase"<<endl;
   
   for(int i=0;i<int(rb.size());i++)
   {
@@ -1364,7 +1367,7 @@ void hydro::print(string outfile, bool debug)
       }
       Phase = newPhase;
       if (debug)
-	fout<<i<<"\t "<<std::setprecision(16)<<rb[i] / RE<<"\t "<<P[i] / 1E10<<"\t "<<M[i] / ME<<"\t "<<rho[i]<<"\t "<<T[i]<<"\t "<<Phase -> getEOS()<<endl;
+	fout<<i<<"\t "<<std::setprecision(16)<<rb[i] / RE<<"\t "<<P[i] / 1E10<<"\t "<<M[i] / ME<<"\t "<<rho[i]<<"\t "<<T[i]<<"\t "<<Phase->entropy(rho[i],T[i])<<"\t "<<Phase -> getEOS()<<endl;
       else
 	fout<<std::setprecision(8)<<i<<"\t "<<rb[i] / RE<<"\t "<<P[i] / 1E10<<"\t "<<M[i] / ME<<"\t "<<rho[i]<<"\t "<<T[i]<<"\t "<<Phase -> getEOS()<<endl;
 
@@ -1373,7 +1376,7 @@ void hydro::print(string outfile, bool debug)
       Mtemp = M[i];
     }
     else if (debug)
-      fout<<i<<"\t "<<std::setprecision(16)<<rb[i] / RE<<"\t "<<P[i] / 1E10<<"\t "<<M[i] / ME<<"\t "<<rho[i]<<"\t "<<T[i]<<"\t "<<Phase -> getEOS()<<endl;
+      fout<<i<<"\t "<<std::setprecision(16)<<rb[i] / RE<<"\t "<<P[i] / 1E10<<"\t "<<M[i] / ME<<"\t "<<rho[i]<<"\t "<<T[i]<<"\t "<<Phase->entropy(rho[i],T[i])<<"\t "<<Phase -> getEOS()<<endl;
     if (i!=int(rb.size())-1)
       newPhase = Phaselist[i+1];
   }

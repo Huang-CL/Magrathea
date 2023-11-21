@@ -64,8 +64,6 @@ struct EOS
   // partial P partial T at constant rho in GPa / K
   double dTdm(double m, double r, double rho, double P, double T);
   // partial T partial enclosed mass, P in cgs
-  double dTdP_S(double P, double T, double &rho_guess);
-  // partial T partial P along isentrope in K / GPa, given pressure in GPa
   int getthermal(){return thermal_type;}	
 
   double fV (double V) {return 0.5*(pow(V0/V,2./3.)-1);}

@@ -1406,24 +1406,6 @@ double EOS::dTdm(double m, double r, double rho, double P, double T)
   return 1E-10*dTdV*G*m/(4*pi*pow(r,4)) / (rho/V*pPprho_T(rho,T) - dTdV*pPpT_rho(rho,T));
 }
 
-double EOS::dTdP_S(double P, double T, double &rho_guess)
-// partial T partial P along isentrope in K / GPa, given pressure in GPa
-{
-  if (eqntype == 6)		// ideal gas
-  {
-    if (!gsl_finite(mmol))
-      cout<<"Error: The mean molecular weight of "<<phasetype<<" unknown."<<endl;
-
-    double gamma = adiabatic_index();
-    return - (gamma-1)*T/(gamma*P);
-  }
-
-  rho_guess = density(P*1E10, T, rho_guess);
-  double V = volume(rho_guess);
-  double dTdV = dTdV_S(V, P, T);
-
-  return -V*dTdV/(rho_guess*pPprho_T(rho_guess,T));
-}
 
 double P_EOS_S(double rho, void *params)
 // function used to solve volume and temperature along adiabatic temperature profile with known temperature gradient.  Read in rho, return the difference between pressure from EOS and target P (in GPa).  Let this function equals 0 to solve for the correct rho.
