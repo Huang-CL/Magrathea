@@ -440,8 +440,8 @@ double watervapor_array[3][2] = {{0,6}, {5,18}, {14,3}};
 EOS *watervapor = new EOS("Water vapor", watervapor_array, 3);
 
 // -----------------------------------
-// H/He, Chambrier & Debras 2021 Apj, Y=0.275
-EOS *Gas_hhe = new EOS("H/He (Chambrier)", "./tabulated/ChamberierHHe0275.txt");
+// H/He, Chabrier & Debras 2021 Apj, Y=0.275
+EOS *Gas_hhe = new EOS("H/He (Chabrier)", "./tabulated/ChabrierHHe0275.txt");
 
 // ==========  OTHER  ================
 
