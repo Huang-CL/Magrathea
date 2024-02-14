@@ -387,6 +387,14 @@ EOS *IceX_HS = new EOS("Ice X (Hermann)", IceX_HS_array, sizeof(IceX_HS_array)/2
 EOS *Ice_Seager = new EOS("Ice (Seager)", "./tabulated/water.txt");
 
 // -----------------------------------
+// Water/Ice/Supercritical/Vapor, AQUA tabulated, Haldermann et al. 2022, A&A 643, A105 
+EOS *H2O_AQUA = new EOS("H2O (AQUA)", "./tabulated/AQUA.txt");
+
+// -----------------------------------
+// Water/Ice, SeaFreeze tabulated, Journaux et al. 2020, JGR Planets, 124, 1
+EOS *H2O_SeaFreeze = new EOS("H2O (SeaFreeze)", "./tabulated/SeaFreeze.txt");
+
+// -----------------------------------
 // Ice Dummy,  Used to fill in phase space that no EOS provided.
 
 EOS *Ice_Dummy = new EOS("Ice Dummy", IceVI_ExoPlex_array, sizeof(IceVI_ExoPlex_array)/2/sizeof(IceVI_ExoPlex_array[0][0]));
@@ -430,6 +438,10 @@ EOS *Gas_iso = new EOS("Isothermal Ideal Gas", Gas_iso_array, 3);
 double watervapor_array[3][2] = {{0,6}, {5,18}, {14,3}};
 
 EOS *watervapor = new EOS("Water vapor", watervapor_array, 3);
+
+// -----------------------------------
+// H/He, Chambrier & Debras 2021 Apj, Y=0.275
+EOS *Gas_hhe = new EOS("H/He (Chambrier)", "./tabulated/ChamberierHHe0275.txt");
 
 // ==========  OTHER  ================
 

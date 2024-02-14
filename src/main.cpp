@@ -453,6 +453,8 @@ int main()
   
   delete Fe_liquid;
   delete Fe_liquid2;
+  delete Fe_fcc;
+  delete Fe_bcc;
   delete Fe_hcp;
   delete Fe_hcp2;
   delete Fe_hcp3;
@@ -470,16 +472,32 @@ int main()
   delete Si_liquid;
   delete Si_Liquid_Wolf;
   delete Si_Dummy;
+  delete Fo;
+  delete Wds;
+  delete Rwd;
+  delete Akm;
+  delete Pv_Doro;
+  delete PPv_Doro;
+  delete Fo_Sotin;
+  delete En;
+  delete Mw;
   delete Ice_Seager;
+  delete H2O_AQUA;
+  delete H2O_SeaFreeze;
   delete Water_ExoPlex;
   delete Water;
+  delete Water_sc_dummy;
+  delete IceIh;
   delete IceIh_ExoPlex;
   delete IceVI_ExoPlex;
+  delete IceVI_Bezacier;
   delete IceVII_ExoPlex;
+  delete IceVII_Bezacier;
   delete IceVII;
   delete IceVIIp;
   delete IceVII_FFH2004;
   delete IceVII_FFH2004fit;
+  delete IceVII_Fei;
   delete IceVII_FFH2004BM;
   delete IceX_HS;
   delete IceX;
@@ -487,6 +505,11 @@ int main()
   delete IceZeng2013FMNR;
   delete Ice_Dummy;
   delete Gas;
+  delete Gas_iso;
+  delete Gas_hhe;
+  delete watervapor;
+  delete Gold;
+  delete Plat;
 
   return 0;
 }

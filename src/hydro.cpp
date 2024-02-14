@@ -85,7 +85,7 @@ int derivs_m2(double x, const double y[], double dydx[], void * params)
   if (thermal == 0 || thermal == 4)
     dydx[2] = 0;
   else if (thermal ==2)
-    dydx[2] = Phase->dTdP(y[1], y[2])*dydx[1];
+    dydx[2] = Phase->dTdP_S(y[1], y[2], rho)*dydx[1];
   else
     dydx[2] = -Phase->dTdm(Mtot-x, y[0], rho, y[1], y[2]);
   
@@ -136,7 +136,7 @@ int derivs_m3(double x, const double y[], double dydx[], void * params)
   if (thermal == 0 || thermal == 4)
     dydx[2] = 0;
   else if (thermal == 2)
-    dydx[2] = Phase->dTdP(y[1], y[2])*dydx[1];
+    dydx[2] = Phase->dTdP_S(y[1], y[2], rho)*dydx[1];
   else
     dydx[2] = Phase->dTdm(x, y[0], rho, y[1], y[2]);
 

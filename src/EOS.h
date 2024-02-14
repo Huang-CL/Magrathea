@@ -4,6 +4,8 @@
 #include "define.h"
 #include <gsl/gsl_interp.h>
 #include <gsl/gsl_spline.h>
+#include <gsl/gsl_interp2d.h>
+#include <gsl/gsl_spline2d.h>
 #include <gsl/gsl_deriv.h>
 
 extern const double mu;
@@ -64,7 +66,10 @@ struct EOS
   // partial P partial T at constant rho in GPa / K
   double dTdm(double m, double r, double rho, double P, double T);
   // partial T partial enclosed mass, P in cgs
+  double dTdP_S(double P, double T, double &rho_guess);
+  // partial T partial P along isentrope in K / GPa, given pressure in GPa
   int getthermal(){return thermal_type;}	
+
 
   double fV (double V) {return 0.5*(pow(V0/V,2./3.)-1);}
 // finite volumetric strain, take volume in cm^3 / mol
@@ -110,13 +115,19 @@ private:
   int n, Z;
   bool Debye_approx;		       // Debye approximate or Einstein approximate.
   int thermal_type;		       // Indicates the thermal type of the phase.  0 indicates no temperature profile available, 1 indicates entropy method, 2 indicates the temperature gradient method, 3 indicates ideal gas, 4 indicates the EOS is fitted along the isentrope, 5 indicates no Theta0, 6 indicates has Theta 0 but no electron pressure, 7 indicates has electron pressure as well, type 8, RTpress style, type 9 thermal expansion
-  double *rhotable, *Ptable;	// density table in cgs, Ptable in GPa.
+  double *rhotable, *Ptable, *temptable, *adiabattable;	// density table in cgs, Ptable in GPa.
+  int lowplowtind=0, lowphightind=0, highplowtind=0, highphightind=0;
+  int tabletype=1; //Table 2D or 3D
   int bn;				// number of indices of b
   double* b;				// fitted polynomial parameters of the thermal coefficients b(V) in erg/mol.  Convert eV/atom to erg/mol need to multiply eV_erg*n*NA. For example, for MgSiO3, 0.9821 eV/atom = 4.824E12 *0.9821 erg/mol = 4.738E12 erg/mol.
 
-  gsl_interp_accel *acc; // The gsl interpolation accelerator.
+  gsl_interp_accel *accP; // The gsl interpolation accelerator.
+  gsl_interp_accel *accT; // The gsl interpolation accelerator.
   gsl_spline *spline; // The gsl workspace objects
+  gsl_spline2d *spline2drho;
+  gsl_spline2d *spline2dadi;
   int nline;
+  int tlen;
   
 /*
   phasetype is the name of a phase. The comment about the EOS used for the phase should be in the parentheses separated by a space.
