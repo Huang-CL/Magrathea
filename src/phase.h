@@ -21,6 +21,7 @@ struct PhaseDgm
 // start pressure is an array with dimension k-1.  The first phase will replace the one with the same name in the phase diagram.
 
   EOS* find_phase(double P, double T);
+  // Pressure in microbar
 
   EOS* find_phase_boundary(double Pl, double Pu, double Tl, double Tu, bool inward, double &Po, double &To, double &rhoo, double &Pn, double &Tn, double &rhon); // Used when integrate adiabatic profile across the phase boundary.  Given the pressure in cgs, integration direction, the lower and upper pressure and temperature limit (at previous and next integral step depends on the integration direction).  Return the pressure, temperature, density at old (o) phase boundary and new (n) phase boundary.
 

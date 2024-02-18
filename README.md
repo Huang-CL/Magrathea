@@ -32,9 +32,9 @@ We encourage the community to contribute to and use MAGRATHEA for their interior
 
 should configure, build, and install the gsl package.  A few prerequisites, such as `g++`, `make`, `make-guile`, may need to be install following the error messages throughout the process. 
 
-On Ubuntu systems, the gsl package can also be installed from the Ubuntu repository using `sudo apt-get install libgsl23 libgsl-dev gsl-bin`. 
+On Ubuntu systems, the gsl package can also be installed from the Ubuntu repository using `sudo apt install libgsl27 libgsl-dev gsl-bin`. 
 
-On Windows systems, we suggest the [cyqwin terminal](https://www.cygwin.com/). Include package 'gsl' upon installation. We suggest including all packages in devel, science, math, and python along with a text editor. 
+On Windows systems, we suggest using WSL and following the above isntructions.
 
 If an error message like "error while loading shared libraries: libgsl.so.23: cannot open shared object file: No such file or directory" is reported when running the code, add `export LD_LIBRARY_PATH=/usr/local/lib` (directory of gsl library files) to the `.bashrc` file, or add `setenv LD_LIBRARY_PATH /usr/local/lib` to the `.cshrc` file.
 
@@ -144,7 +144,7 @@ Examples:
 
 
 Index | Variable | Unit | Comment 
-------------- | ------------- | ------------- | -------------
+:---------: | :---------: | :----------: | -------------
 0 | EOS formula type | | Index in parentheses above 
 1 |	V0 | cm^3 mol^-1$ | Molar volume at reference point 
 2 |	K0 | GPa | Bulk modulus 
@@ -206,6 +206,51 @@ In the equations below, *m* is the number of formula units per unit cell. For ex
 * 1 eV/atom = 1.602&times;10<sup>-12</sup>nN<sub>A</sub> erg/mol = 9.649&times;10<sup>11</sup>n erg/mol. 
 * 1 GPa = 10<sup>10</sup>&micro;bar = 0.01 Mbar.
 
+### Several functions can be used to obtain the calculated planetary parameters ###
+The functions in the table below can be used to obtain the calculated planetary parameters after a successful solving of planetary structure.
+
+
+Function | Output unit | Comment
+-------|:--------:|-----------
+`double totalM()` | g | return the total mass of a planet
+`double totalR()` | cm | return the total radius of a planet
+`int getLayer_from_r(double r)` |  | Input radius in the RE, return the layer index `l` (from 0, count from bottom), rb(l)<=r*R⊕<rb(l+1)
+`int getLayer_from_m(double m)` |  | Input mass in the ME, return the layer index `l` (from 0, count from bottom), M(l)<=m*M⊕<M(l+1)
+`double getP(int l)` | &micro;bar | return the pressure at layer `l`
+`double getM(int l)` | g | return the pressure at layer `l`
+`double getR(int l)` | cm | return the radius at layer `l`
+`double getrho(int l)` | g/ cm<sup>3</sup> | return the ensity at layer `l`
+`double getT(int l)` | K | return the temperature at layer `l`
+`int getsize()` |  | return the total number of layers
+`vector<double> getRs()` | R⊕ | Return the radii of core, mantle, and water layer, and the total radius in the unit of earth radii.
+`vector<double> getTs()` | K | Return the temperatures at the outer side of each component interfaces as well as planet surface 
+
+Example code:
+
+    vector<double> Tgap = {0, 0, 0, 300};
+    vector<double> Mcomp =  {1.0,0.5,0.1,0.00001}; 
+    planet=fitting_method(Comp, Mcomp, Tgap, ave_rho, P_surface, false);
+    if (planet)
+    {
+      int l = planet->getLayer_from_r(1);
+      cout<<"layer:"<<l<<" P="<<planet->getP(l)<<"microbar R="<<planet->getR(l)/RE<<"REarth  rho="<<planet->getrho(l)<<"g/cm^3"<<endl;
+      l = planet->getLayer_from_m(1);
+      cout<<"layer:"<<l<<" P="<<planet->getP(l)<<"microbar M="<<planet->getM(l)/ME<<"MEarth  rho="<<planet->getrho(l)<<"g/cm^3"<<endl;
+      vector<double> Rs = planet->getRs();
+      vector<double> Ts = planet->getTs();
+      for (int i=0; i<4; i++)
+        cout<<planet->getLayer_from_r(Rs[i])<<' '<<Rs[i]<<"REarth "<<Ts[i]<<'K'<<endl;
+    }
+
+Example output:
+
+	layer:605 P=1.21568e+11microbar R=0.998631REarth  rho=1.95656g/cm^3
+	layer:547 P=1.5147e+12microbar M=0.999971MEarth  rho=11.8156g/cm^3
+	547 0.726926REarth 630.97K
+	602 0.978419REarth 460.504K
+	682 1.07939REarth 300K
+	752 1.12843REarth 300K
+
 ### Print EOS into a table ###
 
 The code can print the pressure-density relation of a built-in EOS into an ASCII table by using the `printEOS` function of the EOS object. This can be a simple way to double check the EOS is set up correctly. The table covers the pressure range from 0.1 GPa (or P<sub>0</sub> if it is larger) to 2000 GPa at the temperature T<sub>0</sub> (default 300 K) of the EOS. The output table file is located at `./tabulated/phasename.txt`.
@@ -217,15 +262,22 @@ Within the directories `run` and `result` are example input files and output fil
 
 Python plotting scripts are included in the directory `plot`. Scripts are written for Python 3.6. Scripts may require matplotlib, numpy, astropy, python-ternary, regex, cmasher, and scipy.
 
+### 3D Representations of Planets ###
+
+Magrathea outputs can be imaged in the 3D open-source software Blender. Instructions and code are in https://github.com/DavidRRice/Blender-Magrathea.
+ <p align="center">
+<img width = "200" src="plot/planet1.png"/>
+ </p>
 
 ## Don't Panic (FAQ) ##
 
 **Who do I talk to?**
 
 Find our emails on our websites:
-Chenliang Huang, University of Arizona [website](https://www.lpl.arizona.edu/~huangcl/)
 
-David R. Rice, University of Nevada, Las Vegas [website](https://www.physics.unlv.edu/~drice986/)
+Chenliang Huang, Shanghai Astronomical Observatory [website](https://huang-cl.github.io/)
+
+David R. Rice, ARCO, Open University of Israel [website](https://davidrrice.github.io/)
 
 **Where is the EOS/functionality I want?**
 

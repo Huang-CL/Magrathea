@@ -85,7 +85,7 @@ int derivs_m2(double x, const double y[], double dydx[], void * params)
   if (thermal == 0 || thermal == 4)
     dydx[2] = 0;
   else if (thermal ==2)
-    dydx[2] = Phase->dTdP(y[1], y[2])*dydx[1];
+    dydx[2] = Phase->dTdP_S(y[1], y[2], rho)*dydx[1];
   else
     dydx[2] = -Phase->dTdm(Mtot-x, y[0], rho, y[1], y[2]);
   
@@ -136,7 +136,7 @@ int derivs_m3(double x, const double y[], double dydx[], void * params)
   if (thermal == 0 || thermal == 4)
     dydx[2] = 0;
   else if (thermal == 2)
-    dydx[2] = Phase->dTdP(y[1], y[2])*dydx[1];
+    dydx[2] = Phase->dTdP_S(y[1], y[2], rho)*dydx[1];
   else
     dydx[2] = Phase->dTdm(x, y[0], rho, y[1], y[2]);
 
@@ -174,7 +174,7 @@ hydro::hydro(double Rp, vector<PhaseDgm> &Comp_in, vector<double> Mass_Comp, vec
   EOS *Phase, *new_Phase;
   int thermal;
   M_Comp = Mass_Comp;
-  for (uint i=0; i<Comp_in.size(); i++) 
+  for (unsigned int i=0; i<Comp_in.size(); i++) 
     Comp.push_back(Comp_in[i]); 
 
   int n_Comp = M_Comp.size();
@@ -675,7 +675,7 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
   EOS *Phase, *new_Phase;
   int thermal;
   M_Comp = Mass_Comp;
-  for (uint i=0; i<Comp_in.size(); i++) 
+  for (unsigned int i=0; i<Comp_in.size(); i++) 
     Comp.push_back(Comp_in[i]); 
   int n_Comp = M_Comp.size();
   double Mtot = accumulate(M_Comp.begin(), M_Comp.end(), 0.0) * ME;
@@ -1352,7 +1352,10 @@ void hydro::print(string outfile, bool debug)
   int j=0;
   EOS *newPhase = Phaselist[0], *Phase=NULL;
 
-  fout<<"Index\t Radius (earth)"<<"\t "<<"P (GPa)"<<"\t "<<"M (earth)"<<"\t "<<"Density (g cm^-3)"<<"\t "<<"T (K)"<<"\t "<<"Phase"<<endl;
+  if (debug)
+    fout<<"Index\t Radius (earth)"<<"\t "<<"P (GPa)"<<"\t "<<"M (earth)"<<"\t "<<"Density (g cm^-3)"<<"\t "<<"T (K)"<<"\t "<<"S/R "<<"\t "<<"Phase"<<endl;
+  else
+    fout<<"Index\t Radius (earth)"<<"\t "<<"P (GPa)"<<"\t "<<"M (earth)"<<"\t "<<"Density (g cm^-3)"<<"\t "<<"T (K)"<<"\t "<<"Phase"<<endl;
   
   for(int i=0;i<int(rb.size());i++)
   {
@@ -1364,7 +1367,7 @@ void hydro::print(string outfile, bool debug)
       }
       Phase = newPhase;
       if (debug)
-	fout<<i<<"\t "<<std::setprecision(16)<<rb[i] / RE<<"\t "<<P[i] / 1E10<<"\t "<<M[i] / ME<<"\t "<<rho[i]<<"\t "<<T[i]<<"\t "<<Phase -> getEOS()<<endl;
+	fout<<i<<"\t "<<std::setprecision(16)<<rb[i] / RE<<"\t "<<P[i] / 1E10<<"\t "<<M[i] / ME<<"\t "<<rho[i]<<"\t "<<T[i]<<"\t "<<Phase->entropy(rho[i],T[i])<<"\t "<<Phase -> getEOS()<<endl;
       else
 	fout<<std::setprecision(8)<<i<<"\t "<<rb[i] / RE<<"\t "<<P[i] / 1E10<<"\t "<<M[i] / ME<<"\t "<<rho[i]<<"\t "<<T[i]<<"\t "<<Phase -> getEOS()<<endl;
 
@@ -1373,12 +1376,60 @@ void hydro::print(string outfile, bool debug)
       Mtemp = M[i];
     }
     else if (debug)
-      fout<<i<<"\t "<<std::setprecision(16)<<rb[i] / RE<<"\t "<<P[i] / 1E10<<"\t "<<M[i] / ME<<"\t "<<rho[i]<<"\t "<<T[i]<<"\t "<<Phase -> getEOS()<<endl;
+      fout<<i<<"\t "<<std::setprecision(16)<<rb[i] / RE<<"\t "<<P[i] / 1E10<<"\t "<<M[i] / ME<<"\t "<<rho[i]<<"\t "<<T[i]<<"\t "<<Phase->entropy(rho[i],T[i])<<"\t "<<Phase -> getEOS()<<endl;
     if (i!=int(rb.size())-1)
       newPhase = Phaselist[i+1];
   }
   fout<<endl;
   fout.close();
+}
+
+int hydro::getLayer_from_r(double r) const
+// return the layer index (from 0, count from bottom) by given the radius in RE. rb(l)<=r*RE<rb(l+1)
+{
+  r *= RE;
+  int l=0,t=rb.size();
+  int m;
+
+  if(r>rb.back())
+    return rb.size();
+  else if(r<rb[0])
+    return -1;
+
+  while(t>l+1)
+  {
+    m=(l+t)>>1;
+    if(rb[m]<=r)
+      l=m;
+    else
+      t=m;
+  }
+  
+  return l;
+}
+
+int hydro::getLayer_from_m(double m) const
+// return the layer index (from 0, count from bottom) by given the mass in MEarth. M(l)<=m*MEarth<M(l+1)
+{
+  m *= ME;
+  int l=0,t=M.size();
+  int mid;
+
+  if(m>M.back())
+    return M.size();
+  else if(m<M[0])
+    return -1;
+
+  while(t>l+1)
+  {
+    mid=(l+t)>>1;
+    if(M[mid]<=m)
+      l=mid;
+    else
+      t=mid;
+  }
+  
+  return l;
 }
 
 vector<double> hydro::getRs()
@@ -1403,6 +1454,30 @@ vector<double> hydro::getRs()
   }
 }
   
+vector<double> hydro::getTs()
+// return the temperatures at the outer side of each component interfaces as well as planet surface 
+{
+  if (!rb.empty())
+  {
+    vector<double> Rs = getRs();
+    vector<double> Ts;
+    int layer;
+    for(int i=0; i < int(Rs.size()); i++)
+    {
+      layer = getLayer_from_r(Rs[i]);
+      Ts.push_back(getT(layer));
+    }
+    return Ts;
+  }
+  else
+  {
+    cout<<"Error: Invalid planet model. Can't get temperature for ";
+    for (int i=0; i < int(M_Comp.size()); i++)
+      cout<<M_Comp[i]<<", ";
+    cout<<endl;
+    return {};			// return empty vector
+  }
+}
 
 
 double R_hydro(double Rp, void *params)
@@ -1429,22 +1504,22 @@ double R_hydro(double Rp, void *params)
     p -> x[0] = numeric_limits<double>::quiet_NaN();
     return numeric_limits<double>::quiet_NaN();
   }
-  if (temp.getMc() < 1)	// The integration reaches the target mass before r reaches 0
+  if (temp.getM(0) < 1)	// The integration reaches the target mass before r reaches 0
   {
-    p -> x[0] = temp.getRc();
-    p -> x[1] = temp.getPc();
+    p -> x[0] = temp.getR(0);
+    p -> x[1] = temp.getP(0);
     return p -> x[0];
   }
   else  			// the integration reaches the center before reaches the target mass.  The integration is stopped at 1E5 GPa to prevent pressure diverge.  Assuming the remaining matter fixed at density 1 g cm^-3.  After the correction, the value should always negative because no material will have a density less than 1 g cm^3 at 1E5 GPa.  The smaller the remaining mass is, the closer to zero the value gets. 
   {
-    p -> x[0] = -cbrt( 3 * temp.getMc() / (4 * pi * 1) - pow(temp.getRc(), 3));
-    p -> x[1] = temp.getPc();
+    p -> x[0] = -cbrt( 3 * temp.getM(0) / (4 * pi * 1) - pow(temp.getR(0), 3));
+    p -> x[1] = temp.getP(0);
 
     if (p -> x[0] >= 0)
     {
       if (verbose)
-	cout<<"Warning: The density of "<<find_phase(temp.getMc(), p -> Comp, M, p->x[1], temp.getTc())->getEOS()<<" at pressure "<<p->x[1]/1E10<<"GPa and temperature "<<temp.getTc()<<" K is "<<temp.getrhoc()<<" g cm^-3.  Such small density at high pressure may cause the program to be less efficient."<<endl;
-      p -> x[0] = -cbrt( 3 * temp.getMc() / (4 * pi * temp.getrhoc()) - pow(temp.getRc(), 3));
+	cout<<"Warning: The density of "<<find_phase(temp.getM(0), p -> Comp, M, p->x[1], temp.getT(0))->getEOS()<<" at pressure "<<p->x[1]/1E10<<"GPa and temperature "<<temp.getT(0)<<" K is "<<temp.getrho(0)<<" g cm^-3.  Such small density at high pressure may cause the program to be less efficient."<<endl;
+      p -> x[0] = -cbrt( 3 * temp.getM(0) / (4 * pi * temp.getrho(0)) - pow(temp.getR(0), 3));
     }
     return p -> x[0];
   }
@@ -1613,10 +1688,11 @@ hydro* Rloop(vector<PhaseDgm> &Comp, vector<double> M_Comp, vector<double> ave_r
 
   gsl_root_fsolver_free (s);
 
+  Rp = R_hi;
   hydro *temp=new hydro(R_hi, Comp, M_Comp, Tgap, ode_eps_rel0, P0, isothermal); // Need the branch of solution that does not diverge at the center to get the central pressure and temperature
 
-  Pc = temp -> getPc() * sqrt(1 + temp -> getRc() / Rp); // Make a correction to the pressure
-  Tc = temp -> getTc();
+  Pc = temp -> getP(0) * sqrt(1 + temp -> getR(0) / Rp); // Make a correction to the pressure
+  Tc = temp -> getT(0);
 
   return temp;
 }
@@ -1849,21 +1925,23 @@ double P_hydro(double Pc, void *params)
   double MW = p->x[2];
   double Mtot = (MC+MM+MW)*ME;
   double P0 = p->x[4];
-
+  int nlayer;			// number of layers
+  
   if (Pc < 0)
     return Pc*1E10;
   
   hydro temp(Pc,MC,MM,MW,P0);
-
-  if (temp.getsize() == 0)	// can't find a solution
+  nlayer = temp.getsize();
+  
+  if (nlayer == 0)	// can't find a solution
   {
     p -> x[4] = -1;
     return 0;
   }
   if (temp.totalM() >= Mtot)	// The integration reaches the target mass before P0.  The center pressure is too large.
-    p -> x[3] = temp.getPs() - P0;
+    p -> x[3] = temp.getP(nlayer-1) - P0;
   else  			// the integration reaches P0 with less mass. The center pressure is too small.
-    p -> x[3] = temp.getPs() - P0 - (Mtot-temp.totalM())*G*temp.totalM()/(4*pi*pow(temp.totalR(),4));
+    p -> x[3] = temp.getP(nlayer-1) - P0 - (Mtot-temp.totalM())*G*temp.totalM()/(4*pi*pow(temp.totalR(),4));
 
   p -> x[5] = 1;
   return p -> x[3];

@@ -44,7 +44,7 @@ int main()
     cout<<count_shoot<<' '<<count_step<<endl;
     if (!planet)
     {
-      for (uint i=0; i < Mcomp.size(); i++)
+      for (unsigned int i=0; i < Mcomp.size(); i++)
 	cout<<Mcomp[i]<<", ";
       cout<<"\t No solution found."<<endl;
     }
@@ -228,7 +228,7 @@ int main()
     }
     gettimeofday(&start_time,NULL);
   
-    fout<<"MCore, MMantle, MWater, MGas, RCore, RMantle, RWater, RPlanet"<<endl;
+    fout<<"MCore\t MMantle\t MWater\t MGas\t RCore\t RMantle\t RWater\t RPlanet"<<endl;
     cout<<"Percentage completed:"<<endl;
     for(int i=0; i<nline; i++)
     {
@@ -339,7 +339,7 @@ int main()
       return 1;
     }
 
-    fout<<"MPlanet, MCore, MMantle, MWater, RCore, RMantle, RWater, RPlanet, RPosterior"<<endl;
+    fout<<"MPlanet\t MCore\t MMantle\t MWater\t RCore\t RMantle\t RWater\t RPlanet\t RPosterior"<<endl;
 //    #pragma omp parallel for schedule(dynamic) num_threads(3) private(planet, Rs)   
     for(int i=0; i<nline; i++) // Loop for each posterior
     {
@@ -453,6 +453,8 @@ int main()
   
   delete Fe_liquid;
   delete Fe_liquid2;
+  delete Fe_fcc;
+  delete Fe_bcc;
   delete Fe_hcp;
   delete Fe_hcp2;
   delete Fe_hcp3;
@@ -470,16 +472,32 @@ int main()
   delete Si_liquid;
   delete Si_Liquid_Wolf;
   delete Si_Dummy;
+  delete Fo;
+  delete Wds;
+  delete Rwd;
+  delete Akm;
+  delete Pv_Doro;
+  delete PPv_Doro;
+  delete Fo_Sotin;
+  delete En;
+  delete Mw;
   delete Ice_Seager;
+  delete H2O_AQUA;
+  delete H2O_SeaFreeze;
   delete Water_ExoPlex;
   delete Water;
+  delete Water_sc_dummy;
+  delete IceIh;
   delete IceIh_ExoPlex;
   delete IceVI_ExoPlex;
+  delete IceVI_Bezacier;
   delete IceVII_ExoPlex;
+  delete IceVII_Bezacier;
   delete IceVII;
   delete IceVIIp;
   delete IceVII_FFH2004;
   delete IceVII_FFH2004fit;
+  delete IceVII_Fei;
   delete IceVII_FFH2004BM;
   delete IceX_HS;
   delete IceX;
@@ -487,6 +505,11 @@ int main()
   delete IceZeng2013FMNR;
   delete Ice_Dummy;
   delete Gas;
+  delete Gas_iso;
+  delete Gas_hhe;
+  delete watervapor;
+  delete Gold;
+  delete Plat;
 
   return 0;
 }

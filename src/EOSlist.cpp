@@ -27,7 +27,7 @@
 21.	cp_b, fitting coefficient for specific heat capacity, in 10^7 erg/g/K^2
 22.	cp_c, cp = cp_a + cp_b*T - cp_c/T^2. cp in 10^7 erg/g/K, cp_c in 10^7 erg*K/g
 23.	Debye_approx, whether use Debye approximation or Einstein approximation. Debye approximation is slower but more accurate at temperature lower than Debye/Einstein temperature.  Positive number for Debye, otherwise Einstein.
-24.     thermal_type, indicates the thermal type of the phase.  0 indicates no temperature profile available, 1 indicates entropy method, 2 indicates the temperature gradient method.  The only method to set the gradient is using the modify_extern_dTdP function, 3 indicates ideal gas, 4 indicates the EOS is fitted along the isentrope, type 8 indicates RTpress style.
+24.     thermal_type, indicates the thermal type of the phase.  0 indicates no temperature profile available, 1 indicates entropy method, 2 indicates the temperature gradient method.  The only method to set the gradient is using the modify_dTdP function, 3 indicates ideal gas, 4 indicates the EOS is fitted along the isentrope, type 8 indicates RTpress style.
 25-32.  at1-at4 & ap1 - ap4
 
 
@@ -387,6 +387,14 @@ EOS *IceX_HS = new EOS("Ice X (Hermann)", IceX_HS_array, sizeof(IceX_HS_array)/2
 EOS *Ice_Seager = new EOS("Ice (Seager)", "./tabulated/water.txt");
 
 // -----------------------------------
+// Water/Ice/Supercritical/Vapor, AQUA tabulated, Haldermann et al. 2022, A&A 643, A105 
+EOS *H2O_AQUA = new EOS("H2O (AQUA)", "./tabulated/AQUA.txt");
+
+// -----------------------------------
+// Water/Ice, SeaFreeze tabulated, Journaux et al. 2020, JGR Planets, 124, 1
+EOS *H2O_SeaFreeze = new EOS("H2O (SeaFreeze)", "./tabulated/SeaFreeze.txt");
+
+// -----------------------------------
 // Ice Dummy,  Used to fill in phase space that no EOS provided.
 
 EOS *Ice_Dummy = new EOS("Ice Dummy", IceVI_ExoPlex_array, sizeof(IceVI_ExoPlex_array)/2/sizeof(IceVI_ExoPlex_array[0][0]));
@@ -431,19 +439,29 @@ double watervapor_array[3][2] = {{0,6}, {5,18}, {14,3}};
 
 EOS *watervapor = new EOS("Water vapor", watervapor_array, 3);
 
+// -----------------------------------
+// H/He, Chabrier & Debras 2021 Apj, Y=0.275
+EOS *Gas_hhe = new EOS("H/He (Chabrier)", "./tabulated/ChabrierHHe0275.txt");
+
 // ==========  OTHER  ================
 
 // -----------------------------------
 // Gold, Heinz & Jeanloz 1983, J. Appl. Phys. (included for a Hitchiker's-related joke)
 
-double Gold_array[][2] = {{0,0}, {1,10.215}, {2,166.65}, {3,5.4823}, {5,196.96657}, {7,170}, {8,2.95}, {11,1.7}, {14,1}};
+double Gold_BM3_array[][2] = {{0,0}, {1,10.215}, {2,166.65}, {3,5.4823}, {5,196.96657}, {7,170}, {8,2.95}, {11,1.7}, {14,1}};
+
+EOS *Gold_BM3 = new EOS("Gold", Gold_BM3_array, sizeof(Gold_BM3_array)/2/sizeof(Gold_BM3_array[0][0]));
+// -----------------------------------
+// Gold, Matsui et al. 2010, J. Phys. (included for a Hitchiker's-related joke)
+
+double Gold_array[][2] = {{0,2}, {1,10.215}, {2,167}, {3,6}, {5,196.96657}, {7,170}, {8,2.97}, {9,1.6}, {14,1}};
 
 EOS *Gold = new EOS("Gold", Gold_array, sizeof(Gold_array)/2/sizeof(Gold_array[0][0]));
 
 // -----------------------------------
 // Platinum, Matsui et al. 2009, J. Appl. Phys. (included for a Hitchiker's-related joke)
 
-double Plat_array[][2] = {{0,2}, {1,10.03}, {2,273}, {3,5.20}, {5,195.084}, {7,230}, {8,2.7}, {9,1.1}, {14,1}};
+double Plat_array[][2] = {{0,2}, {1,9.0902}, {2,273}, {3,5.20}, {5,195.084}, {7,230}, {8,2.7}, {9,1.1}, {14,1}};
 
 EOS *Plat = new EOS("Plat", Plat_array, sizeof(Plat_array)/2/sizeof(Plat_array[0][0]));
 

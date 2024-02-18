@@ -26,15 +26,17 @@ struct hydro			// pressure, density of each species, and maybe temperature again
   // The R, P, and T value at inner edge (from inside-out integration with subscript i) and outer edge (from outside-in integration with subscript o) at the connection point is passed out. 
   void print(string outfile, bool debug=false);
   double totalM(){return M.back();}		// return the total mass of a planet model
-  double totalR(){return rb.back();}		// return the total mass of a planet model
-  double getPs(){return P.back();}		// return the surface pressure
-  double getPc(){return P[0];}		// return the central pressure
-  double getMc(){return M[0];}		// return the center mass, it may not be 0 if the initial radius is too small.
-  double getRc(){return rb[0];}		// return the center radius, it may not be 0 if the initial radius is too large.
-  double getrhoc(){return rho[0];}		// return the center density
-  double getTc(){return T[0];}			// return the center temperature
+  double totalR(){return rb.back();}		// return the total radius of a planet model
+  double getP(int layer){return P[layer];}		// return the pressure
+  double getM(int layer){return M[layer];}		// return the enclosed mass, M[0] may not be 0 if the initial radius is too small.
+  double getR(int layer){return rb[layer];}		// return the radius, rb[0] may not be 0 if the initial radius is too large.
+  double getrho(int layer){return rho[layer];}		// return the density
+  double getT(int layer){return T[layer];}			// return temperature
   int getsize(){return rb.size();}		// return the number of layers
+  int getLayer_from_r(double r) const;	        // return the layer index (from 0, count from bottom) by given the radius in RE. rb(l)<=r*RE<rb(l+1)
+  int getLayer_from_m(double m) const;	        // return the layer index (from 0, count from bottom) by given the mass in MEarth. M(l)<=m*MEarth<M(l+1)
   vector<double> getRs();
+  vector<double> getTs();	// return the temperatures at the outer side of each component interfaces as well as planet surface 
   string checkdummy();		// Check if there is any Dummy EOS used in the profile
   void setstatus(int s);
   int getstatus(){return ode_status;}
