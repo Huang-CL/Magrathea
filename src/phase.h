@@ -35,9 +35,12 @@ private:
 // modular conditonal phase diagrams for each layer
 //Core
 EOS* find_phase_Fe_default(double P, double T);
+EOS* find_phase_Fe_fccbcc(double P, double T);
 
 //Mantle
 EOS* find_phase_Si_default(double P, double T);
+EOS* find_phase_Si_simple(double P, double T);
+EOS* find_phase_PREM(double P, double T);
 
 // Hydrosphere
 EOS* find_phase_water_default(double P, double T);
@@ -45,6 +48,7 @@ EOS* find_phase_water_tabulated(double P, double T);
 
 //Atmsophere
 EOS* find_phase_gas_default(double P, double T);
+EOS* find_phase_HHe_tabulated(double P, double T);
 
 EOS* find_phase(double m, double MC, double MM, double MW, double MG, double P, double T, bool inward = false);
 // given the accumulated mass (in g), P (in cgs) and T, return the corresponding phase.  If inward = true, return the outer component at the mass transition boundary
