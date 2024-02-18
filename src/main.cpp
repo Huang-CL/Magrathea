@@ -21,6 +21,11 @@ const double P_surface = 1E5;		  // The pressure level that the broad band optic
 int count_shoot = 0;			  // used to count the total number of shootings per each solution
 int count_step = 0;			  // used to count the sum of integral steps in all shooting results.
 
+PhaseDgm water("water", find_phase_water_default); //Phase Diagram for Hydrosphere
+PhaseDgm core("core", find_phase_Fe_default); //Phase Diagram for Core
+PhaseDgm mant("mantle", find_phase_Si_default); //Phase Diagram for Mantle
+PhaseDgm atm("atm", find_phase_gas_default); //Phase Diagram for Atmosphere
+
 int main()
 {
   gsl_set_error_handler_off();  //Dismiss the abortion from execution, which is designed for code testing.
@@ -36,10 +41,10 @@ int main()
 
   if (input_mode == 0)
   {
-    vector<PhaseDgm> Comp = {Fe, Si, water, atm};
+    vector<PhaseDgm> Comp = {core, mant, water, atm};
     vector<double> Tgap = {0, 0, 0, 300};
     // The temperature of the outer boundary of the inner component minus the inner boundary of the outer component.  A positive number indicates temperature increases inward.  0 indicates the temperature is continuous at the boundary of components.  The last number is the planetary surface temperature.
-    vector<double> Mcomp =  {1.0,0.5,0.1,0.00001}; // Mass in Earth Masses of Core, Mantle, Hydrosphere, Atmosphere
+    vector<double> Mcomp =  {1.0,0.5,0.5,0.001}; // Mass in Earth Masses of Core, Mantle, Hydrosphere, Atmosphere
     planet=fitting_method(Comp, Mcomp, Tgap, ave_rho, P_surface, false);
     cout<<count_shoot<<' '<<count_step<<endl;
     if (!planet)
@@ -137,7 +142,7 @@ int main()
   
   else if(input_mode == 5)
   {
-    vector<PhaseDgm> Comp = {Fe, Si, water, atm};
+    vector<PhaseDgm> Comp = {core, mant, water, atm};
     vector<double> Tgap = {0, 0, 0, 300};
     vector<double> Mcomp =  {0.29,0.69,1.02,0.001};
 
@@ -208,7 +213,7 @@ int main()
     cout<<"Choose the mode to use (1 or 2. default 1):";
     cin>>mode;
 
-    vector<PhaseDgm> Comp = {Fe, Si, water, atm};
+    vector<PhaseDgm> Comp = {core, mant, water, atm};
     vector<double> Tgap;
     if (mode!='2')
     {
@@ -346,7 +351,7 @@ int main()
       int step=1; // Step size for core/manlte %
       double rerr=0.001; // Acceptable error in the simulated radius to target radius
       double MC, MM, MW, MG;
-      vector<PhaseDgm> Comp = {Fe, Si, water, atm};
+      vector<PhaseDgm> Comp = {core, mant, water, atm};
       vector<double> Tgap = {0,0,0,300}; // Using full temperature solver, Temperature gap between each layer and surface temperature.
       char final='n';     
       for(int j=0; j<101; j+=step){   // Loop for each core:mantle mass fraction

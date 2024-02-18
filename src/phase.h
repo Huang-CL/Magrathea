@@ -32,16 +32,19 @@ private:
   double *start_P;	      // The phase change pressure at low end. In unit of GPa.  with the size of n-1
 };
   
+// modular conditonal phase diagrams for each layer
+//Core
+EOS* find_phase_Fe_default(double P, double T);
 
-EOS* find_water_phase(double P, double T);
-// input P in cgs
+//Mantle
+EOS* find_phase_Si_default(double P, double T);
 
+// Hydrosphere
+EOS* find_phase_water_default(double P, double T);
+EOS* find_phase_water_tabulated(double P, double T);
 
-EOS* find_Fe_phase(double P, double T);
-
-EOS* find_Si_phase(double P, double T);
-
-EOS* find_gas_phase(double P, double T);
+//Atmsophere
+EOS* find_phase_gas_default(double P, double T);
 
 EOS* find_phase(double m, double MC, double MM, double MW, double MG, double P, double T, bool inward = false);
 // given the accumulated mass (in g), P (in cgs) and T, return the corresponding phase.  If inward = true, return the outer component at the mass transition boundary
@@ -55,7 +58,7 @@ struct phase_params
   PhaseDgm* cmpn;
 };
 
-extern PhaseDgm water, Fe, Si, atm;
+extern PhaseDgm water, core, mant, atm;
 // Atmosphere doesn't support self-consistent phase diagram.  Multiple components with each masses specifid have to be constructed in order to use multi-phase atmosphere.
 
 #endif	// PHASE_H_

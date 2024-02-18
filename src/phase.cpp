@@ -1,5 +1,5 @@
 #include "phase.h"
-//Conditionals for Phase Diagrams in each layer begin LINE 250
+//Conditionals for Phase Diagrams in each layer begin LINE 249
 
 PhaseDgm::PhaseDgm(string Comp_name, EOS* (*f)(double, double), int k, EOS** phase_name, double *start_pressure)
 {
@@ -245,10 +245,95 @@ double dunaeva_phase_curve(double P, double a, double b, double c, double d, dou
   }
   return a + b*P + c*log(P) + d/P + e*sqrt(P);
 }
-  
+ 
+// ========== Phase Diagram for Core  ================
+
+EOS* find_phase_Fe_default(double P, double T)
+{
+  if (P <= 0 || T <= 0)
+  {
+    return NULL;
+  }
+
+  P /= 1E10;			// convert microbar to GPa
+
+  // Default Core
+  if( T > 12.8*P + 2424 && T > 13.7*P + 2328)   // melting curve from Dorogokupets et al. 2017, Scientific Reports. fcc and hcp Fe melting curve.
+    return Fe_liquid;
+  else
+    return Fe_hcp;             // use hcp Iron for all regions.
+
+  //Alternative Core Phase Diagram with fcc and bcc iron
+  //if(T>575+18.7*P+0.213*pow(P,2)-0.000817*pow(P,3) && P<98.5) // Anzellini et al. 2013
+  //{
+  //  if(T<1991*pow((((P-5.2)/27.39)+1),1/2.38) && P<98.5)
+  //    if(T<-41.1*P+1120)	
+  //      return Fe_bcc;
+  //    else
+  //      return Fe_fcc;
+  //  else
+  //    return Fe_liquid;
+  //}
+  //else
+  //{
+  //  if(T<3712*pow((((P-98.5)/161.2)+1),1/1.72))
+  //    if(T<-61.2*P+1266)     // Dorogokupets et al. 2017
+  //      return Fe_bcc;
+  //    else	
+  //      return Fe_hcp;
+  //  else
+  //    return Fe_liquid;
+  //}
+}
+
+// ========== Phase Diagram for Mantle  ================
 // ---------------------------------
-// Phase Diagram for Hydrosphere
-EOS* find_water_phase(double P, double T)
+// Phase Diagram for Mantle 
+EOS* find_phase_Si_default(double P, double T)
+{
+  if (P <= 0 || T <= 0)
+  {
+    return NULL;
+  }
+
+  P /= 1E10;			// convert microbar to GPa
+  // Default Mantle
+  if(P > 112.5 + 7E-3*T)	// Phase transfer curve from Ono & Oganov 2005, Earth Planet. Sci. Lett. 236, 914
+    return Si_PPv_Sakai;
+  else if (T > 1830*pow(1+P/4.6, 0.33)) // Melting curve from Belonoshko et al. 2005 Eq. 2
+    return Si_Liquid_Wolf;
+  else
+    return Si_Pv;
+
+  // Detailed Upper Mantle
+  //if(P > 112.5 + 7E-3*T)      // Phase transfer curve from Ono & Oganov 2005, Earth Planet. Sci. Lett. 236, 914
+  //  return Si_PPv_Sakai;
+  //else if (T > 1830*pow(1+P/4.6, 0.33)) // Melting curve from Belonoshko et al. 2005 Eq. 2
+  //  return Si_Liquid_Wolf;
+  //else if (P > 24.3+(-2.12E-4*T)+(-3.49E-7*pow(T, 2))) // Dorogokupets et al. 2015
+  //    return Pv_Doro;
+  //else if (P > 8.69+6.05E-3*T)
+  //    return Rwd;
+  //else if (P > 9.45+2.76E-3*T)
+  //    return Wds;
+  //else
+  //  return Fo;
+
+  // PREM Mantle
+  //if(P > 3500)
+  //  return Si_Seager;
+  //else if(P > 23.83)
+  //  return Si_BM2fit;
+  //else
+  //  return Si_PREM;
+}
+
+ 
+// ========== Phase Diagram for Hydrosphere  ================
+
+// ---------------------------------
+// H2O Water/Ice boundaries primarily form Dunaeva et al. 2010
+EOS* find_phase_water_default(double P, double T)
 // input P in cgs
 {
   P /= 1E10;			// convert microbar to GPa
@@ -331,8 +416,8 @@ EOS* find_water_phase(double P, double T)
 }
 
 // ---------------------------------
-// Phase Diagram for Core
-EOS* find_Fe_phase(double P, double T)
+// H2O Tabulated Water/Ice boudnaries primarily form Dunaeva et al. 2010
+EOS* find_phase_water_tabulated(double P, double T)
 {
   if (P <= 0 || T <= 0)
   {
@@ -340,82 +425,12 @@ EOS* find_Fe_phase(double P, double T)
   }
 
   P /= 1E10;			// convert microbar to GPa
-
-  // Default Core
-  if( T > 12.8*P + 2424 && T > 13.7*P + 2328)   // melting curve from Dorogokupets et al. 2017, Scientific Reports. fcc and hcp Fe melting curve.
-    return Fe_liquid;
-  else
-    return Fe_hcp;             // use hcp Iron for all regions.
-
-  //Alternative Core Phase Diagram with fcc and bcc iron
-  //if(T>575+18.7*P+0.213*pow(P,2)-0.000817*pow(P,3) && P<98.5) // Anzellini et al. 2013
-  //{
-  //  if(T<1991*pow((((P-5.2)/27.39)+1),1/2.38) && P<98.5)
-  //    if(T<-41.1*P+1120)	
-  //      return Fe_bcc;
-  //    else
-  //      return Fe_fcc;
-  //  else
-  //    return Fe_liquid;
-  //}
-  //else
-  //{
-  //  if(T<3712*pow((((P-98.5)/161.2)+1),1/1.72))
-  //    if(T<-61.2*P+1266)     // Dorogokupets et al. 2017
-  //      return Fe_bcc;
-  //    else	
-  //      return Fe_hcp;
-  //  else
-  //    return Fe_liquid;
-  //}
+  return H2O_AQUA;
 }
 
+// ========== Phase Diagram for Atmosphere  ================
 
-// ---------------------------------
-// Phase Diagram for Mantle 
-EOS* find_Si_phase(double P, double T)
-{
-  if (P <= 0 || T <= 0)
-  {
-    return NULL;
-  }
-
-  P /= 1E10;			// convert microbar to GPa
-  // Default Mantle
-  if(P > 112.5 + 7E-3*T)	// Phase transfer curve from Ono & Oganov 2005, Earth Planet. Sci. Lett. 236, 914
-    return Si_PPv_Sakai;
-  else if (T > 1830*pow(1+P/4.6, 0.33)) // Melting curve from Belonoshko et al. 2005 Eq. 2
-    return Si_Liquid_Wolf;
-  else
-    return Si_Pv;
-
-  // Detailed Upper Mantle
-  //if(P > 112.5 + 7E-3*T)      // Phase transfer curve from Ono & Oganov 2005, Earth Planet. Sci. Lett. 236, 914
-  //  return Si_PPv_Sakai;
-  //else if (T > 1830*pow(1+P/4.6, 0.33)) // Melting curve from Belonoshko et al. 2005 Eq. 2
-  //  return Si_Liquid_Wolf;
-  //else if (P > 24.3+(-2.12E-4*T)+(-3.49E-7*pow(T, 2))) // Dorogokupets et al. 2015
-  //    return Pv_Doro;
-  //else if (P > 8.69+6.05E-3*T)
-  //    return Rwd;
-  //else if (P > 9.45+2.76E-3*T)
-  //    return Wds;
-  //else
-  //  return Fo;
-
-  // PREM Mantle
-  //if(P > 3500)
-  //  return Si_Seager;
-  //else if(P > 23.83)
-  //  return Si_BM2fit;
-  //else
-  //  return Si_PREM;
-}
-
-// ---------------------------------
-// Phase Diagram for Atmosphere
-EOS* find_gas_phase(double P, double T)
- 
+EOS* find_phase_gas_default(double P, double T)
 {
   if (P <= 0 || T <= 0)
   {
@@ -428,10 +443,6 @@ EOS* find_gas_phase(double P, double T)
     return Gas;
 }
 
-PhaseDgm water("water", find_water_phase);
-PhaseDgm Fe("core", find_Fe_phase);
-PhaseDgm Si("mantle", find_Si_phase);
-PhaseDgm atm("atm", find_gas_phase);
 
 EOS* find_phase(double m, double MC, double MM, double MW, double MG, double P, double T, bool inward)
 // given the accumulated mass (in g), P (in cgs) and T, return the corresponding phase
@@ -439,10 +450,10 @@ EOS* find_phase(double m, double MC, double MM, double MW, double MG, double P, 
   if (inward)
   {
     if(m < MC*ME)			// iron core
-      return Fe.find_phase(P,T);
+      return core.find_phase(P,T);
 
     else if(m < (MM+MC)*ME)		// silicon mantle
-      return Si.find_phase(P,T);
+      return mant.find_phase(P,T);
 
     else if(m < (MM+MC+MW)*ME)		// hydrosphere
       return water.find_phase(P,T);
@@ -454,18 +465,18 @@ EOS* find_phase(double m, double MC, double MM, double MW, double MG, double P, 
       else if(MW > 1E-18)
 	return water.find_phase(P,T);
       else if(MM > 1E-18)
-	return Si.find_phase(P,T);
+	return mant.find_phase(P,T);
       else
-	return Fe.find_phase(P,T);
+	return core.find_phase(P,T);
     }
   }
   else
   {
     if(m <= MC*ME)			// iron core
-      return Fe.find_phase(P,T);
+      return core.find_phase(P,T);
 
     else if(m <= (MM+MC)*ME)		// silicon mantle
-      return Si.find_phase(P,T);
+      return mant.find_phase(P,T);
 
     else if(m <= (MM+MC+MW)*ME)		// hydrosphere
       return water.find_phase(P,T);
@@ -477,9 +488,9 @@ EOS* find_phase(double m, double MC, double MM, double MW, double MG, double P, 
       else if(MW > 1E-18)
 	return water.find_phase(P,T);
       else if(MM > 1E-18)
-	return Si.find_phase(P,T);
+	return mant.find_phase(P,T);
       else
-	return Fe.find_phase(P,T);
+	return core.find_phase(P,T);
     }
   }
 }  
