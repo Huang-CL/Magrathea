@@ -481,8 +481,8 @@ hydro::hydro(double Pc, double MCin, double MMin, double MWin, double P0, double
   EOS *Phase;
 
   Comp.clear();
-  Comp.push_back(Fe);
-  Comp.push_back(Si);
+  Comp.push_back(core);
+  Comp.push_back(mant);
   Comp.push_back(water);
   Comp.push_back(atm);
   

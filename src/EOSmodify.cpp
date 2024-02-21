@@ -74,9 +74,9 @@ void twolayer(int absent_index, double fraction, double P0, int adjust_index, st
 {
   PhaseDgm *adjust_cp;
   if (adjust_index == 0)
-    adjust_cp = &Fe;
+    adjust_cp = &core;
   else if (adjust_index == 1)
-    adjust_cp = &Si;
+    adjust_cp = &mant;
   else if (adjust_index == 2)
     adjust_cp = &water;
   else

@@ -54,7 +54,7 @@ int main()
       cout<<"\t No solution found."<<endl;
     }
     else
-      planet->print("./result/Structure.txt", true); // Save the result in an asc file with this name.
+      planet->print("./result/Structure.txt", false); // Save the result in an asc file with this name.
 
     delete planet;
   }  

@@ -161,9 +161,6 @@ EOS::EOS(string phaseinput, string filename):phasetype(phaseinput),eqntype(7), V
   density_extern=NULL;
   entropy_extern=NULL;
   dTdP = NULL;
-  adiabattable=NULL;
-  temptable=NULL;
-
   
   if(!fin)
   {
