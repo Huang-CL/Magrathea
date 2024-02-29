@@ -13,7 +13,7 @@ A 1D planet structure code written in C++ which considers the case of fully diff
 The code integrates the hydrostatic equation in order to shoot for the correct planet radius given the mass in each layer.
 The code returns the pressure, temperature, density, phase, and radius at steps of enclosed mass.
 The code supports 4 layers: core, mantle, hydrosphere, and atmosphere. Each layer has a phase diagram with equations of state (EOS) chosen for each phase.
-The code was developed by Chenliang Huang, David R. Rice, and Jason H. Steffen at the Univerisity of Nevada, Las Vegas starting in 2017.
+The code was developed by [Chenliang Huang](https://huang-cl.github.io/), [David R. Rice](https://davidrrice.github.io/), and [Jason H. Steffen](https://www.jasonhsteffen.com/) at the Univerisity of Nevada, Las Vegas starting in 2017.
 See a [list of works](citations.md) that use MAGRATHEA and [instructions on how to cite](CITATION.md). If you don't see something on this ReadMe check our publication in this repository: [*MAGRATHEA.pdf*](MAGRATHEA.pdf).
 
 We encourage the community to contribute to and use MAGRATHEA for their interior modeling needs.
@@ -305,3 +305,5 @@ Magrathea itself disappeared and its memory soon passed into the obscurity of le
 ---
 
 *MAGRATHEA is supported by the [Nevada Center for Astrophysics](https://www.physics.unlv.edu/~bzhang/NCfA.html), University of Nevada, Las Vegas's [Physics & Astronomy Department](https://www.physics.unlv.edu/) and [Star & Planet Formation Group](https://unlv-spfg.github.io/), and University of Arizona's [Lunar and Planetary Laboratory](https://www.lpl.arizona.edu/)*
+
+*We want to thank the many users and supporters of this code. We greatly appreciate the contributions, discussions, and support of [Allona Vazan](https://www.openu.ac.il/en/personalsites/AllonaVazan.aspx), [Michael Lozovsky](https://michloz8.wixsite.com/michael-lozovsky), [Ashkan Salamat](https://nexcl.unlv.edu/the-team/ashkan-salamat), and [Piyush Puranik](https://github.com/preppie22)*
