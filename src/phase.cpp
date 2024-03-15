@@ -433,7 +433,7 @@ EOS* find_phase_water_default(double P, double T)
 }
 
 // ---------------------------------
-// H2O Tabulated Water/Ice boudnaries primarily form Dunaeva et al. 2010
+// AQUA Haldemann et al. 2020 Tabulated Ice, Liquid, Vapor, Supercritical
 EOS* find_phase_water_tabulated(double P, double T)
 {
   if (P <= 0 || T <= 0)
@@ -473,6 +473,17 @@ EOS* find_phase_HHe_tabulated(double P, double T)
   else
     return Gas_hhe;
 }
+
+
+PhaseDgm core("core", find_phase_Fe_default); //Phase Diagrams for Core
+PhaseDgm core1("core1", find_phase_Fe_fccbcc); 
+PhaseDgm mant("mantle", find_phase_Si_default); //Phase Diagram for Mantle
+PhaseDgm mant1("mantle1", find_phase_Si_simple); 
+PhaseDgm mant2("mantle2", find_phase_PREM); 
+PhaseDgm water("water", find_phase_water_default); //Phase Diagram for Hydrosphere
+PhaseDgm water1("water1", find_phase_water_tabulated);
+PhaseDgm atm("atm", find_phase_gas_default); //Phase Diagram for Atmosphere
+PhaseDgm atm1("atm1", find_phase_HHe_tabulated);
 
 EOS* find_phase(double m, double MC, double MM, double MW, double MG, double P, double T, bool inward)
 // given the accumulated mass (in g), P (in cgs) and T, return the corresponding phase

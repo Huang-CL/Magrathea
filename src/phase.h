@@ -4,6 +4,19 @@
 #include "EOS.h"
 #include "EOSlist.h"
 
+/*
+  Available Phase Diagrams
+  Core: "Fe_default" : hcp and Liquid iron
+         "Fe_fccbcc" : Includes low pressure fcc and bcc iron
+  Mantle: "Si_default" : Upper Mantle: Fo, Wds, Rwd, and liquid ; Lower Mantle: Brg, PPv
+          "Si_simple" : Brg, PPv, and liquid 
+          "PREM" : PREM tabulated mantle
+  Hydrosphere: "water_default" :  H2O Water/Ice boundaries primarily form Dunaeva et al. 2010
+               "water_tabulated" : AQUA Haldemann et al. 2020 Tabulated Ice, Liquid, Vapor, Supercritical
+  Atmosphere: "gas_default" : Ideal Gas: Isothermal for P<100 bar. Adiabatic ideal gas for P > 100 bar
+              "HHe_tabulated" : H/He Gas: Isothermal ideal for P<100 bar, P>100 bar: tabulated real gas, Chabrier & Debras 2021 Y=0.275
+*/
+
 struct PhaseDgm
 /*
   At lower pressure, using the input function to set the phase diagram and pick the correct phase.  This part of the phase diagram is fixed and can't be adjusted.
@@ -62,7 +75,7 @@ struct phase_params
   PhaseDgm* cmpn;
 };
 
-extern PhaseDgm water, core, mant, atm;
+extern PhaseDgm core, core1, mant, mant1, mant2, water, water1, atm, atm1;
 // Atmosphere doesn't support self-consistent phase diagram.  Multiple components with each masses specifid have to be constructed in order to use multi-phase atmosphere.
 
 #endif	// PHASE_H_
