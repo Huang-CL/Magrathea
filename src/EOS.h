@@ -9,9 +9,9 @@
 #include <gsl/gsl_deriv.h>
 
 extern const double mu;
-extern const double rho_eps_rel;
-extern const double T_eps_rel;
-extern const bool verbose;
+extern double rho_eps_rel;
+extern double T_eps_rel;
+extern bool verbose;
 
 struct EOS
 // The pressure unit inside this package is GPa

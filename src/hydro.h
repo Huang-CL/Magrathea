@@ -5,12 +5,12 @@
 #include "EOS.h"
 #include "phase.h"
 
-extern const double ode_eps_rel0;
-extern const double ode_eps_rel1;
-extern const double ode_eps_rel2;
-extern const double R_eps_rel;
-extern const double P_eps_rel;
-extern const double fit_eps_rel;
+extern double ode_eps_rel0;
+extern double ode_eps_rel1;
+extern double ode_eps_rel2;
+extern double R_eps_rel;
+extern double P_eps_rel;
+extern double fit_eps_rel;
 extern int fit_iter;
 extern int count_shoot;
 extern int count_step;
