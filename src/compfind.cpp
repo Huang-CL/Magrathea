@@ -204,7 +204,7 @@ void compfinder(vector<PhaseDgm> &Comp, int findlayer, vector<int> layers, doubl
             }
           }
           Mcomp[findlayer-1]=funk0*Mp[i];
-          cout<<Mcomp[0]<<' '<<Mcomp[1]<<' '<<Mcomp[2]<<' '<<Mcomp[3]<<endl; //Uncomment to watch solver find mass
+          //cout<<Mcomp[0]<<' '<<Mcomp[1]<<' '<<Mcomp[2]<<' '<<Mcomp[3]<<endl; //Uncomment to watch solver find mass
 	        planet = fitting_method(Comp, Mcomp, Tgap, ave_rho, P0, isothermal);
           if (!planet)
     	    {
@@ -259,7 +259,7 @@ void compfinder(vector<PhaseDgm> &Comp, int findlayer, vector<int> layers, doubl
             }
           }
           Mcomp[findlayer-1]=funk1*Mp[i];
-          cout<<Mcomp[0]<<' '<<Mcomp[1]<<' '<<Mcomp[2]<<' '<<Mcomp[3]<<endl; //Uncomment to watch solver find mass
+          //cout<<Mcomp[0]<<' '<<Mcomp[1]<<' '<<Mcomp[2]<<' '<<Mcomp[3]<<endl; //Uncomment to watch solver find mass
 	        planet = fitting_method(Comp, Mcomp, Tgap, ave_rho, P0, isothermal);
           if (!planet)
     	    {
