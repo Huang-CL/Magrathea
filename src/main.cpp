@@ -25,23 +25,36 @@ int count_shoot = 0;			  // used to count the total number of shootings per each
 int count_step = 0;			  // used to count the sum of integral steps in all shooting results.
 
 
-
 int main(int argc, char* argv[])
 {
   gsl_set_error_handler_off();  //Dismiss the abortion from execution, which is designed for code testing.
   hydro* planet;
   ifstream fin;
   int n_settings;
-  //Initialize all the parameters, will throw error later if missing
 
+  //Initialize all the parameters, will throw error later if missing
+  int input_mode=0;
   string core_phasedgm="Fe_default";
   string mantle_phasedgm="Si_default";
   string hydro_phasedgm="water_default";
   string atm_phasedgm="gas_default";
-  int input_mode=0;
   vector<double> Mcomp={0,0,0,0}; 
   vector<double> Tgap = {0,0,0,0};
-  string outputfile=" ";  
+  string outputfile=" "; 
+  int layer_index=0;
+  float mass_frac=0;
+  float min_mass=0;
+  float max_mass=0;
+  float step_mass=0;
+  string inputfile=" ";
+  int solver=1;
+  int findlayer=1;
+  float minPMR=0;
+  float maxPMR=0;
+  float step=0;
+  vector<int> layers={1,1,0,0};
+  float rerr=0;
+
 
   //Parse input file
   try{
@@ -68,9 +81,9 @@ int main(int argc, char* argv[])
     // 4: composition finder, finds third layer mass to match a mass and radius measurement
     // 5: modify a built-in EOS on they fly, 
     // 6: iterate over EOS modifications with two-layer solver, 5: iterate over EOS with regular solver
-    input_mode= options.GetOptionDouble("input_mode");
+    input_mode = options.GetOptionDouble("input_mode");
     //Get Phase Diagrams for modes which require
-    if (input_mode==0)
+    if (input_mode==0 or input_mode==3 or input_mode==4 or input_mode==7)
     {
       core_phasedgm=options.GetOptionString("core_phasedgm");
       mantle_phasedgm=options.GetOptionString("mantle_phasedgm");
@@ -87,13 +100,64 @@ int main(int argc, char* argv[])
         Tgap[1]=options.GetOptionDouble("temp_jump_2");
         Tgap[2]=options.GetOptionDouble("temp_jump_2");
         Tgap[3]=options.GetOptionDouble("surface_temp");
-	outputfile=options.GetOptionString("output");
-	break;
+	      outputfile=options.GetOptionString("output_file");
+	      break;
       case 1:
         Mcomp[0]=options.GetOptionDouble("mass_of_core");
         Mcomp[1]=options.GetOptionDouble("mass_of_mantle");
         Mcomp[2]=options.GetOptionDouble("mass_of_hydro");
-        outputfile=options.GetOptionString("output");
+        outputfile=options.GetOptionString("output_file");
+        break;
+      case 2:
+        layer_index=options.GetOptionDouble("layer_index");
+        mass_frac=options.GetOptionDouble("mass_frac");
+        min_mass=options.GetOptionDouble("min_mass");
+        max_mass=options.GetOptionDouble("max_mass");
+        step_mass=options.GetOptionDouble("step_mass");
+        break;
+      case 3:
+        inputfile=options.GetOptionString("input_file");
+        solver=options.GetOptionDouble("solver");
+        Tgap[0]=options.GetOptionDouble("temp_jump_3"); 
+        Tgap[1]=options.GetOptionDouble("temp_jump_2");
+        Tgap[2]=options.GetOptionDouble("temp_jump_2");
+        Tgap[3]=options.GetOptionDouble("surface_temp");
+	      outputfile=options.GetOptionString("output_file");      
+        break;
+      case 4:
+        inputfile=options.GetOptionString("input_file");
+        outputfile=options.GetOptionString("output_file");
+        findlayer=options.GetOptionDouble("find_layer");
+        layers[options.GetOptionDouble("layer_inner")]=1;
+        layers[options.GetOptionDouble("layer_outer")]=1;
+        minPMR=options.GetOptionDouble("PMR_min");
+        maxPMR=options.GetOptionDouble("PMR_max");
+        step=options.GetOptionDouble("PMR_step");
+        rerr=options.GetOptionDouble("R_error");
+        Tgap[0]=options.GetOptionDouble("temp_jump_3"); 
+        Tgap[1]=options.GetOptionDouble("temp_jump_2");
+        Tgap[2]=options.GetOptionDouble("temp_jump_2");
+        Tgap[3]=options.GetOptionDouble("surface_temp");
+        break;
+      case 5:   
+        break;
+      case 6:
+        inputfile=options.GetOptionString("input_file");
+        outputfile=options.GetOptionString("output_file");
+        layer_index=options.GetOptionDouble("layer_index");
+        mass_frac=options.GetOptionDouble("mass_frac");   
+        break;
+      case 7:
+        inputfile=options.GetOptionString("input_file");
+        outputfile=options.GetOptionString("output_file");
+        Mcomp[0]=options.GetOptionDouble("mass_of_core");
+        Mcomp[1]=options.GetOptionDouble("mass_of_mantle");
+        Mcomp[2]=options.GetOptionDouble("mass_of_hydro");
+        Mcomp[3]=options.GetOptionDouble("mass_of_atm");
+        Tgap[0]=options.GetOptionDouble("temp_jump_3"); 
+        Tgap[1]=options.GetOptionDouble("temp_jump_2");
+        Tgap[2]=options.GetOptionDouble("temp_jump_2");
+        Tgap[3]=options.GetOptionDouble("surface_temp");
         break;
     }
 	
@@ -104,7 +168,7 @@ int main(int argc, char* argv[])
 
   //Set Phase Diagrams
   vector<PhaseDgm> Comp = {core, mant, water, atm};
-  if (input_mode==0){
+  if (input_mode==0 or input_mode==3 or input_mode==4 or input_mode==7){
     if (core_phasedgm=="Fe_default")
       Comp[0]=core;
     else if (core_phasedgm=="Fe_fccbcc")
@@ -135,8 +199,13 @@ int main(int argc, char* argv[])
 
   if (input_mode == 0)
   {
+    double deltat;
+    gettimeofday(&start_time,NULL);
     planet=fitting_method(Comp, Mcomp, Tgap, ave_rho, P_surface, false);
     cout<<"# of shots "<<count_shoot<<", # of total steps "<<count_step<<endl;
+    gettimeofday(&end_time, NULL);
+    deltat = ((end_time.tv_sec  - start_time.tv_sec) * 1000000u + end_time.tv_usec - start_time.tv_usec) / 1.e6;
+    cout<<"run time "<<deltat<<'s'<<endl;
     if (!planet)
     {
       for (unsigned int i=0; i < Mcomp.size(); i++)
@@ -153,8 +222,13 @@ int main(int argc, char* argv[])
 
   else if(input_mode == 1)
   {
+    double deltat;
+    gettimeofday(&start_time,NULL);
     planet=getmass(Mcomp[0],Mcomp[1],Mcomp[2],P_surface);
     // Mass in Earth Masses of Core, Mantle, Hydrosphere
+    gettimeofday(&end_time, NULL);
+    deltat = ((end_time.tv_sec  - start_time.tv_sec) * 1000000u + end_time.tv_usec - start_time.tv_usec) / 1.e6;
+    cout<<"run time "<<deltat<<'s'<<endl;
     if (planet)
     {
       planet->print(outputfile);
@@ -168,60 +242,30 @@ int main(int argc, char* argv[])
   {
     vector<double> Mp,Rp;
     double deltat;
+    for (float value = min_mass; value <= max_mass; value += step_mass) {
+      Mp.push_back(value);
+    }
     gettimeofday(&start_time,NULL);
-
-    twolayer(0,0,Mp,Rp,P_surface,true);
-
+    twolayer(layer_index,mass_frac,Mp,Rp,P_surface,true);
     for(int i=0; i < int(Mp.size()); i++)
       cout<<Mp[i]<<" \t"<<Rp[i]<<endl;
     gettimeofday(&end_time, NULL);
-  
     deltat = ((end_time.tv_sec  - start_time.tv_sec) * 1000000u + end_time.tv_usec - start_time.tv_usec) / 1.e6;
-
-    cout<<"running time "<<deltat<<'s'<<endl;
+    cout<<"run time "<<deltat<<'s'<<endl;
   }
 
   else if(input_mode == 3)
   {
-    vector<PhaseDgm> Comp = {core,mant,water,atm};
-    vector<double> Tgap = {0,0,0,300}; // Using full temperature solver, Temperature gap between each layer and surface temperature.
-
-    string infilename="./input/inputcore.txt";
-    string outfilename="./result/coreplanets.txt";
-
-    int solver=1; //Calculation mode. Mode 2 is twice faster, but only applicable for planet with no gas layer and whose temperature effect is not important
-
-    
-    multiplanet(Comp, Tgap, solver, ave_rho, P_surface, false, infilename, outfilename);
-    
-
+    multiplanet(Comp, Tgap, solver, ave_rho, P_surface, false, inputfile, outputfile);
   }
 
   else if(input_mode == 4)
   {
-    vector<PhaseDgm> Comp = {core, mant, water, atm};
-    vector<double> Tgap = {0,0,0,300}; // Using full temperature solver, Temperature gap between each layer and surface temperature.
-
-    string infilename="./input/inputplanetMR.txt";
-    string outfilename="./result/outputcompfindplanet.txt";
-
-    //Solver will hold 2 layers in constant Partial Mass Ratio (PMR) and find the mass of 3rd layer: 
-    //PMR(%) is OMF/(IMF+OMF)*100, where OMG is outer-mass fraction, IMF is inner-mass fraction
-    //Solver can be looped through steps in PMR
-    int findlayer=3; //1 to find core, 2 for mantle, 3 for water, 4 for atmosphere mass fraction
-    vector<int> layers={1,1,0,0}; //mark which layers {C,M,W,A} to hold in constant partial ratio
-    double minPMR=67.0; //Minimum PMR(%) for iteration, must be multiple of 0.1
-    double maxPMR=67.6; //Maximum PMR(%) for iteration, must be multiple of 0.1
-    float step=0.2; // Step size for partial mass ratio, must be multiple of 0.1
-
-    double rerr=0.001; // Error in the simulated radius to target radius
-
     //Multi-threading is commented out by default for easy install
     //Must uncomment Line 2 in Makefile and all occurences of "pragma..." in comfind.cpp 
     int num_threads=0; 
     
-    compfinder(Comp,findlayer,layers,minPMR,maxPMR,step,rerr,num_threads,Tgap,ave_rho,P_surface,false,infilename, outfilename);
-
+    compfinder(Comp,findlayer,layers,minPMR,maxPMR,step,rerr,num_threads,Tgap,ave_rho,P_surface,false,inputfile,outputfile);
   }
 
   else if(input_mode == 5)
@@ -263,28 +307,22 @@ int main(int argc, char* argv[])
 
   else if(input_mode == 6)
   {
-    double deltat;
-    double fraction = 1;
-    int index = 0;
-    
+    double deltat;    
     gettimeofday(&start_time,NULL);
-
-    twolayer(index,fraction,P_surface,1,"./run/PosteriorsPPv.txt", "./result/PPvMCMC.txt");
-  
+    twolayer(layer_index,mass_frac,P_surface,1,inputfile, outputfile);
     gettimeofday(&end_time, NULL);
-  
     deltat = ((end_time.tv_sec  - start_time.tv_sec) * 1000000u + end_time.tv_usec - start_time.tv_usec) / 1.e6;
-
-    cout<<"running time "<<deltat<<'s'<<endl;
+    cout<<"run time "<<deltat<<'s'<<endl;
   }
   
   else if(input_mode == 7)
   {
-    vector<PhaseDgm> Comp = {core, mant, water, atm};
-    vector<double> Tgap = {0, 0, 0, 300};
-    vector<double> Mcomp =  {0.29,0.69,1.02,0.001};
-
-    fullmodel(Comp,Mcomp,Tgap,ave_rho,P_surface,false,2,"./run/PosteriorsVinet.txt", "./result/IceMCMCnew.txt");
+    double deltat;    
+    gettimeofday(&start_time,NULL);
+    fullmodel(Comp,Mcomp,Tgap,ave_rho,P_surface,false,2,inputfile,outputfile);
+    gettimeofday(&end_time, NULL);
+    deltat = ((end_time.tv_sec  - start_time.tv_sec) * 1000000u + end_time.tv_usec - start_time.tv_usec) / 1.e6;
+    cout<<"run time "<<deltat<<'s'<<endl;
   }
 
 

@@ -8,52 +8,49 @@ void twolayer(int index, double fraction, vector<double> &Mp, vector<double> &Rp
 // index=1 for planet with no Si-mantle.  2 for no water.
 // fraction is the mass fraction of the inner layer.
 {
-  double Mpt, MC, MM, MW;  
+  double MC, MM, MW;  
 
   hydro* planet;
-  Mp.resize(0);
+  //Mp.resize(0);
   Rp.resize(0);
   
   switch(index)
   {
   case 0:
-    for(Mpt=0.1;Mpt<50;Mpt*=1.1)
+    for(double Mpt : Mp)
     {
       MM=Mpt*fraction;
       MW=Mpt-MM;
       MC=0;
       planet=getmass(MC,MM,MW,P0);
       if(printmodel == true)
-	planet->print("./result/densitymap.txt");
-      Mp.push_back(planet->totalM()/ME);
+	      planet->print("./result/densitymap.txt");
       Rp.push_back(planet->totalR()/RE);
       delete planet;
     }
     break;
   case 1:
-    for(Mpt=0.1;Mpt<50;Mpt*=1.1)
+    for(double Mpt : Mp)
     {
       MC=Mpt*fraction;
       MW=Mpt-MC;
       MM=0;
       planet=getmass(MC,MM,MW,P0);
       if(printmodel == true)
-	planet->print("./result/densitymap.txt");
-      Mp.push_back(planet->totalM()/ME);
+	        planet->print("./result/densitymap.txt");
       Rp.push_back(planet->totalR()/RE);
       delete planet;
     }
     break;
   case 2:
-    for(Mpt=0.1;Mpt<50;Mpt*=1.1)
+    for(double Mpt : Mp)
     {
       MC=Mpt*fraction;
       MM=Mpt-MC;
       MW=0;
       planet=getmass(MC,MM,MW,P0);
       if(printmodel == true)
-	planet->print("./result/densitymap.txt");
-      Mp.push_back(planet->totalM()/ME);
+	      planet->print("./result/densitymap.txt");
       Rp.push_back(planet->totalR()/RE);
       delete planet;
     }
