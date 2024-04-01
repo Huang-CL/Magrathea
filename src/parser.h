@@ -54,7 +54,7 @@ public:
      * @brief Get the option as a double. Throws exception if value is not double.
      * 
      * @param name Name of the option to get.
-     * @return double Value of the option.
+     * @return double Value of the option. Also works for int
      * 
      */
     double GetOptionDouble(std::string name);

@@ -90,6 +90,7 @@ int main(int argc, char* argv[])
       hydro_phasedgm=options.GetOptionString("hydro_phasedgm");
       atm_phasedgm=options.GetOptionString("atm_phasedgm");
     }
+    //Get parameters specific to each mode
     switch (input_mode){
       case 0:
         Mcomp[0]=options.GetOptionDouble("mass_of_core");
@@ -140,7 +141,7 @@ int main(int argc, char* argv[])
         Tgap[3]=options.GetOptionDouble("surface_temp");
         break;
       case 5:   
-        break;
+        break; //must be run from main.cpp
       case 6:
         inputfile=options.GetOptionString("input_file");
         outputfile=options.GetOptionString("output_file");
@@ -166,7 +167,7 @@ int main(int argc, char* argv[])
        return EXIT_FAILURE;
    }
 
-  //Set Phase Diagrams
+  //Set Phase Diagrams from string in config
   vector<PhaseDgm> Comp = {core, mant, water, atm};
   if (input_mode==0 or input_mode==3 or input_mode==4 or input_mode==7){
     if (core_phasedgm=="Fe_default")
@@ -196,6 +197,14 @@ int main(int argc, char* argv[])
     else
       cout<<"atm_phasedgm does not exist, using default"<<endl;
   }	
+
+
+  //START main code for the 8 input modes
+    // 0: regular solver, 1: temperature-free solver, 2: two-layer solver, 
+    // 3: bulk input mode with regular solver
+    // 4: composition finder, finds third layer mass to match a mass and radius measurement
+    // 5: modify a built-in EOS on they fly, 
+    // 6: iterate over EOS modifications with two-layer solver, 5: iterate over EOS with regular solver
 
   if (input_mode == 0)
   {
