@@ -14,7 +14,7 @@ The code integrates the hydrostatic equation in order to shoot for the correct p
 The code returns the pressure, temperature, density, phase, and radius at steps of enclosed mass.
 The code supports 4 layers: core, mantle, hydrosphere, and atmosphere. Each layer has a phase diagram with equations of state (EoS) chosen for each phase.
 The code was developed by [Chenliang Huang](https://huang-cl.github.io/), [David R. Rice](https://davidrrice.github.io/), and [Jason H. Steffen](https://www.jasonhsteffen.com/) at the Univerisity of Nevada, Las Vegas starting in 2017.
-See a [list of works](citations.md) that use MAGRATHEA and [instructions on how to cite](CITATION.md). **If you don't see something on this ReadMe check our publication in this repository: [*MAGRATHEA.pdf*](MAGRATHEA.pdf).**
+See a [list of works](citations.md) that use MAGRATHEA and [instructions on how to cite](CITATION.md). **If you don't see something on this ReadMe check our publication in this repository: [*MAGRATHEA.pdf*](MAGRATHEA.pdf).** A tutorial and practice projects/problems are found in [Tutorial_Practice_Problems.pdf](Tutorial_Practice_Problems.pdf)
 
 We encourage the community to contribute to and use MAGRATHEA for their interior modeling needs.
 
@@ -187,7 +187,7 @@ Tabulated EoS can be read from files in the `tabulated` directory. A table can e
 
 ### Phase Diagrams ###
 
-To pick desired materials/phases in each layer, change the corresponding return values of `find_water_phase_default`, `find_Fe_phase_default`,  `find_Si_phase_default`, or `find_phase_gas_default` in `phase.cpp` using conditionals to set the desired pressure and temperature where the material/phase will exist.
+To pick desired materials/phases in each layer, change the corresponding return values of `find_phase_water_default`, `find_phase_Fe_default`,  `find_phase_Si_default`, or `find_phase_gas_default` in `phase.cpp` using conditionals to set the desired pressure and temperature where the material/phase will exist.
 
 Example:
 
