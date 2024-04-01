@@ -192,7 +192,7 @@ int main(int argc, char* argv[])
       cout<<"hydro_phasedgm does not exist, using default"<<endl;
     if (atm_phasedgm=="gas_default")
       Comp[3]=atm;
-    if (atm_phasedgm=="HHe_tabulated")
+    else if (atm_phasedgm=="HHe_tabulated")
       Comp[3]=atm1;
     else
       cout<<"atm_phasedgm does not exist, using default"<<endl;
