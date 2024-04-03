@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
         Mcomp[3]=options.GetOptionDouble("mass_of_atm");
         Tgap[0]=options.GetOptionDouble("temp_jump_3"); 
         Tgap[1]=options.GetOptionDouble("temp_jump_2");
-        Tgap[2]=options.GetOptionDouble("temp_jump_2");
+        Tgap[2]=options.GetOptionDouble("temp_jump_1");
         Tgap[3]=options.GetOptionDouble("surface_temp");
 	      outputfile=options.GetOptionString("output_file");
 	      break;
@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
         solver=options.GetOptionDouble("solver");
         Tgap[0]=options.GetOptionDouble("temp_jump_3"); 
         Tgap[1]=options.GetOptionDouble("temp_jump_2");
-        Tgap[2]=options.GetOptionDouble("temp_jump_2");
+        Tgap[2]=options.GetOptionDouble("temp_jump_1");
         Tgap[3]=options.GetOptionDouble("surface_temp");
 	      outputfile=options.GetOptionString("output_file");      
         break;
@@ -137,7 +137,7 @@ int main(int argc, char* argv[])
         rerr=options.GetOptionDouble("R_error");
         Tgap[0]=options.GetOptionDouble("temp_jump_3"); 
         Tgap[1]=options.GetOptionDouble("temp_jump_2");
-        Tgap[2]=options.GetOptionDouble("temp_jump_2");
+        Tgap[2]=options.GetOptionDouble("temp_jump_1");
         Tgap[3]=options.GetOptionDouble("surface_temp");
         break;
       case 5:   
@@ -157,7 +157,7 @@ int main(int argc, char* argv[])
         Mcomp[3]=options.GetOptionDouble("mass_of_atm");
         Tgap[0]=options.GetOptionDouble("temp_jump_3"); 
         Tgap[1]=options.GetOptionDouble("temp_jump_2");
-        Tgap[2]=options.GetOptionDouble("temp_jump_2");
+        Tgap[2]=options.GetOptionDouble("temp_jump_1");
         Tgap[3]=options.GetOptionDouble("surface_temp");
         break;
     }
