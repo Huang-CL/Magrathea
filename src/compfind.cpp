@@ -184,7 +184,7 @@ void compfinder(vector<PhaseDgm> &Comp, int findlayer, vector<int> layers, doubl
       double funk1=0.0, funk0=0.0, funk2=0.0;  // Starts 0% Water        
       do   // Finds water fraction to match posterior sampled radius
       {
-        interations=interations+1;
+        iterations=iterations+1;
         if (funk1==0) // First iteration
         {
           int count_dumb=0;
