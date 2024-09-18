@@ -158,28 +158,28 @@ Analytical EoS are defined by an array with as many parameters as needed from th
 Index | Variable | Unit | Comment 
 :---------: | :---------: | :----------: | -------------
 0 | EOS formula type | | Index in parentheses above 
-1 |	V0 | cm^3 mol^-1$ | Molar volume at reference point 
+1 |	V0 | cm<sup>3</sup> mol<sup>-1</sup> | Molar volume at reference point 
 2 |	K0 | GPa | Bulk modulus 
 3 |	K0' | | Pressure derivative of the bulk modulus. Default 4 
-4 |	K0'' | GPa^-1 | Second pressure derivative 
-5 |	m_mol | g mol^-1 | Molar mass 
+4 |	K0'' | GPa<sup>-1</sup> | Second pressure derivative 
+5 |	m_mol | g mol<sup>-1</sup> | Molar mass 
 6 |	P0 | GPa | The minimum pressure, corresponding to V0. Default 0
 7 |	Theta0 | K | Fitting parameter of Einstein or Debye temperature. Default 1
 8 |	gamma_0 | | Fitting parameter of Gruneisen parameter
 9 | beta | | Fitting parameter of Gruneisen parameter
 10 | gamma_inf | | Fitting parameter of Gruneisen parameter. Default 2/3
 11 | gamma_0' | | Volume derivative of the Gruneisen parameter
-12 | e0 | 10^-6$ K^-1 | Electronic contribution to Helmholtz free energy. Default 0
+12 | e0 | 10<sup>-6</sup> K<sup>-1</sup> | Electronic contribution to Helmholtz free energy. Default 0
 13 | g | | Electronic analogue of the Gruneisen parameter
 14 | n | | Number of atoms in the chemical formula. Default 1
 15 |  Z | | Atomic number (number of electron) 
 16 | T0 | K | Reference temperature for the thermal pressure. Default 300 
-17 | alpha0 | 10^-6 K^-1 | The zeroth order coefficient of thermal expansion at a reference pressure P0 
-18 | alpha1 | 10^-6 K^-2 | The first order coefficient of thermal expansion at a reference pressure P0 
+17 | alpha0 | 10<sup>-6</sup> K<sup>-1</sup> | The zeroth order coefficient of thermal expansion at a reference pressure P0 
+18 | alpha1 | 10<sup>-6</sup> K<sup>-2</sup> | The first order coefficient of thermal expansion at a reference pressure P0 
 19 | xi | | Power law index in the coefficient of thermal expansion. Default 0 
-20 | c_p0 | 10^7 erg g^-1 K^-1 | Specific heat capacity at constant pressure
-21 | c_p1 | 10^7 erg g^-1 K^-2 | Coefficient for specific heat capacity
-22 | c_p2 | 10^7 erg g^-1 K  | Coefficient for specific heat capacity
+20 | c_p0 | 10<sup>7</sup> erg g<sup>-1</sup> K<sup>-1</sup> | Specific heat capacity at constant pressure
+21 | c_p1 | 10<sup>7</sup> erg g<sup>-1</sup> K<sup>-2</sup> | Coefficient for specific heat capacity
+22 | c_p2 | 10<sup>7</sup> erg g<sup>-1</sup> K  | Coefficient for specific heat capacity
 23 | Debye approx |  | Positive number for Debye, otherwise Einstein 
 24 |thermal type | | See Paper
 
