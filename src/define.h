@@ -54,6 +54,7 @@ const double mFe=55.845;	// iron molar mass in grams
 const double mSi=28.0855;
 const double mMg=24.305;
 const double mO=15.999;
+const double mC=12.011;
 const double mH=1.00794;
 const double NA=6.02214E23;
 const double AAtocm3 = 0.3011;	// 1 \AA^3 equivalents to NA / (2*10^24) = 0.3011 cm^3 / mol.

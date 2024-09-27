@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
   //Initialize all the parameters, will throw error later if missing
   int input_mode=0;
   string core_phasedgm="Fe_default";
-  string mantle_phasedgm="Si_default";
+  string mantle_phasedgm="C_simple";
   string hydro_phasedgm="water_default";
   string atm_phasedgm="gas_default";
   vector<double> Mcomp={0,0,0,0}; 
@@ -182,6 +182,8 @@ int main(int argc, char* argv[])
       Comp[1]=mant1;
     else if (mantle_phasedgm=="PREM")
       Comp[1]=mant2;
+    else if (mantle_phasedgm=="C_simple")
+      Comp[1]=mant3;
     else
       cout<<"mant_phasedgm does not exist, using default"<<endl;
     if (hydro_phasedgm=="water_default")
@@ -396,6 +398,10 @@ int main(int argc, char* argv[])
   delete watervapor;
   delete Gold;
   delete Plat;
+  delete Graph;
+  delete Diam_a;
+  delete Diam_b;
+  delete Diam_1;
 
   return 0;
 }

@@ -173,9 +173,9 @@ void compfinder(vector<PhaseDgm> &Comp, int findlayer, vector<int> layers, doubl
   //#pragma omp parallel for schedule(dynamic) num_threads(3) private(planet, Rs)   
   for(int i=0; i<nline; i++) // Loop for each posterior
   {
-    char dontrecord='n';     
+    char dontrecord='n';  
+    int interations=0;   
     for(int j=static_cast<int>(minPMR*10); j<static_cast<int>(maxPMR*10+1); j+=static_cast<int>(step*10)){   // Loop for each core:mantle mass fraction
-      int iterations=0;
       double R1=0, R2=0;
       vector<double> Mcomp;
       double fouter0=j/10.0/100.0; 
@@ -184,7 +184,7 @@ void compfinder(vector<PhaseDgm> &Comp, int findlayer, vector<int> layers, doubl
       double funk1=0.0, funk0=0.0, funk2=0.0;  // Starts 0% Water        
       do   // Finds water fraction to match posterior sampled radius
       {
-        iterations=iterations+1;
+        interations=interations+1;
         if (funk1==0) // First iteration
         {
           int count_dumb=0;
@@ -284,7 +284,7 @@ void compfinder(vector<PhaseDgm> &Comp, int findlayer, vector<int> layers, doubl
           }
         }       
       }
-      while(abs(Rtarg[i]-R1)/Rtarg[i]>rerr && iterations<30);  // Find Radius with error, break after 30 tries
+      while(abs(Rtarg[i]-R1)/Rtarg[i]>rerr && interations<30);  // Find Radius with error, break after 30 tries
       //#pragma omp critical
       if (dontrecord!='y') // Don't record if the posterior radius is less than radius with 0% water
       {

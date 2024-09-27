@@ -478,3 +478,35 @@ double dTdP_gas(double P, double T)
     return numeric_limits<double>::quiet_NaN();
   }
 }
+
+//------------------------------------
+//Carbon EoS//
+//------------------------------------
+// Graphite (BME), Seager et al. 2007, ApJ
+
+double Graph_array[][2] = {{0,0},{1,5.33822},{2,33.8},{3,8.9},{5,mC}};   
+
+EOS *Graph = new EOS("Graph",Graph_array,sizeof(Graph_array)/2/sizeof(Graph_array[0][0]));
+
+//------------------------------------
+// Diamond-a (Vinet), Benedict et al. 2018, Phys Rev B
+// Uses the A terms from the double Debye model found in Benedict et al (2018)
+
+double Diamond_a_array[][2] = {{0,2},{1,5.7304},{2,432.4},{3,3.793},{5,mC},{7,1887.8},{8,0.597},{9,1},{10,0.913},{14,1},{15,6}};
+
+EOS *Diam_a = new EOS("Diamond_a",Diamond_a_array,sizeof(Diamond_a_array)/2/sizeof(Diamond_a_array[0][0]));
+
+//------------------------------------
+// Diamond-b (Vinet), Benedict et al. 2018, Phys Rev B
+// Uses the B terms from the double Debye model found in Benedict et al (2018)
+
+double Diamond_b_array[][2] = {{0,2},{1,5.7304},{2,432.4},{3,3.793},{5,mC},{7,1887.8},{8,0.597},{9,1},{10,0.429},{14,1},{15,6}};
+
+EOS *Diam_b = new EOS("Diamond_b",Diamond_b_array,sizeof(Diamond_b_array)/2/sizeof(Diamond_b_array[0][0]));
+
+// Diamond-1 (Vinet), Benedict et al. 2018, Phys Rev B
+// Uses the 1 terms from the double Debye model found in Benedict et al (2018)
+
+double Diamond_1_array[][2] = {{0,2},{1,5.7304},{2,432.4},{3,3.793},{5,mC},{7,1887.8},{8,0.5836},{9,1},{10,0.499},{14,1},{15,6}};
+
+EOS *Diam_1 = new EOS("Diamond_1",Diamond_1_array,sizeof(Diamond_1_array)/2/sizeof(Diamond_1_array[0][0]));
