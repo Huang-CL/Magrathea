@@ -214,6 +214,7 @@ Core | "Fe_default" | hcp and Liquid iron
 &nbsp; | "Fe_fccbcc" | Includes low pressure fcc and bcc iron
 Mantle |  "Si_default" | Upper Mantle: Fo, Wds, Rwd, and liquid ; Lower Mantle: Brg, PPv
 &nbsp; | "Si_simple" | Brg, PPv, and liquid 
+&nbsp; | "C_simple" | Graphite and Diamond 
 &nbsp; | "PREM" | PREM tabulated mantle
 Hydrosphere | "water_default" | H2O Water/Ice boundaries primarily form Dunaeva et al. 2010
 &nbsp; | "water_tabulated" | AQUA Haldemann et al. 2020 Tabulated Ice, Liquid, Vapor, Supercritical

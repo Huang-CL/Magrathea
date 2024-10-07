@@ -182,6 +182,8 @@ int main(int argc, char* argv[])
       Comp[1]=mant1;
     else if (mantle_phasedgm=="PREM")
       Comp[1]=mant2;
+    else if (mantle_phasedgm=="C_simple")
+      Comp[1]=mant3;
     else
       cout<<"mant_phasedgm does not exist, using default"<<endl;
     if (hydro_phasedgm=="water_default")
@@ -396,6 +398,8 @@ int main(int argc, char* argv[])
   delete watervapor;
   delete Gold;
   delete Plat;
+  delete Graph;
+  delete Diam;
 
   return 0;
 }

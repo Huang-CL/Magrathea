@@ -11,6 +11,7 @@
   Mantle: "Si_default" : Upper Mantle: Fo, Wds, Rwd, and liquid ; Lower Mantle: Brg, PPv
           "Si_simple" : Brg, PPv, and liquid 
           "PREM" : PREM tabulated mantle
+          "C_simple": Graph, Diam
   Hydrosphere: "water_default" :  H2O Water/Ice boundaries primarily form Dunaeva et al. 2010
                "water_tabulated" : AQUA Haldemann et al. 2020 Tabulated Ice, Liquid, Vapor, Supercritical
   Atmosphere: "gas_default" : Ideal Gas: Isothermal for P<100 bar. Adiabatic ideal gas for P > 100 bar
@@ -54,6 +55,7 @@ EOS* find_phase_Fe_fccbcc(double P, double T);
 EOS* find_phase_Si_default(double P, double T);
 EOS* find_phase_Si_simple(double P, double T);
 EOS* find_phase_PREM(double P, double T);
+EOS* find_phase_C_simple(double P, double T);
 
 // Hydrosphere
 EOS* find_phase_water_default(double P, double T);
@@ -75,7 +77,7 @@ struct phase_params
   PhaseDgm* cmpn;
 };
 
-extern PhaseDgm core, core1, mant, mant1, mant2, water, water1, atm, atm1;
+extern PhaseDgm core, core1, mant, mant1, mant2, mant3, water, water1, atm, atm1;
 // Atmosphere doesn't support self-consistent phase diagram.  Multiple components with each masses specifid have to be constructed in order to use multi-phase atmosphere.
 
 #endif	// PHASE_H_
