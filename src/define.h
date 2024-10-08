@@ -55,6 +55,7 @@ const double mSi=28.0855;
 const double mMg=24.305;
 const double mO=15.999;
 const double mH=1.00794;
+const double mC=12.011;
 const double NA=6.02214E23;
 const double AAtocm3 = 0.3011;	// 1 \AA^3 equivalents to NA / (2*10^24) = 0.3011 cm^3 / mol.
 const double eV_erg = 1.60217710E-12;	// 1 eV=1.6E-12 erg

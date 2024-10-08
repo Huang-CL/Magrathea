@@ -443,6 +443,21 @@ EOS *watervapor = new EOS("Water vapor", watervapor_array, 3);
 // H/He, Chabrier & Debras 2021 Apj, Y=0.275
 EOS *Gas_hhe = new EOS("H/He (Chabrier)", "./tabulated/ChabrierHHe0275.txt");
 
+// ==========  CARBON  ================
+
+// Graphite (BME), Seager et al. 2007, ApJ
+
+double Graph_array[][2] = {{0,0},{1,5.33822},{2,33.8},{3,8.9},{5,mC}};   
+
+EOS *Graph = new EOS("Graph",Graph_array,sizeof(Graph_array)/2/sizeof(Graph_array[0][0]));
+// -----------------------------------
+// Diamond (Vinet), Benedict et al. 2018, Phys Rev B
+// Uses the 1 terms from the double Debye model found in Benedict et al (2014)
+
+double Diamond_array[][2] = {{0,2},{1,5.7304},{2,432.4},{3,3.793},{5,mC},{7,1887.8},{8,0.5836},{9,1},{10,0.499},{14,1},{15,6}};
+
+EOS *Diam = new EOS("Diamond",Diamond_array,sizeof(Diamond_array)/2/sizeof(Diamond_array[0][0]));
+
 // ==========  OTHER  ================
 
 // -----------------------------------
