@@ -356,7 +356,7 @@ EOS* find_phase_C_simple(double P, double T)
   if(P <= 1.949+(T+273)/4)  //transition curve from Kennedy and Kennedy (1976)
     return Graph;
   else
-    return Diam_1;
+    return Diam;
 }
  
 // ========== Phase Diagram for Hydrosphere  ================
