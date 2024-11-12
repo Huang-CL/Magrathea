@@ -178,7 +178,7 @@ EOS::EOS(string phaseinput, string filename):phasetype(phaseinput),eqntype(7), V
   for(size_t i=0; i<sline.size()-1; i++){ //Checks columns for 2D or 3D table
     if(sline[i] == '\t')
       {
-      if(!previoustab){
+      if(!previoustab){		// two continuous tabs doesn't add new table column
         tabletype++;}    
         previoustab = true;
       } 
