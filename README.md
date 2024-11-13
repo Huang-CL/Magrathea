@@ -36,8 +36,6 @@ On Ubuntu systems, the GSL package can also be installed from the Ubuntu reposit
 
 On Windows systems, we suggest using WSL and following the above isntructions.
 
-If an error message like "error while loading shared libraries: libgsl.so.23: cannot open shared object file: No such file or directory" is reported when running the code, add `export LD_LIBRARY_PATH=/usr/local/lib` (directory of GSL library files) to the `.bashrc` file, or add `setenv LD_LIBRARY_PATH /usr/local/lib` to the `.cshrc` file.
-
 When running many simulations with bulk input modes, OpenMP can be used to run individual planets in parallel, please contact us to get this set up in the code. 
 
 ## Quick Start ##
@@ -46,7 +44,7 @@ Installation:
 
 1. Open a terminal. Navigate to where you wish to install the directory.
 2. Clone the repository: `git clone https://github.com/Huang-CL/Magrathea.git`.
-3. If the gsl library is not installed globally (under /usr/local/ or equivalent), edit `Makefile` to include the actual path toward the gsl headers (e.g. `~/include` or `~/gsl/include`) and gsl library (e.g. `~/lib` or `~/gsl/lib`) following `-I` in `CFLAGS` and `-L` in `LDFLAGS`. The path of headers and libraries can be found using `gsl-config --cflags` and `gsl-config --libs`.  If the `gsl-config` command is not found, `gsl` may not have been installed properly.  _Note: The path after `-I` should end with `/include`, not `/include/gsl`._
+3. If the gsl library is not installed globally (under /usr/local/ or equivalent), edit `Makefile` of MAGRATHEA to include the actual path toward the gsl headers (e.g. `~/include` or `~/gsl/include`) and gsl library (e.g. `~/lib` or `~/gsl/lib`) following `-I` in `CFLAGS` and `-L` in `LDFLAGS`. The path of headers and libraries can be found using `gsl-config --cflags` and `gsl-config --libs`.  If the `gsl-config` command is not found, `gsl` may not have been installed properly.  _Note: The path after `-I` should end with `/include`, not `/include/gsl`._
 4. Run `make -B` inside the code's directory. _After the first compilation use `make` to compile the code._
 
 Running a planet:
@@ -57,6 +55,7 @@ Running a planet:
 8. Line 21: set output file name and path.
 9. In terminal, compile changed file with `make`.
 10. Run MAGRATHEA with `./planet run/mode0.cfg`.
+11. If an error message like "error while loading shared libraries: libgsl.so.23: cannot open shared object file: No such file or directory" is reported when running the code, add `export LD_LIBRARY_PATH=/usr/local/lib` (directory of GSL library files) to the `.bashrc` file, or add `setenv LD_LIBRARY_PATH /usr/local/lib` to the `.cshrc` file.  To apply the changes immediately, execute either `source ~/.bashrc` or `source ~/.cshrc`.
 
 ## Capability and Output ##
 
@@ -157,7 +156,7 @@ Analytical EoS are defined by an array with as many parameters as needed from th
 
 Index | Variable | Unit | Comment 
 :---------: | :---------: | :----------: | -------------
-0 | EOS formula type | | Index in parentheses above 
+0 | EOS formula type | | Index of the EoS formats indicated in parentheses [above](#adding-new-equations-of-state) 
 1 |	V0 | cm<sup>3</sup> mol<sup>-1</sup> | Molar volume at reference point 
 2 |	K0 | GPa | Bulk modulus 
 3 |	K0' | | Pressure derivative of the bulk modulus. Default 4 
@@ -214,6 +213,7 @@ Core | "Fe_default" | hcp and Liquid iron
 &nbsp; | "Fe_fccbcc" | Includes low pressure fcc and bcc iron
 Mantle |  "Si_default" | Upper Mantle: Fo, Wds, Rwd, and liquid ; Lower Mantle: Brg, PPv
 &nbsp; | "Si_simple" | Brg, PPv, and liquid 
+&nbsp; | "C_simple" | Graphite and Diamond 
 &nbsp; | "PREM" | PREM tabulated mantle
 Hydrosphere | "water_default" | H2O Water/Ice boundaries primarily form Dunaeva et al. 2010
 &nbsp; | "water_tabulated" | AQUA Haldemann et al. 2020 Tabulated Ice, Liquid, Vapor, Supercritical

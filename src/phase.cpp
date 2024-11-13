@@ -345,7 +345,19 @@ EOS* find_phase_PREM(double P, double T)
   else
     return Si_PREM;
 }
-
+//-----------------------------------
+// C Default
+EOS* find_phase_C_simple(double P, double T)
+{
+  if (P <= 0 || T <= 0)
+    return NULL;
+  P /= 1E10;      // convert microbar to GPa
+  
+  if(P <= 1.949+(T+273)/4)  //transition curve from Kennedy and Kennedy (1976)
+    return Graph;
+  else
+    return Diam;
+}
  
 // ========== Phase Diagram for Hydrosphere  ================
 
@@ -482,6 +494,7 @@ PhaseDgm core1("core1", find_phase_Fe_fccbcc);
 PhaseDgm mant("mantle", find_phase_Si_default); //Phase Diagram for Mantle
 PhaseDgm mant1("mantle1", find_phase_Si_simple); 
 PhaseDgm mant2("mantle2", find_phase_PREM); 
+PhaseDgm mant3("mantle3", find_phase_C_simple); //Phase Diagram for Carbon Mantle
 PhaseDgm water("water", find_phase_water_default); //Phase Diagram for Hydrosphere
 PhaseDgm water1("water1", find_phase_water_tabulated);
 PhaseDgm atm("atm", find_phase_gas_default); //Phase Diagram for Atmosphere
