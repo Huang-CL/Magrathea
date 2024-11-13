@@ -464,14 +464,16 @@ EOS* find_phase_gas_default(double P, double T)
 // H/He Gas: Isothermal ideal for P<100 bar, P>100 bar: tabulated real gas, Chabrier & Debras 2021 Y=0.275
 EOS* find_phase_HHe_tabulated(double P, double T)
 {
-  if (P <= 0 || T <= 0)
+  if (P <= 1E-5 || T <= 0)
   {
     return NULL;
   }
-  else if (P < 1E8)
-    return Gas_iso;
+  // else if (P < 1E8)
+    // return Gas_iso;
+  // else
+    // return Gas_hhe;
   else
-    return Gas_hhe;
+    return pure_He;
 }
 
 

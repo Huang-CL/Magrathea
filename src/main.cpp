@@ -396,6 +396,9 @@ int main(int argc, char* argv[])
   delete watervapor;
   delete Gold;
   delete Plat;
-
+  delete My_Fe_liquid;
+  delete Gas_hhe_mix;
+  delete pure_H;
+  delete pure_He;
   return 0;
 }

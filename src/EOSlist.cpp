@@ -478,3 +478,28 @@ double dTdP_gas(double P, double T)
     return numeric_limits<double>::quiet_NaN();
   }
 }
+
+
+
+// ---------------------------------
+// Liquid Iron, Dorogokupets et al. 2017, Scientific Reports.
+// DEFAULT
+
+double My_Fe_liquid_array[][2] = {{0,2}, {1,7}, {2,60.7}, {3,5.97}, {5,mFe}, {6, 1E-4}, {7, 263}, {8, 2.033}, {9, 1.168}, {10,0}, {12,198}, {13, 0.884}, {14, 1}, {15,26}, {16, 1811}};
+
+EOS *My_Fe_liquid = new EOS("Fe liquid (Dorogokupets)", Fe_liquid_array, sizeof(Fe_liquid_array)/2/sizeof(Fe_liquid_array[0][0]));
+
+
+// -----------------------------------
+// H/He, Chabrier & Debras 2021 Apj, Y=0.275
+EOS *Gas_hhe_mix = new EOS("H/He (Chabrier)", "./tabulated/ChabrierHHe0275.txt");
+
+
+// -----------------------------------
+// Pire H, Chabrier & Debras 2021 Apj, TABLE_H_TP_effective
+EOS *pure_H = new EOS("H (Chabrier)", "./tabulated/data_H_TP_new");
+
+
+// -----------------------------------
+// Pire He, Chabrier & Debras 2021 Apj, TABLE_HE_TP_v1
+EOS *pure_He = new EOS("He (Chabrier)", "./tabulated/data_He_TP_new");

@@ -1,8 +1,8 @@
 #DEBUG=-g
 CC=g++ #-fopenmp
 
-CFLAGS= -std=c++0x -O3 -Wall #-I ~/Downloads/gsl/include
-LDFLAGS= -L/usr/local/lib -lgsl -lgslcblas -lm #-L ~/Downloads/gsl/lib
+CFLAGS= -std=c++0x -O3 -Wall -I/home/yuanyuxuan/anaconda3/envs/fermi/include #-I ~/Downloads/gsl/include
+LDFLAGS= -L/usr/local/lib -lgsl -lgslcblas -lm -L/home/yuanyuxuan/anaconda3/envs/fermi/lib -lgsl -lgslcblas -lm #-L ~/Downloads/gsl/lib
 
 SRCDIR = src
 LIBDIR = src
