@@ -129,8 +129,8 @@ int main(int argc, char* argv[])
         inputfile=options.GetOptionString("input_file");
         outputfile=options.GetOptionString("output_file");
         findlayer=options.GetOptionDouble("find_layer");
-        layers[options.GetOptionDouble("layer_inner")]=1;
-        layers[options.GetOptionDouble("layer_outer")]=1;
+        layers[options.GetOptionDouble("layer_inner")-1]=1;
+        layers[options.GetOptionDouble("layer_outer")-1]=1;
         minPMR=options.GetOptionDouble("PMR_min");
         maxPMR=options.GetOptionDouble("PMR_max");
         step=options.GetOptionDouble("PMR_step");
