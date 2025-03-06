@@ -116,7 +116,6 @@ private:
   bool Debye_approx;		       // Debye approximate or Einstein approximate.
   int thermal_type;		       // Indicates the thermal type of the phase.  0 indicates no temperature profile available, 1 indicates entropy method, 2 indicates the temperature gradient method, 3 indicates ideal gas, 4 indicates the EOS is fitted along the isentrope, 5 indicates no Theta0, 6 indicates has Theta 0 but no electron pressure, 7 indicates has electron pressure as well, type 8, RTpress style, type 9 thermal expansion
   double *rhotable, *Ptable, *temptable, *adiabattable;	// density table in cgs, Ptable in GPa.
-  int lowplowtind=0, lowphightind=0, highplowtind=0, highphightind=0;
   int tabletype=1; //Table 2D or 3D
   int bn;				// number of indices of b
   double* b;				// fitted polynomial parameters of the thermal coefficients b(V) in erg/mol.  Convert eV/atom to erg/mol need to multiply eV_erg*n*NA. For example, for MgSiO3, 0.9821 eV/atom = 4.824E12 *0.9821 erg/mol = 4.738E12 erg/mol.

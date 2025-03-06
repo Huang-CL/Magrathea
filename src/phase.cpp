@@ -338,6 +338,12 @@ EOS* find_phase_Si_simple(double P, double T)
 // PREM tabulated mantle
 EOS* find_phase_PREM(double P, double T)
 {
+  if (P <= 0 || T <= 0)
+  {
+    return NULL;
+  }
+
+  P /= 1E10;			// convert microbar to GPa	
   if(P > 3500)
     return Si_Seager;
   else if(P > 23.83)
