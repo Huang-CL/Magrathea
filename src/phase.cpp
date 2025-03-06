@@ -269,6 +269,13 @@ EOS* find_phase_Fe_default(double P, double T)
 // Fe fccbcc: Includes low pressure fcc and bcc iron
 EOS* find_phase_Fe_fccbcc(double P, double T)
 {
+  if (P <= 0 || T <= 0)
+  {
+    return NULL;
+  }
+
+  P /= 1E10;			// convert microbar to GPa
+	
   if(T>575+18.7*P+0.213*pow(P,2)-0.000817*pow(P,3) && P<98.5) // Anzellini et al. 2013
   {
     if(T<1991*pow((((P-5.2)/27.39)+1),1/2.38) && P<98.5)
