@@ -335,6 +335,33 @@ int main(int argc, char* argv[])
     deltat = ((end_time.tv_sec  - start_time.tv_sec) * 1000000u + end_time.tv_usec - start_time.tv_usec) / 1.e6;
     cout<<"run time "<<deltat<<'s'<<endl;
   }
+  
+  else if(input_mode == 8)
+  {
+    double MassPrior=8.63;
+    double MUncPrior=1.35;
+    double RadPrior=2.61;
+    double RUncPrior=0.087;
+    outputfile="posterioroutput.txt";
+
+    struct MCMCRecord {
+      double Mass;         // Model parameter: Mass
+      double fCore;        // Model parameter: fCore
+      double fMantle;      // Model parameter: fMantle
+      double fWater;        // Model parameter: fWater
+      double fAtm;       // Derived: fAtm = 1 - fCore - fMantle- fWater
+      double log_likelihood;  
+      double RPlanet;     
+      double RCore;
+      double RMantle;   //Distance between top of mantle and center of exoplanet
+      double RWater;
+      double RAtm;
+    };
+
+    mcmcsample(Comp,MassPrior,MUncPrior,RadPrior,RUncPrior,Tgap,ave_rho,P_surface,false,outputfile);
+
+
+  }
 
 
   // ============================

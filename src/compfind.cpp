@@ -313,3 +313,81 @@ void compfinder(vector<PhaseDgm> &Comp, int findlayer, vector<int> layers, doubl
   delete[] Rtarg;
 }
 
+void mcmcsample(vector<PhaseDgm> &Comp, double MassPrior, double MUncPrior, double RadPrior, double RUncPrior,  vector<double> Tgap, vector<double> ave_rho, double P0, bool isothermal, string outfile)
+// Find planet radii and radii of layers for an input file of planets
+// Input file must specify planet mass and mass fractions of each layer
+{
+  // Query radius from CSV using nearest-neighbor
+  double RPlanet, RCore, RMantle, RWater;
+  bool found = CalRpMagratheaNN(Mass, fCore, fMantle, fWater, RPlanet, RCore, RMantle, RWater);
+
+  //Find radius using Magrathea
+  vector<double> Mcomp={fCore,fMantle,fWater,fAtm};
+  planet = fitting_method(Comp, Mcomp, Tgap, ave_rho, P0, isothermal);
+  if (!planet)
+    {
+        // No solution. Try something else
+    }
+  
+  // ln(L) = -0.5 [ ((M_model - M_obs)/sigM)^2 + ((R_model - R_obs)/sigR)^2 ]
+  double chi2_mass = std::pow((Mass - M_obs) / sigM, 2);
+  double chi2_rad  = std::pow((RPlanet - R_obs) / sigR, 2);
+  double lnL = -0.5 * (chi2_mass + chi2_rad);
+  // in my matlab code for proposed mass the ratio of log likelihood is  logratio=(rnMp-obsMp)^2.0/(2.0*sigmaMp^2)-(propMp-obsMp)^2.0/(2.0*sigmaMp^2)+(  (calRp-obsRp)^2.0/(2.0*sigmaRp^2)-(propcalRp-obsRp)^2.0/(2.0*sigmaRp^2)  );
+  return {lnL, RPlanet, RCore, RMantle, RWater};
+
+  cout<<"test complete"<<endl;
+}
+
+void metropolis_hastings(int n_steps, std::vector<MCMCRecord>& chain)
+{
+    // Start guess
+    Params current {M_obs, 0.2, 0.3, 0.5};
+    auto [logL_current,RPlanet, RCore, RMantle, RWater] = log_likelihood(current.Mass, current.fCore, current.fMantle, current.fWater);
+
+    // Random engines
+    std::default_random_engine gen;
+    std::normal_distribution<double> prop_dist(0.0, 0.01);  //proposed mcmc step size and direction for mass fractions
+    std::normal_distribution<double> prop_Mass(M_obs, sigM);  //proposed mass
+    std::uniform_real_distribution<double> uniform(0.0, 1.0);
+
+    chain.clear();
+    chain.reserve(n_steps + 1);
+    double fAtm = 1.0 - current.fCore - current.fMantle - current.fWater;   //using the fact that sum of mass fractions of a exoplanet is 1
+    MCMCRecord record = {current.Mass,current.fCore,current.fMantle,current.fWater,fAtm,logL_current,RPlanet,RCore,RMantle-RCore,RWater-RMantle,RPlanet-RWater};
+    chain.push_back(record);
+
+    for (int step = 0; step < n_steps; ++step) {
+        
+        Params proposal = current;  //is it unnecessary? 
+        proposal.Mass    = prop_Mass(gen);
+        proposal.fCore   += prop_dist(gen);
+        proposal.fMantle += prop_dist(gen);
+        proposal.fWater += prop_dist(gen);
+
+        do {
+            proposal.Mass = prop_Mass(gen); //propose mass sampled from the observed mass and uncertainity 
+        } while (proposal.Mass < 0.100001 || proposal.Mass > 16.0);
+
+        // Propose mass fractions between 0 and (1 - sum of other mass fractions) || withing limits of ratios of core, mamntle and water layers based on solar relative elemental abundances.   
+        do {
+    		proposal.fCore = current.fCore + prop_dist(gen);
+    		proposal.fMantle = current.fMantle + prop_dist(gen);
+    		proposal.fWater = current.fWater + prop_dist(gen);
+		} while (proposal.fCore < 0.0 || proposal.fCore > (1.0-proposal.fMantle-proposal.fWater) || proposal.fMantle < 0.0 || proposal.fMantle > (1.0-proposal.fCore-proposal.fWater) || proposal.fWater < 0.0 || proposal.fWater > (1.0-proposal.fCore-proposal.fMantle)   || (proposal.fMantle/proposal.fCore<(36.0/64.0)) || (proposal.fMantle/(proposal.fWater)<(19.0/81.0) )                     );
+
+		
+
+
+        auto [logL_prop,RPlanet, RCore, RMantle, RWater] = log_likelihood(proposal.Mass, proposal.fCore, proposal.fMantle, proposal.fWater);
+        double log_alpha = logL_prop - logL_current;
+
+        if (std::log(uniform(gen)) < log_alpha) {
+            current = proposal; // accept
+            logL_current = logL_prop;
+        }
+        fAtm=1-current.fCore-current.fMantle-current.fWater;
+        record={current.Mass,current.fCore,current.fMantle,current.fWater,fAtm,logL_current,RPlanet,RCore,RMantle-RCore,RWater-RMantle,RPlanet-RWater};  
+        chain.push_back(record);
+    }
+}
