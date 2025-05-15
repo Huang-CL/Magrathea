@@ -268,9 +268,15 @@ double Water_array[][2] = {{0,0}, {1,18.047}, {2,2.18}, {5,18.01528}};
 EOS *Water = new EOS("Water (Valencia)", Water_array, sizeof(Water_array)/2/sizeof(Water_array[0][0]));
 
 // -----------------------------------
-// Dummy for supercritical water. 
+// Supercritical water. 
 // DEFAULT
 EOS *Water_sc_dummy = new EOS("Water supercritical Dummy", Water_array, sizeof(Water_array)/2/sizeof(Water_array[0][0]));
+
+// -----------------------------------
+// Dummy for supercritical water. 
+// DEFAULT
+double Water_sc_Mazevet_array[][2] = {{0,5}, {5,18.01528}, {24,2}};
+EOS *Water_sc_Mazevet = new EOS("Water supercritical Mazevet", Water_sc_Mazevet_array, sizeof(Water_sc_Mazevet_array)/2/sizeof(Water_sc_Mazevet_array[0][0]));
 
 // -----------------------------------
 // Ice Ih, Feistel & Wagner 2006, Acuna et al. 2021
@@ -420,7 +426,7 @@ EOS *IceZeng2013FMNR = new EOS("Ice (FMNR 2009)", FMNR[1], FMNR[0], 13);
 // Adiabtic Ideal Gas, Parameter 5 can be changed for mean molecular weight of gas. 3 g/mol = mix of H/He
 // DEFAULT
 
-double Gas_array[3][2] = {{0,6}, {5,3}, {14,2}};
+double Gas_array[3][2] = {{0,6}, {5,18}, {14,2}};
 
 EOS *Gas = new EOS("Ideal Gas", Gas_array, 3);
 
@@ -428,7 +434,7 @@ EOS *Gas = new EOS("Ideal Gas", Gas_array, 3);
 // Isothermal Ideal Gas
 // DEFAULT
 
-double Gas_iso_array[3][2] = {{0,6}, {5,3}, {14,0}};
+double Gas_iso_array[3][2] = {{0,6}, {5,18}, {14,0}};
 
 EOS *Gas_iso = new EOS("Isothermal Ideal Gas", Gas_iso_array, 3);
 

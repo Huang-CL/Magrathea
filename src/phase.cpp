@@ -260,7 +260,7 @@ EOS* find_phase_Fe_default(double P, double T)
 
   // Default Core
   if( T > 12.8*P + 2424 && T > 13.7*P + 2328)   // melting curve from Dorogokupets et al. 2017, Scientific Reports. fcc and hcp Fe melting curve.
-    return Fe_liquid;
+    return Fe_hcp;
   else
     return Fe_hcp;             // use hcp Iron for all regions.
 }
@@ -440,7 +440,7 @@ EOS* find_phase_water_default(double P, double T)
   else if(P < 5.10)		// liquid water or Ice VII.
   {
     if(T>1200)			// A dummy melting curve to avoid ice VII EOS extrapolated to temperature too high.
-      return Water_sc_dummy;
+      return Water_sc_Mazevet;
     else
       return IceVII_Bezacier;
   }
@@ -448,13 +448,13 @@ EOS* find_phase_water_default(double P, double T)
   else if(P < 30.9)		// liquid water or Ice VII'.
   {
     if(T>1200)			// A dummy melting curve to avoid Ice VII EOS extrapolated to temperature too high.
-      return Water_sc_dummy;
+      return Water_sc_Mazevet;
     else
       //return IceVIIp;         //Region of possible transitional Ice VII' reported in Grande not used in default
       return IceVII_Bezacier;
   }  
   else				// liquid water or Ice X. The melting curve is so uncertain. Assuming all ice above 30.9 GPa.
-    return IceX;
+    return Water_sc_Mazevet;
 }
 
 // ---------------------------------
@@ -467,7 +467,15 @@ EOS* find_phase_water_tabulated(double P, double T)
   }
 
   P /= 1E10;			// convert microbar to GPa
-  return H2O_AQUA;
+  //return H2O_AQUA;
+
+  if (P < 62.5)
+  {
+    return H2O_AQUA;
+  }
+  else
+    return Water_sc_Mazevet;
+
 }
 
 // ========== Phase Diagram for Atmosphere  ================

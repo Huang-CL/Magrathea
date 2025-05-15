@@ -36,6 +36,7 @@ struct EOS
   double Vinet(double rho);	// type 2
   double Holzapfel(double rho);	// type 3
   double Keane(double rho);	// type 4
+  double H2OSC(double rho,double T);
   // type 5, Water, low pressure ice EOS from Choukroun & Grasset
   // type 6, ideal gas law.
   // type 7, interpolate an input file
@@ -164,6 +165,14 @@ For RTpress style of EOS, also need a _b array. They are fitted polynomial param
 double P_EOS(double rho, void *params);
 double dP_EOS(double rho, void *params);
 void PdP_EOS(double rho, void *params, double *P, double *dP);
+
+void ELECNR(double DENSE, double TEMP,
+            double &CHI, double &FEid, double &PEid, double &UEid,
+            double &SEid, double &CVE, double &CHITE, double &CHIRE);
+
+double FERMIF(double X);
+void FERINT(double X, int N, double &F);
+void FINVER(double F, int N, double &X, double &XDF, double &XDFF);
 
 struct EOS_params
 {

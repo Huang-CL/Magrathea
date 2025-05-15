@@ -374,6 +374,7 @@ int main(int argc, char* argv[])
   delete H2O_SeaFreeze;
   delete Water_ExoPlex;
   delete Water;
+  delete Water_sc_Mazevet;
   delete Water_sc_dummy;
   delete IceIh;
   delete IceIh_ExoPlex;
