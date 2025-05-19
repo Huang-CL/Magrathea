@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
   float step=0;
   vector<int> layers={1,1,0,0};
   float rerr=0;
-
+	Water_sc_Mazevet -> modify_dTdP(dTdP_S_H2OSC);
 
   //Parse input file
   try{
@@ -374,6 +374,7 @@ int main(int argc, char* argv[])
   delete H2O_SeaFreeze;
   delete Water_ExoPlex;
   delete Water;
+  delete Water_sc_Mazevet;
   delete Water_sc_dummy;
   delete IceIh;
   delete IceIh_ExoPlex;
