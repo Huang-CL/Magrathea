@@ -19,7 +19,7 @@ struct EOS
   EOS();
   EOS(string phaseinput, double params[][2], int length);
   EOS(string phaseinput, string filename); // construction EOS from interpolate an input file
-  EOS(string phaseinput, double (*f)(double P, double T), double (*g)(double rho, double T)=NULL); // construct EOS from external functions
+  EOS(string phaseinput, double (*f)(double P, double T, double rho_guess), double (*g)(double rho, double T)=NULL); // construct EOS from external functions
   EOS(string phaseinput, double *Plist, double *rholist, int len_list); // construction EOS from interpolate an input pressure density list
   EOS(string phaseinput, double params[][2], double bparams[], int length, int blength); // construction EOS for RTpress
   ~EOS();
@@ -27,9 +27,9 @@ struct EOS
   void setphasename(string phaseinput){phasetype=phaseinput;}
   void modifyEOS(double params[][2], int length=3);  // modify the constructed EOS parameters
   void modifyEOS(int index, double value);	     // modify one value of the EOS
-  void modify_extern_density(double (*f)(double P, double T)){density_extern = f;}
+  void modify_extern_density(double (*f)(double P, double T, double rho_guess)){density_extern = f;}
   void modify_extern_entropy(double (*g)(double rho, double T)){entropy_extern = g; thermal_type = 1;}
-  void modify_dTdP(double (*h)(double P, double T)){dTdP = h; thermal_type = 2;} // If the dTdP is set, it will overwrite the entropy method. Pressure in cgs unit.
+  void modify_dTdP(double (*h)(double P, double T, double &rho_guess)){dTdP = h; thermal_type = 2;} // If the dTdP is set, it will overwrite the entropy method. Pressure in cgs unit. rho_guess is only used as the initial guess of density solver. Shouldn't be used to calculate temperature gradient.
   
   double BM3(double rho);	// input rho in g/cm^3, return pressure in GPa, type 0
   double BM4(double rho);	// type 1
@@ -44,7 +44,7 @@ struct EOS
   double Pth(double rho, double T); // thermal pressure in GPa, and electron pressure or anharmonic if provided.
   double adiabatic_index();	    // get the adiabatic index for ideal gas.  Vibrational freedom is always ignored.
   double density(double P, double T, double rho_guess); // input P in cgs (microbar), at given temperature, return density in g/cm^3
-  double (*density_extern)(double P, double T);		// using external function, input P, T in cgs, return density in g/cm^3
+  double (*density_extern)(double P, double T, double rho_guess);		// using external function, input P, T in cgs, return density in g/cm^3
   double (*entropy_extern)(double rho, double T);	// using the external entropy function.
   void printEOS();					// print EOS table into a file named with ./tabulated/phasename.txt
   string getEOS(){return phasetype;}		// get the type of EOS
@@ -53,7 +53,7 @@ struct EOS
   double getmmol(){return mmol;}
   double getP0(){return P0;}
   double getT0(){return T0;}
-  double (*dTdP)(double P, double T); // return the temperature gradient at given pressure and temperature point. Pressure in cgs unit.
+  double (*dTdP)(double P, double T, double &rho_guess); // return the temperature gradient at given pressure and temperature point. Pressure in cgs unit. rho_guess is only used as the initial guess of density solver. Shouldn't be used to calculate temperature gradient.
   void DebyeT(double x, double &gamma, double &Theta);	   // return the Grueneisen parameter, Debye temperature or Einstein temperature according to Altshuler form.  If Theta0 is not available, a Debye temperature scaling factor is returned
   double entropy(double rho, double T); // Given the volume per mol and temperature, calculate the entropy over n*R, or P V^{7/5} / R for ideal gas.
   double pSpV_T(double V, double T);
@@ -170,5 +170,9 @@ struct EOS_params
   vector<double> x;
   EOS* Phase;
 };
+
+double density_solver(double P, double T, double (*f)(double rho, double T), double rho_guess);
+// Given the function f, which calculates pressure at (rho, T), use a root solver to find the density (rho) at the given pressure (P) in microbar and temperature (T).
+
 
 #endif // EOS_H_

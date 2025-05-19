@@ -84,8 +84,6 @@ int derivs_m2(double x, const double y[], double dydx[], void * params)
   dydx[1] = G * (Mtot - x) / (4 * pi * pow(y[0], 4)); // dP/d(Mtot-m)= G m / (4 pi r^4)
   if (thermal == 0 || thermal == 4)
     dydx[2] = 0;
-  else if (thermal ==2)
-    dydx[2] = Phase->dTdP_S(y[1], y[2], rho)*dydx[1];
   else
     dydx[2] = -Phase->dTdm(Mtot-x, y[0], rho, y[1], y[2]);
   
@@ -135,8 +133,6 @@ int derivs_m3(double x, const double y[], double dydx[], void * params)
   dydx[1] = - G * x / (4 * pi * pow(y[0], 4)); // dP/dm= - G m / (4 pi r^4)
   if (thermal == 0 || thermal == 4)
     dydx[2] = 0;
-  else if (thermal == 2)
-    dydx[2] = Phase->dTdP_S(y[1], y[2], rho)*dydx[1];
   else
     dydx[2] = Phase->dTdm(x, y[0], rho, y[1], y[2]);
 
@@ -739,7 +735,7 @@ hydro::hydro(double Rp, double Pc, double Tc,  vector<PhaseDgm> &Comp_in, vector
 
   if (thermal == 2)
   {
-    Tt -= Phase->dTdP(P[0], Tc) * (P[0]-P[1]);
+    Tt -= Phase->dTdP(P[0], Tc, rhot) * (P[0]-P[1]);
     rhot = Phase -> density(P[1], Tt, rhot);
   }
   else if (thermal == 0 || thermal == 4) // isothermal or fitted along isentrope
