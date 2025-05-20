@@ -29,7 +29,7 @@ struct EOS
   void modifyEOS(int index, double value);	     // modify one value of the EOS
   void modify_extern_density(double (*f)(double P, double T, double rho_guess)){density_extern = f;}
   void modify_extern_entropy(double (*g)(double rho, double T)){entropy_extern = g; thermal_type = 1;}
-  void modify_dTdP(double (*h)(double P, double T, double &rho_guess)){dTdP = h; thermal_type = 2;} // If the dTdP is set, it will overwrite the entropy method. Pressure in cgs unit. rho_guess is only used as the initial guess of density solver. Shouldn't be used to calculate temperature gradient.
+  void modify_dTdP(double (*h)(double P, double T, double &rho_guess)){dTdP = h; thermal_type = 2;} // If the dTdP is set, it will overwrite the entropy method. Pressure in cgs unit. rho_guess is only used as the initial guess of density solver. Shouldn't be used to calculate temperature gradient. The dTdP should be in the unit of K/microbar.
   
   double BM3(double rho);	// input rho in g/cm^3, return pressure in GPa, type 0
   double BM4(double rho);	// type 1
