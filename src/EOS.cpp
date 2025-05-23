@@ -136,9 +136,9 @@ EOS::EOS(string phaseinput, double params[][2], int length):phasetype(phaseinput
     if (gsl_finite(Theta0))
     {
       if (gsl_finite(e0) && gsl_finite(g)) // Also have enough information to get Pe
-	thermal_type = 7;
+        thermal_type = 7;
       else
-	thermal_type = 6;
+        thermal_type = 6;
     }
     else
       thermal_type = 5;
@@ -177,20 +177,20 @@ EOS::EOS(string phaseinput, string filename):phasetype(phaseinput),eqntype(7), V
 
   for(size_t i=0; i<sline.size()-1; i++){ //Checks columns for 2D or 3D table
     if(sline[i] == '\t')
-      {
+    {
       if(!previoustab){		// two continuous tabs doesn't add new table column
         tabletype++;}    
-        previoustab = true;
-      } 
-      else {
-        previoustab = false;
-      }   
-    }  
+      previoustab = true;
+    } 
+    else {
+      previoustab = false;
+    }   
+  }  
 
   while(getline(fin,sline))
   {
-   if(!sline.empty())
-     nline++;
+    if(!sline.empty())
+      nline++;
   }
   fin.clear();
   fin.seekg(beginpos);
@@ -221,7 +221,7 @@ EOS::EOS(string phaseinput, string filename):phasetype(phaseinput),eqntype(7), V
     Ptable=new double[nline/tlen];
     temptable=new double[tlen];
     adiabattable=new double[nline];
-    thermal_type=2;
+    thermal_type=10;
    
     fin>>Ptable[0]>>temptable[0]>>rhotable[0]>>adiabattable[0];
     fin.seekg(beginpos);
@@ -263,8 +263,8 @@ EOS::EOS(string phaseinput, string filename):phasetype(phaseinput),eqntype(7), V
     fin.seekg(beginpos);
 
     if(Ptable[0]>Ptable[1])    
-     for(int i=nline-1; i>=0; i--)
-       fin>>rhotable[i]>>Ptable[i];
+      for(int i=nline-1; i>=0; i--)
+        fin>>rhotable[i]>>Ptable[i];
     else
       for(int i=0; i<nline; i++)
         fin>>rhotable[i]>>Ptable[i];
@@ -547,8 +547,8 @@ void EOS::modifyEOS(double params[][2], int length)  // modify the constructed E
     case 14:
       if(eqntype>=8)		// RTpress style
       {
-	cout<<"Error: The number of atoms of a RTpress style EOS is not allowed to be modified."<<endl;
-	exit(1);
+        cout<<"Error: The number of atoms of a RTpress style EOS is not allowed to be modified."<<endl;
+        exit(1);
       }
       n=round(params[i][1]);
       break;
@@ -620,9 +620,9 @@ void EOS::modifyEOS(double params[][2], int length)  // modify the constructed E
     if (gsl_finite(Theta0))
     {
       if (gsl_finite(e0) && gsl_finite(g)) // Also have enough information to get Pe
-	thermal_type = 7;
+        thermal_type = 7;
       else
-	thermal_type = 6;
+        thermal_type = 6;
     }
     else
       thermal_type = 5;
@@ -763,9 +763,9 @@ void EOS::modifyEOS(int index, double value)	     // modify one value of the EOS
     if (gsl_finite(Theta0))
     {
       if (gsl_finite(e0) && gsl_finite(g)) // Also have enough information to get Pe
-	thermal_type = 7;
+        thermal_type = 7;
       else
-	thermal_type = 6;
+        thermal_type = 6;
     }
     else
       thermal_type = 5;
@@ -980,9 +980,9 @@ double EOS::density(double P, double T, double rho_guess)
       if(status == GSL_EDOM)
       {
         if (verbose)
-	        cout<<"Warning: Pressure "<<P<<"GPa or Temperature "<<T<<"K is outside the tabulated range for "<<this->phasetype<<". The density at the end point is returned"<<endl;
+          cout<<"Warning: Pressure "<<P<<"GPa or Temperature "<<T<<"K is outside the tabulated range for "<<this->phasetype<<". The density at the end point is returned"<<endl;
         if(P < Ptable[0] && T < temptable[0])
-	        return rhotable[0];
+          return rhotable[0];
         else if(P>Ptable[nline/tlen-1] && T>temptable[tlen-1])
           return rhotable[nline-1];
         else if(P<Ptable[0])
@@ -1017,11 +1017,11 @@ double EOS::density(double P, double T, double rho_guess)
       if(status == GSL_EDOM)
       {
         if (verbose)
-	        cout<<"Warning: Pressure "<<P<<"GPa is outside the tabulated range for "<<this->phasetype<<". The density at the end point is returned"<<endl;
+          cout<<"Warning: Pressure "<<P<<"GPa is outside the tabulated range for "<<this->phasetype<<". The density at the end point is returned"<<endl;
         if(P < Ptable[0])
-	        return rhotable[0];
+          return rhotable[0];
         else
-	        return rhotable[nline-1];
+          return rhotable[nline-1];
       }
       else	
         return rho;
@@ -1076,13 +1076,13 @@ double EOS::density(double P, double T, double rho_guess)
       rho = gsl_root_fdfsolver_root (s);
       if (rho<0.95*rho0)// limit the step size of each iteration to increase stability.
       {
-				rho = 0.95*rho0;
-				gsl_root_fdfsolver_set (s, &FDF, rho);
+        rho = 0.95*rho0;
+        gsl_root_fdfsolver_set (s, &FDF, rho);
       }
       else if (rho>1.05*rho0)
       {
-				rho = 1.05*rho0;
-				gsl_root_fdfsolver_set (s, &FDF, rho);
+        rho = 1.05*rho0;
+        gsl_root_fdfsolver_set (s, &FDF, rho);
       }
 
       status = gsl_root_test_delta (rho, rho0, 1E-16, rho_eps_rel);
@@ -1092,7 +1092,7 @@ double EOS::density(double P, double T, double rho_guess)
     if (!gsl_finite(rho))
     {
       if (verbose)
-				cout<<"Warning: Can't find the density for "<<phasetype<<" at pressure "<<P<<" GPa and temperature "<<T<<" K, initial guessed rho:"<<rho_guess<<". V0, K0, K0p: "<<V0<<' '<<K0<<' '<<K0p<<". Likely no solution exist for this physical condition under the EOS used."<<endl;
+        cout<<"Warning: Can't find the density for "<<phasetype<<" at pressure "<<P<<" GPa and temperature "<<T<<" K, initial guessed rho:"<<rho_guess<<". V0, K0, K0p: "<<V0<<' '<<K0<<' '<<K0p<<". Likely no solution exist for this physical condition under the EOS used."<<endl;
       
       gsl_root_fdfsolver_free (s);
       return numeric_limits<double>::quiet_NaN();
@@ -1100,7 +1100,7 @@ double EOS::density(double P, double T, double rho_guess)
     else if (status == GSL_CONTINUE)
     {
       if (verbose)
-				cout<<"Warning: Can't find the density for "<<phasetype<<" at pressure "<<P<<" GPa and temperature "<<T<<" K within maximum interation "<<max_iter<<", initial guessed rho:"<<rho_guess<<". V0, K0, K0p: "<<V0<<' '<<K0<<' '<<K0p<<endl;
+        cout<<"Warning: Can't find the density for "<<phasetype<<" at pressure "<<P<<" GPa and temperature "<<T<<" K within maximum interation "<<max_iter<<", initial guessed rho:"<<rho_guess<<". V0, K0, K0p: "<<V0<<' '<<K0<<' '<<K0p<<endl;
       
       gsl_root_fdfsolver_free (s);
       return numeric_limits<double>::quiet_NaN();
@@ -1423,7 +1423,7 @@ double EOS::pSpT_V(double V, double T)
 
 
 double EOS::dTdV_S(double V, double P, double T)
-  // adiabatic temperature gradient in K mol/cm^3, take volume in cm^3 / mol, P in GPa
+// adiabatic temperature gradient in K mol/cm^3, take volume in cm^3 / mol, P in GPa
 {
   if (thermal_type == 1)	// has external entropy
     // dT/dV_S = - (dS/dV_T) / (dS/dT_V)
@@ -1478,7 +1478,7 @@ double P_rho(double T, void *params)
 }
 
 double EOS::pPprho_T(double rho, double T)
-  // partial P partial rho at constant T in GPa / g/cm^3
+// partial P partial rho at constant T in GPa / g/cm^3
 {
   gsl_function F;
   double result, abserr;
@@ -1506,7 +1506,7 @@ double EOS::pPpT_rho(double rho, double T)
 
 
 double EOS::dTdm(double m, double r, double rho, double P, double T)
-  // adiabatic temperature gradient in K/g, P in cgs
+// adiabatic temperature gradient in K/g, P in cgs
 {
   if (eqntype == 6)		// ideal gas
   {
@@ -1531,12 +1531,12 @@ double EOS::dTdm(double m, double r, double rho, double P, double T)
     return -1E-7*(alpha(P/1E10,T)*T*G*m)/(4*pi*pow(r,4)*rho*cp(T));
   }
   
-	else if (thermal_type == 2) 	// External temperature gradient function
-	{
-		double dPdm =  -G*m/(4*pi*pow(r,4));
-		return dPdm * dTdP(P, T, rho);
-	}
-	
+  else if (thermal_type == 2) 	// External temperature gradient function
+  {
+    double dPdm =  -G*m/(4*pi*pow(r,4));
+    return dPdm * dTdP(P, T, rho);
+  }
+  
   double V = volume(rho);
   double dTdV = dTdV_S(V, P/1E10, T);
   if (r<1)		// At the center of the planet where dTdm has a 0/0 limit
@@ -1569,7 +1569,7 @@ double EOS::dTdP_S(double P, double T, double &rho_guess)
     if(status == GSL_EDOM)
     {
       if(P < Ptable[0] && T < temptable[0]) //return end point if P or T outside table bounds
-	      return adiabattable[0];
+        return adiabattable[0];
       else if(P>Ptable[nline/tlen-1] && T>temptable[tlen-1])
         return adiabattable[nline-1];
       else if(P<Ptable[0])
@@ -1592,8 +1592,8 @@ double EOS::dTdP_S(double P, double T, double &rho_guess)
         gsl_spline2d_eval_e(spline2dadi, temptable[tlen-1], P, accT, accP, &adiabat);
         return adiabat/1E10;
       }          
-      }
-    else	
+    }
+    else  
       return adiabat/1E10;     
   }
   rho_guess = density(P*1E10, T, rho_guess);
@@ -1653,12 +1653,12 @@ double EOS::density(double P1, double T1, double rho, double P2, double &T2)
     return P2;
   }
 
-	if (thermal_type == 2)				// External temperature gradient function
-	{
-		T2 = T1 + dTdP(P1, T1, rho)*(P2-P1);
-		return density(P2, T2, rho);
-	}
-	
+  if (thermal_type == 2)				// External temperature gradient function
+  {
+    T2 = T1 + dTdP(P1, T1, rho)*(P2-P1);
+    return density(P2, T2, rho);
+  }
+  
   if (!entropy_extern && thermal_type < 3)
     // Using external density function, but no external entropy function. assuming isothermal.
 // don't have thermal pressure data, isothermal applied.
@@ -1681,7 +1681,7 @@ double EOS::density(double P1, double T1, double rho, double P2, double &T2)
   {
     if (!gsl_finite(mmol))
       cout<<"Error: The mean molecular weight of "<<phasetype<<" unknown."<<endl;
-	
+  
     if(rho < 0.5 || !gsl_finite(rho))		// rho will be set to negative if it is unknown.
       rho = density(V0) + P2/1E13;
   
@@ -1746,13 +1746,13 @@ double EOS::density(double P1, double T1, double rho, double P2, double &T2)
       rho2 = gsl_root_fdfsolver_root (s);
       if (rho2<0.95*rho1)// limit the step size of each iteration to increase stability.
       {
-				rho2 = 0.95*rho1;
-				gsl_root_fdfsolver_set (s, &FDF, rho2);
+        rho2 = 0.95*rho1;
+        gsl_root_fdfsolver_set (s, &FDF, rho2);
       }
       else if (rho2>1.05*rho1)
       {
-				rho2 = 1.05*rho1;
-				gsl_root_fdfsolver_set (s, &FDF, rho2);
+        rho2 = 1.05*rho1;
+        gsl_root_fdfsolver_set (s, &FDF, rho2);
       }
 
       T2 = T1 + mmol/sq(rho2)*(rho-rho2)*dTdV; // 
@@ -1763,7 +1763,7 @@ double EOS::density(double P1, double T1, double rho, double P2, double &T2)
     if (!gsl_finite(rho2))
     {
       if (verbose)
-				cout<<"Warning: Can't find the density for "<<phasetype<<" at pressure "<<P2<<" GPa and temperature "<<T1<<" K, initial guessed density:"<<rho<<". V0, K0, K0p: "<<V0<<' '<<K0<<' '<<K0p<<". Likely no solution exist for this physical condition under the EOS used."<<endl;
+        cout<<"Warning: Can't find the density for "<<phasetype<<" at pressure "<<P2<<" GPa and temperature "<<T1<<" K, initial guessed density:"<<rho<<". V0, K0, K0p: "<<V0<<' '<<K0<<' '<<K0p<<". Likely no solution exist for this physical condition under the EOS used."<<endl;
       
       gsl_root_fdfsolver_free (s);
       return numeric_limits<double>::quiet_NaN();
@@ -1771,7 +1771,7 @@ double EOS::density(double P1, double T1, double rho, double P2, double &T2)
     else if (status == GSL_CONTINUE)
     {
       if (verbose)
-				cout<<"Warning: Can't find the density for "<<phasetype<<" at pressure "<<P2<<" GPa and temperature "<<T1<<" K within maximum interation "<<max_iter<<", initial guessed density:"<<rho<<". V0, K0, K0p: "<<V0<<' '<<K0<<' '<<K0p<<endl;
+        cout<<"Warning: Can't find the density for "<<phasetype<<" at pressure "<<P2<<" GPa and temperature "<<T1<<" K within maximum interation "<<max_iter<<", initial guessed density:"<<rho<<". V0, K0, K0p: "<<V0<<' '<<K0<<' '<<K0p<<endl;
       
       gsl_root_fdfsolver_free (s);
       return numeric_limits<double>::quiet_NaN();
@@ -1784,43 +1784,43 @@ double EOS::density(double P1, double T1, double rho, double P2, double &T2)
 // Define a structure to hold the parameters
 typedef struct
 {
-    double P;
-    double T;
-    double (*pressure_func)(double, double);
+  double P;
+  double T;
+  double (*pressure_func)(double, double);
 } density_params;
 
 // Define the function to solve for the root
 double fP_EOS(double rho, void *params)
 {
-	density_params *p = (density_params *)params;
-	return p->pressure_func(rho, p->T) - p->P; // f(rho) = Pressure(rho, T) - P
+  density_params *p = (density_params *)params;
+  return p->pressure_func(rho, p->T) - p->P; // f(rho) = Pressure(rho, T) - P
 }
 
 // Define the derivative of the function using gsl_deriv_central
 double fdP_EOS(double rho, void *params)
 {
-	// Use gsl_deriv_central to compute the derivative
-	double result, abserr;
-	gsl_function F;
-	F.function = &fP_EOS; // Directly use f as the function
-	F.params = params;
-	gsl_deriv_central(&F, rho, 1e-4, &result, &abserr);
+  // Use gsl_deriv_central to compute the derivative
+  double result, abserr;
+  gsl_function F;
+  F.function = &fP_EOS; // Directly use f as the function
+  F.params = params;
+  gsl_deriv_central(&F, rho, 1e-4, &result, &abserr);
 
-	return result;
+  return result;
 }
 
 // Define the function and its derivative together
 void fdfP_EOS(double rho, void *params, double *f, double *df)
 {
-	density_params *p = (density_params *)params;
-	*f = p->pressure_func(rho, p->T) - p->P; // f(rho) = Pressure(rho, T) - P
-	*df = fdP_EOS(rho, params); // Use the df function defined above
+  density_params *p = (density_params *)params;
+  *f = p->pressure_func(rho, p->T) - p->P; // f(rho) = Pressure(rho, T) - P
+  *df = fdP_EOS(rho, params); // Use the df function defined above
 }
 
 double density_solver(double P, double T, double (*pressure_func)(double rho, double T), double rho_guess)
 // Given the function pressure_func, which calculates pressure at (rho, T), use a root solver to find the density (rho) at the given pressure (P) in microbar and temperature (T).
 {
-	if(!gsl_finite(P) || !gsl_finite(T)) // Check if P or T is infinite or nan due to some error.  Stop code to avoid further error.
+  if(!gsl_finite(P) || !gsl_finite(T)) // Check if P or T is infinite or nan due to some error.  Stop code to avoid further error.
   {
     if (verbose)
       cout<<"Warning: Request density at infinite/nan value.  P="<<P/1E10<<" T="<<T<<endl;
@@ -1831,66 +1831,66 @@ double density_solver(double P, double T, double (*pressure_func)(double rho, do
   if(P < 0 || P > 1E16)		// unrealistic pressure
     return numeric_limits<double>::quiet_NaN();
 
-	P /= 1E10;			// convert pressure from microbar to GPa
+  P /= 1E10;			// convert pressure from microbar to GPa
 
-	density_params params[3] = {P, T, pressure_func};
+  density_params params[3] = {P, T, pressure_func};
 
-	int status;
-	int iter = 0, max_iter = 100;
-	
-	const gsl_root_fdfsolver_type *TPL = gsl_root_fdfsolver_newton;
-	gsl_root_fdfsolver *s = gsl_root_fdfsolver_alloc (TPL);
-	gsl_function_fdf FDF;
+  int status;
+  int iter = 0, max_iter = 100;
+  
+  const gsl_root_fdfsolver_type *TPL = gsl_root_fdfsolver_newton;
+  gsl_root_fdfsolver *s = gsl_root_fdfsolver_alloc (TPL);
+  gsl_function_fdf FDF;
 
-	double rho = rho_guess, rho0;
+  double rho = rho_guess, rho0;
 
-	FDF.f = &fP_EOS;
-	FDF.df = &fdP_EOS;
-	FDF.fdf = &fdfP_EOS;
-	FDF.params = &params;
+  FDF.f = &fP_EOS;
+  FDF.df = &fdP_EOS;
+  FDF.fdf = &fdfP_EOS;
+  FDF.params = &params;
 
-	gsl_root_fdfsolver_set (s, &FDF, rho);
+  gsl_root_fdfsolver_set (s, &FDF, rho);
 
-	do
-	{
-		iter++;
+  do
+  {
+    iter++;
 
-		status = gsl_root_fdfsolver_iterate (s);
-		rho0 = rho;
-		rho = gsl_root_fdfsolver_root (s);
-		if (rho<0.95*rho0)// limit the step size of each iteration to increase stability.
-		{
-			rho = 0.95*rho0;
-			gsl_root_fdfsolver_set (s, &FDF, rho);
-		}
-		else if (rho>1.05*rho0)
-		{
-			rho = 1.05*rho0;
-			gsl_root_fdfsolver_set (s, &FDF, rho);
-		}
+    status = gsl_root_fdfsolver_iterate (s);
+    rho0 = rho;
+    rho = gsl_root_fdfsolver_root (s);
+    if (rho<0.95*rho0)// limit the step size of each iteration to increase stability.
+    {
+      rho = 0.95*rho0;
+      gsl_root_fdfsolver_set (s, &FDF, rho);
+    }
+    else if (rho>1.05*rho0)
+    {
+      rho = 1.05*rho0;
+      gsl_root_fdfsolver_set (s, &FDF, rho);
+    }
 
-		status = gsl_root_test_delta (rho, rho0, 1E-16, rho_eps_rel);
-	}
-	while (status == GSL_CONTINUE && gsl_finite(rho) && iter < max_iter);
+    status = gsl_root_test_delta (rho, rho0, 1E-16, rho_eps_rel);
+  }
+  while (status == GSL_CONTINUE && gsl_finite(rho) && iter < max_iter);
 
-	if (!gsl_finite(rho))
-	{
-		if (verbose)
-			cout<<"Warning: Can't find the density at pressure "<<P<<" GPa and temperature "<<T<<" K, initial guessed rho:"<<rho_guess<<" for user set up function.  Likely no solution exist for this physical condition under the EOS used."<<endl;
+  if (!gsl_finite(rho))
+  {
+    if (verbose)
+      cout<<"Warning: Can't find the density at pressure "<<P<<" GPa and temperature "<<T<<" K, initial guessed rho:"<<rho_guess<<" for user set up function.  Likely no solution exist for this physical condition under the EOS used."<<endl;
       
-		gsl_root_fdfsolver_free (s);
-		return numeric_limits<double>::quiet_NaN();
-	}
-	else if (status == GSL_CONTINUE)
-	{
-		if (verbose)
-			cout<<"Warning: Can't find the density at pressure "<<P<<" GPa and temperature "<<T<<" K within maximum interation "<<max_iter<<", initial guessed rho:"<<rho_guess<<endl;
+    gsl_root_fdfsolver_free (s);
+    return numeric_limits<double>::quiet_NaN();
+  }
+  else if (status == GSL_CONTINUE)
+  {
+    if (verbose)
+      cout<<"Warning: Can't find the density at pressure "<<P<<" GPa and temperature "<<T<<" K within maximum interation "<<max_iter<<", initial guessed rho:"<<rho_guess<<endl;
       
-		gsl_root_fdfsolver_free (s);
-		return numeric_limits<double>::quiet_NaN();
-	}
+    gsl_root_fdfsolver_free (s);
+    return numeric_limits<double>::quiet_NaN();
+  }
 
-	gsl_root_fdfsolver_free (s);
+  gsl_root_fdfsolver_free (s);
 
-	return rho;
+  return rho;
 }

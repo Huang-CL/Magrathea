@@ -24,7 +24,7 @@ void twolayer(int index, double fraction, vector<double> &Mp, vector<double> &Rp
       MC=0;
       planet=getmass(MC,MM,MW,P0);
       if(printmodel == true)
-	      planet->print("./result/densitymap.txt");
+        planet->print("./result/densitymap.txt");
       Rp.push_back(planet->totalR()/RE);
       delete planet;
     }
@@ -37,7 +37,7 @@ void twolayer(int index, double fraction, vector<double> &Mp, vector<double> &Rp
       MM=0;
       planet=getmass(MC,MM,MW,P0);
       if(printmodel == true)
-	        planet->print("./result/densitymap.txt");
+          planet->print("./result/densitymap.txt");
       Rp.push_back(planet->totalR()/RE);
       delete planet;
     }
@@ -50,7 +50,7 @@ void twolayer(int index, double fraction, vector<double> &Mp, vector<double> &Rp
       MW=0;
       planet=getmass(MC,MM,MW,P0);
       if(printmodel == true)
-	      planet->print("./result/densitymap.txt");
+        planet->print("./result/densitymap.txt");
       Rp.push_back(planet->totalR()/RE);
       delete planet;
     }
@@ -152,10 +152,10 @@ void twolayer(int absent_index, double fraction, double P0, int adjust_index, st
     {
       for(i=1; i<nPhases; i++)
       {
-	fin >> start_P[i-1];
-	for(j=0; j<length; j++)
-	  fin >> params[j][1];
-	highEOSs[i] -> modifyEOS(params, length);
+        fin >> start_P[i-1];
+        for(j=0; j<length; j++)
+          fin >> params[j][1];
+        highEOSs[i] -> modifyEOS(params, length);
       }
       adjust_cp->set_phase_highP(nPhases, start_P, highEOSs);
     }
@@ -170,7 +170,7 @@ void twolayer(int absent_index, double fraction, double P0, int adjust_index, st
     {
       first_iter = false;
       for(int j=0; j < int(Mp.size()); j++)
-	fout<<Mp[j]<<" \t";
+        fout<<Mp[j]<<" \t";
       fout<<endl;
     }
     for(int j=0; j < int(Rp.size()); j++)
@@ -270,10 +270,10 @@ void fullmodel(vector<PhaseDgm> &Comp, vector<double> M_Comp, vector<double> Tga
     {
       for(i=1; i<nPhases; i++)
       {
-	fin >> start_P[i-1];
-	for(j=0; j<length; j++)
-	  fin >> params[j][1];
-	highEOSs[i] -> modifyEOS(params, length);
+        fin >> start_P[i-1];
+        for(j=0; j<length; j++)
+          fin >> params[j][1];
+        highEOSs[i] -> modifyEOS(params, length);
       }
       adjust_cp->set_phase_highP(nPhases, start_P, highEOSs);
     }

@@ -19,7 +19,7 @@ struct EOS
   EOS();
   EOS(string phaseinput, double params[][2], int length);
   EOS(string phaseinput, string filename); // construction EOS from interpolate an input file
-  EOS(string phaseinput, double (*f)(double P, double T, double rho_guess), double (*g)(double rho, double T)=NULL); // construct EOS from external functions
+  EOS(string phaseinput, double (*f)(double P, double T, double rho_guess), double (*g)(double rho, double T)=NULL); // construct EOS from external functions. The function has to be able to generate a rough guess for the density when the input rho_guess is clearly unreliable.
   EOS(string phaseinput, double *Plist, double *rholist, int len_list); // construction EOS from interpolate an input pressure density list
   EOS(string phaseinput, double params[][2], double bparams[], int length, int blength); // construction EOS for RTpress
   ~EOS();
