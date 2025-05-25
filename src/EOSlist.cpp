@@ -272,7 +272,7 @@ EOS *Water = new EOS("Water (Valencia)", Water_array, sizeof(Water_array)/2/size
 EOS *Water_sc_dummy = new EOS("Water supercritical Dummy", Water_array, sizeof(Water_array)/2/sizeof(Water_array[0][0]));
 
 // -----------------------------------
-// Supercritical water. Mazevet et al. 2019
+// Supercritical water. Mazevet et al. 2019, A&A 621
 // https://www.ioffe.ru/astro/H2O/index.html
 // DEFAULT
 EOS *Water_sc_Mazevet = new EOS("Water supercritical Mazevet", H2OSC);
@@ -501,7 +501,7 @@ double dTdP_gas(double P, double T)
 }
 
 double PH2OSC(double rho,double T)
-// Mazevet
+// Mazevet et al. 2019, A&A, 621
 // https://www.ioffe.ru/astro/H2O/index.html
 {
   constexpr double UN_T6   = 0.3157746;             // ha/kB × 1e−6
@@ -528,10 +528,7 @@ double PH2OSC(double rho,double T)
   const double GAME = 1.0 / (RS * TEMP);           // Γ_e
   const double GAMEsq = sqrt(GAME);
    
-  // -------------------------------------------------------------------------
-  //  1) super‑ionic / plasma contribution (most of the algebra is straight
-  //     from the Fortran; only operator precedence and pow→std::pow changed)
-  // -------------------------------------------------------------------------
+  //  1) super‑ionic / plasma contribution 
   const double ZNA    = 1.0 + P8 / RS / GAMEsq;
   const double ZNA1RS = -P8 / RS / GAMEsq;
   const double ZNA1G  =  0.5 * ZNA1RS;
@@ -559,7 +556,7 @@ double PH2OSC(double rho,double T)
 
   const double DENSEF = DENSI * ZEF;
 
-  //  electron‑gas EOS (ideal Fermi gas) ------------------------------------
+  //  electron‑gas EOS (ideal Fermi gas) 
   double CHI, FE, PE, UE, SE, CVE, CHITE, CHIRE;
   ELECNR(DENSEF, TEMP,
          CHI, FE, PE, UE, SE, CVE, CHITE, CHIRE);
@@ -572,18 +569,14 @@ double PH2OSC(double rho,double T)
 
   const double PnkTsi = FDR;
 
-  // ---------------------------------------------------------------------
   //  2) non‑ideal molecular piece
-  // ---------------------------------------------------------------------
   const double cW    = 1.0 + pow(QW / TEMP, PW);
   const double bWPQ  = bW * DENSMOL * sqrt(bW * DENSMOL); // (bW*ρ)^1.5
 
   const double FNkTmol = (-aW * DENSMOL / TEMP + bW * DENSMOL + bWPQ * cW / PQ) / 3.0;
   const double PnkTmol = (-aW * DENSMOL / TEMP + bW * DENSMOL + bWPQ * cW)      / 3.0;
 
-// ---------------------------------------------------------------------
   //  3) mix molecular + plasma via smooth switch YL/YH
-  // ---------------------------------------------------------------------
   const double X   = Q4 * log(Q1 * rho + Q2 * T);
   const double X1R = Q4 * Q1 * rho   / (Q1 * rho + Q2 * T);
 
@@ -596,20 +589,14 @@ double PH2OSC(double rho,double T)
 
   const double PnkTni = PnkTmol * YL + PnkTsi * YH + (FNkTsi - FNkTmol) * YH1R;
 
-  // ---------------------------------------------------------------------
   //  4) Ideal gas of pseudo‑molecules
-  // ---------------------------------------------------------------------
   const double PnkTid = C13;
 
-  // ---------------------------------------------------------------------
   //  5) total (non‑ideal + ideal)
-  // ---------------------------------------------------------------------
   double PnkT,PGPa;
   PnkT = PnkTni + PnkTid;
 
-  // ---------------------------------------------------------------------
   //  7) auxiliary conversions
-  // ---------------------------------------------------------------------
   const double Tnk = TnkCONV * rho * T6;
   PGPa = PnkT * Tnk / 1.0e10;   // → GPa
   // PGPa = P/1E10 = PnkT * n k T / 1E10 = PnkT * rho * NA *k / MImean * T / 1E10
@@ -655,10 +642,7 @@ double dTdP_S_H2O_of_rho(double rho, double T)
   const double GAME = 1.0 / (RS * TEMP);           // Γ_e
   const double GAMEsq = sqrt(GAME);
    
-  // -------------------------------------------------------------------------
-  //  1) super‑ionic / plasma contribution (most of the algebra is straight
-  //     from the Fortran; only operator precedence and pow→std::pow changed)
-  // -------------------------------------------------------------------------
+  //  1) super‑ionic / plasma contribution 
   const double ZNA    = 1.0 + P8 / RS / GAMEsq;
   const double ZNA1RS = -P8 / RS / GAMEsq;
   const double ZNA1G  =  0.5 * ZNA1RS;
@@ -710,7 +694,7 @@ double dTdP_S_H2O_of_rho(double rho, double T)
 
   const double DENSEF = DENSI * ZEF;
 
-  //  electron‑gas EOS (ideal Fermi gas) ------------------------------------
+  //  electron‑gas EOS (ideal Fermi gas) 
   double CHI, FE, PE, UE, SE, CVE, CHITE, CHIRE;
   ELECNR(DENSEF, TEMP,
          CHI, FE, PE, UE, SE, CVE, CHITE, CHIRE);
@@ -739,9 +723,7 @@ double dTdP_S_H2O_of_rho(double rho, double T)
   const double PnkTsi = FDR;
   const double UNkTsi = -FDT;
 
-  // ---------------------------------------------------------------------
   //  2) non‑ideal molecular piece
-  // ---------------------------------------------------------------------
   const double cW    = 1.0 + pow(QW / TEMP, PW);
   const double cW1T  = -PW * pow(QW / TEMP, PW);
   const double cW2T  = -PW * cW1T;
@@ -755,9 +737,7 @@ double dTdP_S_H2O_of_rho(double rho, double T)
   const double FmDTT = -( aW * DENSMOL / TEMP - bWPQ * cW2T / PQ) / 3.0;
   const double FmDRT = ( aW * DENSMOL / TEMP + bWPQ * cW1T) / 3.0;
 
-  // ---------------------------------------------------------------------
   //  3) mix molecular + plasma via smooth switch YL/YH
-  // ---------------------------------------------------------------------
   const double X   = Q4 * log(Q1 * rho + Q2 * T);
   const double X1R = Q4 * Q1 * rho   / (Q1 * rho + Q2 * T);
   const double X1T = Q4 * Q2 * T     / (Q1 * rho + Q2 * T);
@@ -788,17 +768,14 @@ double dTdP_S_H2O_of_rho(double rho, double T)
     + (FNkTsi - FNkTmol) * YH2T;
   const double FDRT = FmDRT * YL + FsiDRT * YH + (PnkTsi - PnkTmol) * YH1T
     - (UNkTsi - UNkTmol) * YH1R + (FNkTsi - FNkTmol) * YH2RT;
-  // ---------------------------------------------------------------------
+
   //  4) Ideal gas of pseudo‑molecules
-  // ---------------------------------------------------------------------
   const double THLmol = sqrt(2 * pi / (18.0 * AUM * TEMP));
   const double FNkTid = (log(DENSMOL * pow(THLmol, 3)) - 1.0) / 3.0;
   const double PnkTid = C13;
   const double UNkTid = 0.5;
 
-  // ---------------------------------------------------------------------
   //  5) total (non‑ideal + ideal)
-  // ---------------------------------------------------------------------
   double PnkT,FNkT,UNkT,CV,CHIT,CHIR;
   FNkT = FNkTni + FNkTid;
   PnkT = PnkTni + PnkTid;		
@@ -808,9 +785,7 @@ double dTdP_S_H2O_of_rho(double rho, double T)
   CHIR = FDRR / PnkT + 1.0;	
   CHIT = FDRT / PnkT + 1.0;	
 
-  // ---------------------------------------------------------------------
   //  6) thermal corrections (high‑T & low‑T tweaks)
-  // ---------------------------------------------------------------------
   const double TTC  = TEMP / TCRIT;
   const double TL2  = PC4 * TTC;
   const double ULB  = pow(TL2, 2) * sqrt(TL2);  // (TL2)^2.5
@@ -830,9 +805,7 @@ double dTdP_S_H2O_of_rho(double rho, double T)
   UNkT += UL + UC;
   CV   += CVL + CVC;
 
-  // ---------------------------------------------------------------------
   //  7) auxiliary conversions
-  // ---------------------------------------------------------------------
   double nabla_ad = CHIT / (CV*CHIR/PnkT + sq(CHIT));				// d ln T / d ln P
   double dT_dP_S  = nabla_ad * 1E6 / (PnkT * TnkCONV * rho);
   // nabla_ad * T / P = nabla_ad * T / (PnkT * n k T) = nabla_ad * T / (PnkT * rho * NA *k / MImean * T)
@@ -853,11 +826,9 @@ double dTdP_S_H2OSC(double P, double T, double &rho_guess)
   return dTdP_S_H2O_of_rho(rho_guess, T);
 }
 	
-// =============================================================================
+
+//  H2O SC Mazevet Helper Functions
 //  ELECNR – ideal, non‑relativistic electron Fermi gas
-// =============================================================================
-
-
 void ELECNR(double DENSE, double TEMP,
             double &CHI, double &FEid, double &PEid, double &UEid,
             double &SEid, double &CVE, double &CHITE, double &CHIRE)
@@ -885,10 +856,7 @@ void ELECNR(double DENSE, double TEMP,
     CVE   = 1.5 * PEid * CHITE;
 }
 
-// =============================================================================
 //  FERMIF: simple logistic Fermi function 1/(exp(x)+1)
-// =============================================================================
-
 double FERMIF(double X)
 {
     if (X > 40.0)  return 0.0;
@@ -896,11 +864,9 @@ double FERMIF(double X)
     return 1.0 / (exp(X) + 1.0);
 }
 
-// =============================================================================
+
 //  FERINT – Antia (1993) rational fits to F_q(x)
 //            q = N-1/2 with N=0..3 (−½, ½, 3/2, 5/2)
-// =============================================================================
-
 void FERINT(double X, int N, double &F)
 {
     if (N < 0 || N > 3) throw std::invalid_argument("FERINT: N out of range");
@@ -982,10 +948,7 @@ void FERINT(double X, int N, double &F)
     }
 }
 
-// =============================================================================
 //  FINVER – Antia (1993) fits to inverse Fermi integrals X_q(f)
-// =============================================================================
-
 void FINVER(double F, int N, double &X, double &XDF, double &XDFF)
 {
     if (N < 0 || N > 3) throw std::invalid_argument("FINVER: N out of range");
