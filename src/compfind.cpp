@@ -29,7 +29,7 @@ void multiplanet(vector<PhaseDgm> &Comp, vector<double> Tgap, int solver, vector
   while(getline(fin,sline))
   {
     if(!sline.empty())
-	  nline++;
+      nline++;
   }
 
   fin.clear();
@@ -70,9 +70,9 @@ void multiplanet(vector<PhaseDgm> &Comp, vector<double> Tgap, int solver, vector
 	    }
 	    else
 	    {
-	    cout<<"Mass, fCore, fMantle, fWater "<<Mp[i]<<' '<<fC[i]<<' '<<fM[i]<<' '<<fW[i]<<" gives negative gas mass "<<MG<<".  nan will be in the output file.";
-	    fout<<MC<<"\t "<<MM<<"\t "<<MW<<"\t "<<MG<<"\t nan"<<endl;
-	    continue;
+        cout<<"Mass, fCore, fMantle, fWater "<<Mp[i]<<' '<<fC[i]<<' '<<fM[i]<<' '<<fW[i]<<" gives negative gas mass "<<MG<<".  nan will be in the output file.";
+        fout<<MC<<"\t "<<MM<<"\t "<<MW<<"\t "<<MG<<"\t nan"<<endl;
+        continue;
 	    }
     }
 
@@ -118,12 +118,12 @@ void multiplanet(vector<PhaseDgm> &Comp, vector<double> Tgap, int solver, vector
 
 
 void compfinder(vector<PhaseDgm> &Comp, int findlayer, vector<int> layers, double minPMR, double maxPMR, float step, double rerr, int num_threads, vector<double> Tgap, vector<double> ave_rho, double P0, bool isothermal, string infile, string outfile)
-  // read in a file with a table of mass and radius posterior samples
-  // Example input file
-  // Mass Radius
-  // 1.3617007672434112 1.1000571279817417
-  // 1.3122419209981564 1.1101895856223976 
-  // calculate a mass-radius curve for two-layer planet with a constant mass fraction.
+// read in a file with a table of mass and radius posterior samples
+// Example input file
+// Mass Radius
+// 1.3617007672434112 1.1000571279817417
+// 1.3122419209981564 1.1101895856223976 
+// calculate a mass-radius curve for two-layer planet with a constant mass fraction.
 {
 
   struct timeval start_time, end_time;
@@ -146,7 +146,7 @@ void compfinder(vector<PhaseDgm> &Comp, int findlayer, vector<int> layers, doubl
   while(getline(fin,sline))
   {
     if(!sline.empty())
-	  nline++;
+      nline++;
   }
 
   fin.clear();
@@ -273,9 +273,9 @@ void compfinder(vector<PhaseDgm> &Comp, int findlayer, vector<int> layers, doubl
 	          funk2=funk1-(funk1-funk0)*(R2-Rtarg[i])/(R2-R1);  // Secant Method
 	          if (funk2<=0) // Secant method returned negative result
     	      {
-    	          dontrecord='y';
-	              j=maxPMR*10+1; // Move to next posterior
-	              break;
+              dontrecord='y';
+              j=maxPMR*10+1; // Move to next posterior
+              break;
 	          }
 	          funk0=funk1;
 	          funk1=funk2;

@@ -23,7 +23,7 @@ magdens=[]
 magtemp=[]
 magphase=[]
 for line in lines[1:-1]: #Skips first line and last empty line
-    div=re.split('\s{2,}',line)
+    div=re.split(r'\s{2,}',line)
     magrad.append(float(div[1]))
     magpress.append(float(div[2]))
     magmass.append(float(div[3]))

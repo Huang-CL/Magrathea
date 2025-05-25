@@ -272,7 +272,8 @@ EOS *Water = new EOS("Water (Valencia)", Water_array, sizeof(Water_array)/2/size
 EOS *Water_sc_dummy = new EOS("Water supercritical Dummy", Water_array, sizeof(Water_array)/2/sizeof(Water_array[0][0]));
 
 // -----------------------------------
-// Supercritical water. 
+// Supercritical water. Mazevet et al. 2019, A&A 621
+// https://www.ioffe.ru/astro/H2O/index.html
 // DEFAULT
 EOS *Water_sc_Mazevet = new EOS("Water supercritical Mazevet", H2OSC);
 
@@ -425,7 +426,7 @@ EOS *IceZeng2013FMNR = new EOS("Ice (FMNR 2009)", FMNR[1], FMNR[0], 13);
 // Adiabtic Ideal Gas, Parameter 5 can be changed for mean molecular weight of gas. 3 g/mol = mix of H/He
 // DEFAULT
 
-double Gas_array[3][2] = {{0,6}, {5,44}, {14,2}};
+double Gas_array[3][2] = {{0,6}, {5,3}, {14,2}};
 
 EOS *Gas = new EOS("Ideal Gas", Gas_array, 3);
 
@@ -433,7 +434,7 @@ EOS *Gas = new EOS("Ideal Gas", Gas_array, 3);
 // Isothermal Ideal Gas
 // DEFAULT
 
-double Gas_iso_array[3][2] = {{0,6}, {5,44}, {14,0}};
+double Gas_iso_array[3][2] = {{0,6}, {5,3}, {14,0}};
 
 EOS *Gas_iso = new EOS("Isothermal Ideal Gas", Gas_iso_array, 3);
 
@@ -500,15 +501,15 @@ double dTdP_gas(double P, double T)
 }
 
 double PH2OSC(double rho,double T)
-	// Mazevet
+// Mazevet et al. 2019, A&A, 621
+// https://www.ioffe.ru/astro/H2O/index.html
 {
-  constexpr double PI      = 3.141592653;
   constexpr double UN_T6   = 0.3157746;             // ha/kB × 1e−6
   constexpr double C13     = 1.0 / 3.0;
   constexpr double Zmean   = 10.0 / 3.0;
   constexpr double CMImean = 18.0 / 3.0;
   constexpr double DENSCONV = 11.20587 * CMImean;   // g cm⁻³ → n_i  [au]
-  constexpr double TnkCONV  = 8.31447e13 / CMImean; // n_i kT factor [erg cm⁻³]
+  constexpr double TnkCONV  = 8.31447e13 / CMImean; // n_i kT factor [1.0e-6 erg cm⁻³]
   constexpr double aW = 2.357;
   constexpr double bW = 340.8;
   // many extra params:
@@ -523,14 +524,11 @@ double PH2OSC(double rho,double T)
   const double DENSMOL = DENSI / 3.0;              // pseudo‑molecule density
 
   // r_s (electron density parameter)
-  const double RS  = pow(0.75 / PI / DENSI / Zmean, C13);
+  const double RS  = pow(0.75 / pi / DENSI / Zmean, C13);
   const double GAME = 1.0 / (RS * TEMP);           // Γ_e
   const double GAMEsq = sqrt(GAME);
    
-  // -------------------------------------------------------------------------
-  //  1) super‑ionic / plasma contribution (most of the algebra is straight
-  //     from the Fortran; only operator precedence and pow→std::pow changed)
-  // -------------------------------------------------------------------------
+  //  1) super‑ionic / plasma contribution 
   const double ZNA    = 1.0 + P8 / RS / GAMEsq;
   const double ZNA1RS = -P8 / RS / GAMEsq;
   const double ZNA1G  =  0.5 * ZNA1RS;
@@ -558,7 +556,7 @@ double PH2OSC(double rho,double T)
 
   const double DENSEF = DENSI * ZEF;
 
-  //  electron‑gas EOS (ideal Fermi gas) ------------------------------------
+  //  electron‑gas EOS (ideal Fermi gas) 
   double CHI, FE, PE, UE, SE, CVE, CHITE, CHIRE;
   ELECNR(DENSEF, TEMP,
          CHI, FE, PE, UE, SE, CVE, CHITE, CHIRE);
@@ -571,62 +569,58 @@ double PH2OSC(double rho,double T)
 
   const double PnkTsi = FDR;
 
-	// ---------------------------------------------------------------------
-	//  2) non‑ideal molecular piece
-	// ---------------------------------------------------------------------
-	const double cW    = 1.0 + pow(QW / TEMP, PW);
-	const double bWPQ  = bW * DENSMOL * sqrt(bW * DENSMOL); // (bW*ρ)^1.5
+  //  2) non‑ideal molecular piece
+  const double cW    = 1.0 + pow(QW / TEMP, PW);
+  const double bWPQ  = bW * DENSMOL * sqrt(bW * DENSMOL); // (bW*ρ)^1.5
 
-	const double FNkTmol = (-aW * DENSMOL / TEMP + bW * DENSMOL + bWPQ * cW / PQ) / 3.0;
-	const double PnkTmol = (-aW * DENSMOL / TEMP + bW * DENSMOL + bWPQ * cW)      / 3.0;
+  const double FNkTmol = (-aW * DENSMOL / TEMP + bW * DENSMOL + bWPQ * cW / PQ) / 3.0;
+  const double PnkTmol = (-aW * DENSMOL / TEMP + bW * DENSMOL + bWPQ * cW)      / 3.0;
 
-// ---------------------------------------------------------------------
-	//  3) mix molecular + plasma via smooth switch YL/YH
-	// ---------------------------------------------------------------------
-	const double X   = Q4 * log(Q1 * rho + Q2 * T);
-	const double X1R = Q4 * Q1 * rho   / (Q1 * rho + Q2 * T);
+  //  3) mix molecular + plasma via smooth switch YL/YH
+  const double X   = Q4 * log(Q1 * rho + Q2 * T);
+  const double X1R = Q4 * Q1 * rho   / (Q1 * rho + Q2 * T);
 
-	const double YL  = FERMIF(X);
-	const double YH  = 1.0 - YL;
+  const double YL  = FERMIF(X);
+  const double YH  = 1.0 - YL;
 
-	const double YH1X = YH * YL;
+  const double YH1X = YH * YL;
 
-	const double YH1R = YH1X * X1R;
+  const double YH1R = YH1X * X1R;
 
-	const double PnkTni = PnkTmol * YL + PnkTsi * YH + (FNkTsi - FNkTmol) * YH1R;
+  const double PnkTni = PnkTmol * YL + PnkTsi * YH + (FNkTsi - FNkTmol) * YH1R;
 
-	// ---------------------------------------------------------------------
-	//  4) Ideal gas of pseudo‑molecules
-	// ---------------------------------------------------------------------
-	const double PnkTid = C13;
+  //  4) Ideal gas of pseudo‑molecules
+  const double PnkTid = C13;
 
-	// ---------------------------------------------------------------------
-	//  5) total (non‑ideal + ideal)
-	// ---------------------------------------------------------------------
-	double PnkT,PGPa;
-	PnkT = PnkTni + PnkTid;
+  //  5) total (non‑ideal + ideal)
+  double PnkT,PGPa;
+  PnkT = PnkTni + PnkTid;
 
-	// ---------------------------------------------------------------------
-	//  7) auxiliary conversions
-	// ---------------------------------------------------------------------
-	const double Tnk = TnkCONV * rho * T6;
-	PGPa = PnkT * Tnk / 1.0e10;   // → GPa
-
+  //  7) auxiliary conversions
+  const double Tnk = TnkCONV * rho * T6;
+  PGPa = PnkT * Tnk / 1.0e10;   // → GPa
+  // PGPa = P/1E10 = PnkT * n k T / 1E10 = PnkT * rho * NA *k / MImean * T / 1E10
   return PGPa;
 }
 
 
 double dTdP_S_H2O_of_rho(double rho, double T)
+// n_i number per volume
+// N_i number per mass
+// PnkT - pressure / n_i kT, where n_i=2*n_H+n_O=3*n_{H2O}
+// FNkT - free energy / N_i kT (up to an additive constant)
+// UNkT - internal energy / N_i kT
+// CV - heat capacity per unit volume /kN_i
+// CHIT - logarithmic derivative of pressure over temperature at constant density
+// CHIR - logarithmic derivative of pressure over density at constant temperature
 {
-  constexpr double PI      = 3.141592653;
-  constexpr double TWO_PI  = 2.0 * PI;
   constexpr double UN_T6   = 0.3157746;             // ha/kB × 1e−6
   constexpr double C13     = 1.0 / 3.0;
   constexpr double AUM     = 1822.88848;            // m_u / m_e
   constexpr double Zmean   = 10.0 / 3.0;
   constexpr double CMImean = 18.0 / 3.0;
   constexpr double DENSCONV = 11.20587 * CMImean;   // g cm⁻³ → n_i  [au]
-  constexpr double TnkCONV  = 8.31447e13 / CMImean; // n_i kT factor [erg cm⁻³]
+  constexpr double TnkCONV  = 8.31447e13 / CMImean; // n_i k factor [1e−6 erg cm⁻³]
   constexpr double aW = 2.357;
   constexpr double bW = 340.8;
   constexpr double TCRIT = 0.00205;                 // 647.15 K in Hartree (k_B=1)
@@ -644,14 +638,11 @@ double dTdP_S_H2O_of_rho(double rho, double T)
   const double DENSMOL = DENSI / 3.0;              // pseudo‑molecule density
 
   // r_s (electron density parameter)
-  const double RS  = pow(0.75 / PI / DENSI / Zmean, C13);
+  const double RS  = pow(0.75 / pi / DENSI / Zmean, C13);
   const double GAME = 1.0 / (RS * TEMP);           // Γ_e
   const double GAMEsq = sqrt(GAME);
    
-  // -------------------------------------------------------------------------
-  //  1) super‑ionic / plasma contribution (most of the algebra is straight
-  //     from the Fortran; only operator precedence and pow→std::pow changed)
-  // -------------------------------------------------------------------------
+  //  1) super‑ionic / plasma contribution 
   const double ZNA    = 1.0 + P8 / RS / GAMEsq;
   const double ZNA1RS = -P8 / RS / GAMEsq;
   const double ZNA1G  =  0.5 * ZNA1RS;
@@ -703,7 +694,7 @@ double dTdP_S_H2O_of_rho(double rho, double T)
 
   const double DENSEF = DENSI * ZEF;
 
-  //  electron‑gas EOS (ideal Fermi gas) ------------------------------------
+  //  electron‑gas EOS (ideal Fermi gas) 
   double CHI, FE, PE, UE, SE, CVE, CHITE, CHIRE;
   ELECNR(DENSEF, TEMP,
          CHI, FE, PE, UE, SE, CVE, CHITE, CHIRE);
@@ -732,123 +723,112 @@ double dTdP_S_H2O_of_rho(double rho, double T)
   const double PnkTsi = FDR;
   const double UNkTsi = -FDT;
 
-	// ---------------------------------------------------------------------
-	//  2) non‑ideal molecular piece
-	// ---------------------------------------------------------------------
-	const double cW    = 1.0 + pow(QW / TEMP, PW);
-	const double cW1T  = -PW * pow(QW / TEMP, PW);
-	const double cW2T  = -PW * cW1T;
-	const double bWPQ  = bW * DENSMOL * sqrt(bW * DENSMOL); // (bW*ρ)^1.5
+  //  2) non‑ideal molecular piece
+  const double cW    = 1.0 + pow(QW / TEMP, PW);
+  const double cW1T  = -PW * pow(QW / TEMP, PW);
+  const double cW2T  = -PW * cW1T;
+  const double bWPQ  = bW * DENSMOL * sqrt(bW * DENSMOL); // (bW*ρ)^1.5
 
-	const double FNkTmol = (-aW * DENSMOL / TEMP + bW * DENSMOL + bWPQ * cW / PQ) / 3.0;
-	const double PnkTmol = (-aW * DENSMOL / TEMP + bW * DENSMOL + bWPQ * cW)      / 3.0;
-	const double UNkTmol = -( aW * DENSMOL / TEMP + bWPQ * cW1T / PQ)              / 3.0;
+  const double FNkTmol = (-aW * DENSMOL / TEMP + bW * DENSMOL + bWPQ * cW / PQ) / 3.0;
+  const double PnkTmol = (-aW * DENSMOL / TEMP + bW * DENSMOL + bWPQ * cW)      / 3.0;
+  const double UNkTmol = -( aW * DENSMOL / TEMP + bWPQ * cW1T / PQ)              / 3.0;
 
-	const double FmDRR = (-aW * DENSMOL / TEMP + bW * DENSMOL + bWPQ * cW * PQ) / 3.0;
-	const double FmDTT = -( aW * DENSMOL / TEMP - bWPQ * cW2T / PQ) / 3.0;
-	const double FmDRT = ( aW * DENSMOL / TEMP + bWPQ * cW1T) / 3.0;
+  const double FmDRR = (-aW * DENSMOL / TEMP + bW * DENSMOL + bWPQ * cW * PQ) / 3.0;
+  const double FmDTT = -( aW * DENSMOL / TEMP - bWPQ * cW2T / PQ) / 3.0;
+  const double FmDRT = ( aW * DENSMOL / TEMP + bWPQ * cW1T) / 3.0;
 
-// ---------------------------------------------------------------------
-	//  3) mix molecular + plasma via smooth switch YL/YH
-	// ---------------------------------------------------------------------
-	const double X   = Q4 * log(Q1 * rho + Q2 * T);
-	const double X1R = Q4 * Q1 * rho   / (Q1 * rho + Q2 * T);
-	const double X1T = Q4 * Q2 * T     / (Q1 * rho + Q2 * T);
-	const double X2R = Q4 * Q1 * Q2 * rho * T / pow(Q1 * rho + Q2 * T, 2);
-	const double X2T = X2R;
-	const double X2RT= -X2R;
+  //  3) mix molecular + plasma via smooth switch YL/YH
+  const double X   = Q4 * log(Q1 * rho + Q2 * T);
+  const double X1R = Q4 * Q1 * rho   / (Q1 * rho + Q2 * T);
+  const double X1T = Q4 * Q2 * T     / (Q1 * rho + Q2 * T);
+  const double X2R = Q4 * Q1 * Q2 * rho * T / pow(Q1 * rho + Q2 * T, 2);
+  const double X2T = X2R;
+  const double X2RT= -X2R;
 
-	const double YL  = FERMIF(X);
-	const double YH  = 1.0 - YL;
+  const double YL  = FERMIF(X);
+  const double YH  = 1.0 - YL;
 
-	const double YH1X = YH * YL;
-	const double YH2X = YH1X * (YL - YH);
+  const double YH1X = YH * YL;
+  const double YH2X = YH1X * (YL - YH);
 
-	const double YH1R = YH1X * X1R;
-	const double YH1T = YH1X * X1T;
+  const double YH1R = YH1X * X1R;
+  const double YH1T = YH1X * X1T;
 
-	const double YH2R  = YH2X * pow(X1R, 2) + YH1X * X2R;
-	const double YH2T  = YH2X * pow(X1T, 2) + YH1X * X2T;
-	const double YH2RT = YH2X * X1R * X1T        + YH1X * X2RT;
+  const double YH2R  = YH2X * pow(X1R, 2) + YH1X * X2R;
+  const double YH2T  = YH2X * pow(X1T, 2) + YH1X * X2T;
+  const double YH2RT = YH2X * X1R * X1T        + YH1X * X2RT;
 
-	const double FNkTni = FNkTmol * YL + FNkTsi * YH;
-	const double PnkTni = PnkTmol * YL + PnkTsi * YH + (FNkTsi - FNkTmol) * YH1R;
-	const double UNkTni = UNkTmol * YL + UNkTsi * YH - (FNkTsi - FNkTmol) * YH1T;
+  const double FNkTni = FNkTmol * YL + FNkTsi * YH;
+  const double PnkTni = PnkTmol * YL + PnkTsi * YH + (FNkTsi - FNkTmol) * YH1R;
+  const double UNkTni = UNkTmol * YL + UNkTsi * YH - (FNkTsi - FNkTmol) * YH1T;
 
-	const double FDRR = FmDRR * YL + FsiDRR * YH + 2.0 * (PnkTsi - PnkTmol) * YH1R
-	+ (FNkTsi - FNkTmol) * YH2R;
-	const double FDTT = FmDTT * YL + FsiDTT * YH - 2.0 * (UNkTsi - UNkTmol) * YH1T
-	+ (FNkTsi - FNkTmol) * YH2T;
-	const double FDRT = FmDRT * YL + FsiDRT * YH + (PnkTsi - PnkTmol) * YH1T
-	- (UNkTsi - UNkTmol) * YH1R + (FNkTsi - FNkTmol) * YH2RT;
-	// ---------------------------------------------------------------------
-	//  4) Ideal gas of pseudo‑molecules
-	// ---------------------------------------------------------------------
-	const double THLmol = sqrt(TWO_PI / (18.0 * AUM * TEMP));
-	const double FNkTid = (log(DENSMOL * pow(THLmol, 3)) - 1.0) / 3.0;
-	const double PnkTid = C13;
-	const double UNkTid = 0.5;
+  const double FDRR = FmDRR * YL + FsiDRR * YH + 2.0 * (PnkTsi - PnkTmol) * YH1R
+    + (FNkTsi - FNkTmol) * YH2R;
+  const double FDTT = FmDTT * YL + FsiDTT * YH - 2.0 * (UNkTsi - UNkTmol) * YH1T
+    + (FNkTsi - FNkTmol) * YH2T;
+  const double FDRT = FmDRT * YL + FsiDRT * YH + (PnkTsi - PnkTmol) * YH1T
+    - (UNkTsi - UNkTmol) * YH1R + (FNkTsi - FNkTmol) * YH2RT;
 
-	// ---------------------------------------------------------------------
-	//  5) total (non‑ideal + ideal)
-	// ---------------------------------------------------------------------
-	double PnkT,FNkT,UNkT,CV,CHIT,CHIR;
-	FNkT = FNkTni + FNkTid;
-	PnkT = PnkTni + PnkTid;
-	UNkT = UNkTni + UNkTid;
+  //  4) Ideal gas of pseudo‑molecules
+  const double THLmol = sqrt(2 * pi / (18.0 * AUM * TEMP));
+  const double FNkTid = (log(DENSMOL * pow(THLmol, 3)) - 1.0) / 3.0;
+  const double PnkTid = C13;
+  const double UNkTid = 0.5;
 
-	CV   = UNkT - FDTT;
-	CHIR = FDRR / PnkT + 1.0;
-	CHIT = FDRT / PnkT + 1.0;
+  //  5) total (non‑ideal + ideal)
+  double PnkT,FNkT,UNkT,CV,CHIT,CHIR;
+  FNkT = FNkTni + FNkTid;
+  PnkT = PnkTni + PnkTid;		
+  UNkT = UNkTni + UNkTid;
 
-	// ---------------------------------------------------------------------
-	//  6) thermal corrections (high‑T & low‑T tweaks)
-	// ---------------------------------------------------------------------
-	const double TTC  = TEMP / TCRIT;
-	const double TL2  = PC4 * TTC;
-	const double ULB  = pow(TL2, 2) * sqrt(TL2);  // (TL2)^2.5
-	const double ULB1 = 1.0 + ULB;
-	const double FL   = log(ULB1 / ULB);
-	const double UL   = 2.5 / ULB1;
-	const double CVL  = UL * (1.0 - 1.5 * ULB) / ULB1;
+  CV   = UNkT - FDTT;				
+  CHIR = FDRR / PnkT + 1.0;	
+  CHIT = FDRT / PnkT + 1.0;	
 
-	const double TTC2 = TTC * TTC;
-	const double ULC1 = 1.0 + TTC2;
-	const double FC   = (PC1 * log(ULC1 / TTC2) + PC2 * atan(TTC)) / TCRIT
-	- PC3 / TEMP;
-	const double UC   = ((2.0 * PC1 * TTC - PC2 * TTC2) / ULC1 - PC3) / TEMP;
-	const double CVC  = 2.0 / TCRIT * (PC1 * (1.0 - TTC2) - PC2 * TTC) / (ULC1 * ULC1);
+  //  6) thermal corrections (high‑T & low‑T tweaks)
+  const double TTC  = TEMP / TCRIT;
+  const double TL2  = PC4 * TTC;
+  const double ULB  = pow(TL2, 2) * sqrt(TL2);  // (TL2)^2.5
+  const double ULB1 = 1.0 + ULB;
+  const double FL   = log(ULB1 / ULB);
+  const double UL   = 2.5 / ULB1;
+  const double CVL  = UL * (1.0 - 1.5 * ULB) / ULB1;
 
-	FNkT += FL + FC - SBASE;
-	UNkT += UL + UC;
-	CV   += CVL + CVC;
+  const double TTC2 = TTC * TTC;
+  const double ULC1 = 1.0 + TTC2;
+  const double FC   = (PC1 * log(ULC1 / TTC2) + PC2 * atan(TTC)) / TCRIT
+    - PC3 / TEMP;
+  const double UC   = ((2.0 * PC1 * TTC - PC2 * TTC2) / ULC1 - PC3) / TEMP;
+  const double CVC  = 2.0 / TCRIT * (PC1 * (1.0 - TTC2) - PC2 * TTC) / (ULC1 * ULC1);
 
-	// ---------------------------------------------------------------------
-	//  7) auxiliary conversions
-	// ---------------------------------------------------------------------
-	double CP = CV + (CHIT*CHIT)/CHIR;
-	double nabla_ad = CHIT / (CHIR * CP);
-	double dT_dP_S  = nabla_ad * 1E6 / (PnkT * TnkCONV * rho);
-	
+  FNkT += FL + FC - SBASE;
+  UNkT += UL + UC;
+  CV   += CVL + CVC;
+
+  //  7) auxiliary conversions
+  double nabla_ad = CHIT / (CV*CHIR/PnkT + sq(CHIT));				// d ln T / d ln P
+  double dT_dP_S  = nabla_ad * 1E6 / (PnkT * TnkCONV * rho);
+  // nabla_ad * T / P = nabla_ad * T / (PnkT * n k T) = nabla_ad * T / (PnkT * rho * NA *k / MImean * T)
   return dT_dP_S;
 }
 
 double H2OSC(double P, double T, double rho_guess)
+// P in GPa
 {
-	return density_solver(P,T,PH2OSC,rho_guess);
+  if(rho_guess<0.5 || rho_guess>20)
+    rho_guess = 1 + 5*log(P/1E2);
+  return density_solver(P,T,PH2OSC,rho_guess);
 }
 
 double dTdP_S_H2OSC(double P, double T, double &rho_guess)
 {
-	rho_guess = density_solver(P,T,PH2OSC,rho_guess);
-	return dTdP_S_H2O_of_rho(rho_guess, T);
+  rho_guess = density_solver(P,T,PH2OSC,rho_guess);
+  return dTdP_S_H2O_of_rho(rho_guess, T);
 }
 	
-// =============================================================================
+
+//  H2O SC Mazevet Helper Functions
 //  ELECNR – ideal, non‑relativistic electron Fermi gas
-// =============================================================================
-
-
 void ELECNR(double DENSE, double TEMP,
             double &CHI, double &FEid, double &PEid, double &UEid,
             double &SEid, double &CVE, double &CHITE, double &CHIRE)
@@ -876,10 +856,7 @@ void ELECNR(double DENSE, double TEMP,
     CVE   = 1.5 * PEid * CHITE;
 }
 
-// =============================================================================
 //  FERMIF: simple logistic Fermi function 1/(exp(x)+1)
-// =============================================================================
-
 double FERMIF(double X)
 {
     if (X > 40.0)  return 0.0;
@@ -887,11 +864,9 @@ double FERMIF(double X)
     return 1.0 / (exp(X) + 1.0);
 }
 
-// =============================================================================
+
 //  FERINT – Antia (1993) rational fits to F_q(x)
 //            q = N-1/2 with N=0..3 (−½, ½, 3/2, 5/2)
-// =============================================================================
-
 void FERINT(double X, int N, double &F)
 {
     if (N < 0 || N > 3) throw std::invalid_argument("FERINT: N out of range");
@@ -973,10 +948,7 @@ void FERINT(double X, int N, double &F)
     }
 }
 
-// =============================================================================
 //  FINVER – Antia (1993) fits to inverse Fermi integrals X_q(f)
-// =============================================================================
-
 void FINVER(double F, int N, double &X, double &XDF, double &XDFF)
 {
     if (N < 0 || N > 3) throw std::invalid_argument("FINVER: N out of range");

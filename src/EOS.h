@@ -19,7 +19,7 @@ struct EOS
   EOS();
   EOS(string phaseinput, double params[][2], int length);
   EOS(string phaseinput, string filename); // construction EOS from interpolate an input file
-  EOS(string phaseinput, double (*f)(double P, double T, double rho_guess), double (*g)(double rho, double T)=NULL); // construct EOS from external functions
+  EOS(string phaseinput, double (*f)(double P, double T, double rho_guess), double (*g)(double rho, double T)=NULL); // construct EOS from external functions. The function has to be able to generate a rough guess for the density when the input rho_guess is clearly unreliable.
   EOS(string phaseinput, double *Plist, double *rholist, int len_list); // construction EOS from interpolate an input pressure density list
   EOS(string phaseinput, double params[][2], double bparams[], int length, int blength); // construction EOS for RTpress
   ~EOS();
@@ -29,7 +29,7 @@ struct EOS
   void modifyEOS(int index, double value);	     // modify one value of the EOS
   void modify_extern_density(double (*f)(double P, double T, double rho_guess)){density_extern = f;}
   void modify_extern_entropy(double (*g)(double rho, double T)){entropy_extern = g; thermal_type = 1;}
-  void modify_dTdP(double (*h)(double P, double T, double &rho_guess)){dTdP = h; thermal_type = 2;} // If the dTdP is set, it will overwrite the entropy method. Pressure in cgs unit. rho_guess is only used as the initial guess of density solver. Shouldn't be used to calculate temperature gradient.
+  void modify_dTdP(double (*h)(double P, double T, double &rho_guess)){dTdP = h; thermal_type = 2;} // If the dTdP is set, it will overwrite the entropy method. Pressure in cgs unit. rho_guess is only used as the initial guess of density solver. Shouldn't be used to calculate temperature gradient. The dTdP should be in the unit of K/microbar.
   
   double BM3(double rho);	// input rho in g/cm^3, return pressure in GPa, type 0
   double BM4(double rho);	// type 1
