@@ -452,9 +452,9 @@ EOS* find_phase_water_default(double P, double T)
       //return IceVIIp;         //Region of possible transitional Ice VII' reported in Grande not used in default
       return IceVII_Bezacier;
   }
-  else if (P<700)				// liquid water or Ice X. The melting curve is so uncertain. Assuming all ice above 30.9 GPa.
-  {
-    if(T<1300)
+  else if (P<700)				// Phase diagram becomes more uncertain over 30.9 GPa
+  {						// use Ice X if T<2250 and P<700 otherwise supercritical similiar to AQUA 
+    if(T<2250)
       return IceX;
     else
       return Water_sc_Mazevet;
@@ -475,13 +475,6 @@ EOS* find_phase_water_tabulated(double P, double T)
 
   P /= 1E10;			// convert microbar to GPa
   return H2O_AQUA;
-
-  if (P < 62.5)
-  {
-    return H2O_AQUA;
-  }
-  else
-    return Water_sc_Mazevet;
 }
 
 // ========== Phase Diagram for Atmosphere  ================
