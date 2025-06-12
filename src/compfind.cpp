@@ -11,55 +11,73 @@ void multiplanet(vector<PhaseDgm> &Comp, vector<double> Tgap, int solver, vector
   double deltat;
   hydro* planet;
 
-  ifstream fin(infile.c_str());
-  if(!fin)
-  {
-    cout<<"Error: Failed to open the eos input file "<<infile<<endl;
+  ifstream fin(infile.c_str());  //open input file
+  if (!fin) {
+    cout << "Error: cannot open " << infile << endl;
     exit(1);
   }
 
-  double *Mp, *fW, *fC, *fM, MC, MM, MW, MG;
+  vector<double> Mp, fC, fM, fW, Tsurf; //containers
   vector<double> Rs;
-  string sline;
-  int nline = 0;
+  string line;
 
-  getline(fin,sline);
-  streampos beginpos = fin.tellg();
+  getline(fin, line); //skip header
 
-  while(getline(fin,sline))
-  {
-    if(!sline.empty())
-      nline++;
+  bool hasTsurf = false;
+  size_t lineno  = 1;                // start after header
+  while (getline(fin, line)) {
+    ++lineno;
+    if (line.find_first_not_of(" \t\r\n") == string::npos) continue; // blank
+
+    stringstream ss(line);
+    double mp, fc, fm, fw, ts;
+
+    if (!(ss >> mp >> fc >> fm >> fw)) {           // need 4 numbers
+      cout << "ERROR: malformed row " << lineno << endl;
+      exit(1);
+    }
+
+    if (ss >> ts) {               // 5th number,  then we have Tsurf
+      hasTsurf = true;
+      Tsurf.push_back(ts);
+    } else if (hasTsurf) {        // earlier rows had 5, this one only 4
+      cout << "ERROR: inconsistent column count at row "
+          << lineno << endl;
+      exit(1);
+    }
+
+    Mp.push_back(mp);
+    fC.push_back(fc);
+    fM.push_back(fm);
+    fW.push_back(fw);
   }
-
-  fin.clear();
-  fin.seekg(beginpos);
-
-  Mp = new double[nline];
-  fC = new double[nline];
-  fM = new double[nline];
-  fW = new double[nline];
-
-  for(int i=0; i<nline; i++)
-    fin>>Mp[i]>>fC[i]>>fM[i]>>fW[i];
 
   fin.close();
+  const int nline = static_cast<int>(Mp.size());
 
-  ofstream fout(outfile.c_str(), std::ofstream::trunc);
-  if(!fout)
-  {
-    cout<<"ERROR: failed to open output file., "<<outfile<<"  Exit"<<endl;
+  cout << "Read " << nline << " planets (" << (hasTsurf?"with":"without")
+     << " Tsurf column)\n";
+
+  ofstream fout(outfile.c_str(), ofstream::trunc); //open output
+  if (!fout) {
+    cout << "ERROR: cannot open " << outfile << endl;
     exit(1);
   }
+
   gettimeofday(&start_time,NULL);
   fout<<"MCore\t MMantle\t MWater\t MGas\t RCore\t RMantle\t RWater\t RPlanet"<<endl;
   cout<<"Percentage completed:"<<endl;
+
+  //#pragma omp parallel for schedule(dynamic) num_threads(3) private(planet, Rs)   
   for(int i=0; i<nline; i++)
   {
+    double  MC, MM, MW, MG;
     MC = fC[i]*Mp[i];
     MM = fM[i]*Mp[i];
     MW = fW[i]*Mp[i];
     MG = Mp[i] - (MW+MC+MM);
+    if(hasTsurf==true)
+      Tgap[3]=Tsurf[i];
 
     if(MG < 0)
     {
@@ -81,6 +99,7 @@ void multiplanet(vector<PhaseDgm> &Comp, vector<double> Tgap, int solver, vector
     else
 	    planet = fitting_method(Comp, {MC, MM, MW, MG}, Tgap, ave_rho, P0, isothermal);
     
+    //#pragma omp critical
     if (!planet)
 	    fout<<MC<<"\t "<<MM<<"\t "<<MW<<"\t "<<MG<<"\t No solution found."<<endl;
     else
@@ -109,10 +128,6 @@ void multiplanet(vector<PhaseDgm> &Comp, vector<double> Tgap, int solver, vector
 
   cout<<"running time "<<deltat<<'s'<<endl;
 
-  delete[] Mp;
-  delete[] fW;
-  delete[] fC;
-  delete[] fM;
 }
 
 
