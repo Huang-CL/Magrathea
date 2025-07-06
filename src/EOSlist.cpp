@@ -426,9 +426,50 @@ EOS *IceZeng2013FMNR = new EOS("Ice (FMNR 2009)", FMNR[1], FMNR[0], 13);
 // Adiabtic Ideal Gas, Parameter 5 can be changed for mean molecular weight of gas. 3 g/mol = mix of H/He
 // DEFAULT
 
-double Gas_array[3][2] = {{0,6}, {5,3}, {14,2}};
+double Gas_array[3][2] = {{0,6}, {5,2}, {14,2}};
 
 EOS *Gas = new EOS("Ideal Gas", Gas_array, 3);
+// -----------------------------------
+// van der Waals, H2, 
+
+double vdW_H2_array[5][2] = {{0,6}, {5,2}, {14,2}, {33, 0.2452}, {34, 0.0265}};
+
+EOS *vdW_H2 = new EOS("H2 vdW", vdW_H2_array, 5);
+
+// -----------------------------------
+// van der Waals, He, 
+
+double vdW_He_array[5][2] = {{0,6}, {5,4}, {14,1}, {33, 0.0346}, {34, 0.0238}};
+
+EOS *vdW_He = new EOS("He vdW", vdW_He_array, 5);
+
+// -----------------------------------
+// van der Waals, H2O, 
+
+double vdW_H2O_array[5][2] = {{0,6}, {5,18}, {14,3}, {33, 5.537}, {34, 0.0305}};
+
+EOS *vdW_H2O = new EOS("H2O vdW", vdW_H2O_array, 5);
+
+// -----------------------------------
+// van der Waals, CH4, 
+
+double vdW_CH4_array[5][2] = {{0,6}, {5,16}, {14,3}, {33, 2.303}, {34, 0.0431}};
+
+EOS *vdW_CH4 = new EOS("CH4 vdW", vdW_CH4_array, 5);
+
+// -----------------------------------
+// van der Waals, NH3, 
+
+double vdW_NH3_array[5][2] = {{0,6}, {5,17}, {14,3}, {33, 4.225}, {34, 0.0371}};
+
+EOS *vdW_NH3 = new EOS("NH3 vdW", vdW_NH3_array, 5);
+
+// -----------------------------------
+// van der Waals, CO2, 
+
+double vdW_CO2_array[5][2] = {{0,6}, {5,44}, {14,2}, {33, 3.658}, {34, 0.0429}};
+
+EOS *vdW_CO2 = new EOS("CO2 vdW", vdW_CO2_array, 5);
 
 // -----------------------------------
 // Isothermal Ideal Gas

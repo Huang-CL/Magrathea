@@ -497,6 +497,7 @@ EOS* find_phase_gas_default(double P, double T)
   else if (P < 1E8)
     return Gas_iso;
   else
+    //return vdW_H2;
     return Gas;
 }
 

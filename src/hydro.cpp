@@ -315,7 +315,6 @@ hydro::hydro(double Rp, vector<PhaseDgm> &Comp_in, vector<double> Mass_Comp, vec
         else
           if (verbose)
             cout<<"Warning: In the first round integration of mode 0, at radius "<<y[0]<<"cm, mass "<<(Mtot - m)/ME<<"MEarth, pressure "<<y[1]/1E10<<"GPa, temperature "<<y[2]<<" no solution can be found.  The final step size is "<<h/ME<<" MEarth. Error code: "<<gsl_strerror (status)<<' '<<status<<endl;
-
         rb.clear();
         P.clear();
         M.clear();
@@ -435,7 +434,7 @@ hydro::hydro(double Rp, vector<PhaseDgm> &Comp_in, vector<double> Mass_Comp, vec
       Phaselist.insert(Phaselist.begin(), new_Phase);
       params.x[0] = rhot;
       h = min(h, 2*pow(y[0],3)*rhot);
-      //cout<<y[0]/RE<<"RE "<<m/ME<<"ME "<<(mmax-m)/ME<<"ME "<<y[1]/1E10<<"GPa "<<params.x[0]<<"g/cm^3 "<<y[2]<<"K "<<h/ME<<"ME "<<Phaselist[0]->getEOS()<<" thermal_type "<<Phaselist[0]->getthermal()<<" params thermal "<<params.x[1]<<endl;
+      //cout<<rb.size()<<' '<<y[0]/RE<<"RE "<<m/ME<<"ME "<<(mmax-m)/ME<<"ME "<<y[1]/1E10<<"GPa "<<params.x[0]<<"g/cm^3 "<<y[2]<<"K "<<h/ME<<"ME "<<Phaselist[0]->getEOS()<<" thermal_type "<<Phaselist[0]->getthermal()<<" params thermal "<<params.x[1]<<endl;
     }
 
     if (i)

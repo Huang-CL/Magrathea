@@ -37,7 +37,7 @@ struct EOS
   double Holzapfel(double rho);	// type 3
   double Keane(double rho);	// type 4
   // type 5, Water, low pressure ice EOS from Choukroun & Grasset
-  // type 6, ideal gas law.
+  double vdW_gas(double rho, double T); // type 6, Van der Waals gas or ideal gas. Both EOSs provide reasonable result up to 0.1 GPa. Ideal gas overestimate the density, VdW underestimate the density.
   // type 7, interpolate an input file
   // type 8-13 the same as 0-5 but for RTpress style. 8 BM3, 9 BM4, 10 Vinet, 11 Holzapfel, 12 Keane, 13 Choukroun
   
@@ -113,6 +113,7 @@ private:
   double V0, K0, K0p, K0pp, mmol, P0, Theta0, gamma0, beta, gammainf, gamma0p, e0, g, T0, alpha0, alpha1, xi, cp_a, cp_b, cp_c;
   double at1, at2, at3, at4, ap1, ap2, ap3, ap4;
   int n, Z;
+  double a_vdW, b_vdW;         // van der Waals constants.
   bool Debye_approx;		       // Debye approximate or Einstein approximate.
   int thermal_type;		       // Indicates the thermal type of the phase.  0 indicates no temperature profile available, 1 indicates entropy method, 2 indicates the temperature gradient method, 3 indicates ideal gas, 4 indicates the EOS is fitted along the isentrope, 5 indicates no Theta0, 6 indicates has Theta 0 but no electron pressure, 7 indicates has electron pressure as well, type 8, RTpress style, type 9 thermal expansion
   double *rhotable, *Ptable, *temptable, *adiabattable;	// density table in cgs, Ptable in GPa.
@@ -157,8 +158,16 @@ private:
 23.	Debye_approx, whether use Debye approximation or Einstein approximation. Debye approximation is slower but more accurate at temperature lower than Debye/Einstein temperature.  Positive number for Debye, otherwise Einstein.
 24.     thermal_type, indicates the thermal type of the phase.  0 indicates no temperature profile available, 1 indicates entropy method, 2 indicates the temperature gradient method.  The only method to set the gradient is using the modify_dTdP function, 3 indicates ideal gas, 4 indicates the EOS is fitted along the isentrope, type 8 indicates RTpress style .
 25-32.  at1-at4 & ap1 - ap4
+33. van der Waals constant a in bar L^2/mol^2
+34. van der Waals constant b in L/mol
 
-For RTpress style of EOS, also need a _b array. They are fitted polynomial parameters of the thermal coefficients b(V) in erg/mol.  Convert eV/atom to erg/mol need to multiply eV_erg*n*NA. For example, for MgSiO3, 0.9821 eV/atom = 4.824E12 *0.9821 erg/mol = 4.738E12 erg/mol.*/
+For RTpress style of EOS, also need a _b array. They are fitted polynomial parameters of the thermal coefficients b(V) in erg/mol.  Convert eV/atom to erg/mol need to multiply eV_erg*n*NA. For example, for MgSiO3, 0.9821 eV/atom = 4.824E12 *0.9821 erg/mol = 4.738E12 erg/mol.
+
+Van der Waals EoS (P  + a(n/V)^2) (1 - b(n/V)) = (n/V) R T
+a = 27 (R Tc)^2 / (64 Pc), b = R Tc / (8 Pc)
+Tc and Pc available in "The properties of gases and liquids 5th edition" Poling, Prausnitz, O'Connel, Appendix A
+a and b from CRC Handbook of Chemistry and Physics, section Fluid Properties, Lide & Haynes.
+*/
 };
 
 double P_EOS(double rho, void *params);
