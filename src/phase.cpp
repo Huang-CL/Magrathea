@@ -366,7 +366,7 @@ EOS* find_phase_C_simple(double P, double T)
     return NULL;
   P /= 1E10;      // convert microbar to GPa
   
-  if(P <= 1.949+(T+273)/4)  //transition curve from Kennedy and Kennedy (1976)
+  if(P <= 1.949+(T+273)/400)  //transition curve from Kennedy and Kennedy (1976)
     return Graph;
   else
     return Diam;
