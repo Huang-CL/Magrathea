@@ -400,6 +400,12 @@ int main(int argc, char* argv[])
   delete Plat;
   delete Graph;
   delete Diam;
+  delete vdW_H2;
+  delete vdW_He;
+  delete vdW_H2O;
+  delete vdW_CH4;
+  delete vdW_NH3;
+  delete vdW_CO2; 
 
   return 0;
 }
