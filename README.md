@@ -63,7 +63,7 @@ MAGRATHEA uses a shooting to a fitting-point method with a Runge-Kutta-Fehlberg 
 
 ### Input Modes ##
 
-**There are 8 modes with different functionality described below. These modes can be used with the 8 config (.cfg) files in the `run` directory. The code is then ran with `./planet run/mode_.cfg`.**
+**There are 9 modes with different functionality described below. These modes can be used with the 9 config (.cfg) files in the `run` directory. The code is then ran with `./planet run/mode_.cfg`.**
 
 ### mode0.cfg ###
 The basic capability: calculate the structure of a planet given the mass of each layer.
