@@ -48,7 +48,7 @@ PhaseDgm::~PhaseDgm()
 }
 
 void PhaseDgm::set_phase_highP(int k, double *start_pressure, EOS** phase_name)
-  // start pressure is an array with dimension k-1.  The first phase will replace the one with the same name in the phase diagram.
+// start pressure is an array with dimension k-1.  The first phase will replace the one with the same name in the phase diagram.
 {
   if(n > 1)
     delete[] start_P;
@@ -101,9 +101,9 @@ EOS* PhaseDgm::find_phase(double P, double T)
       s = phase_matched->getEOS();
       first_token = s.substr(0,s.find(" ("));
       if(first_token == phase_list[0]->getEOS())
-	return phase_list[0];
+        return phase_list[0];
       else
-	return phase_matched;
+        return phase_matched;
     }
   }
 }
@@ -314,11 +314,11 @@ EOS* find_phase_Si_default(double P, double T)
   else if (T > 1830*pow(1+P/4.6, 0.33)) // Melting curve from Belonoshko et al. 2005 Eq. 2
     return Si_Liquid_Wolf;
   else if (P > 24.3+(-2.12E-4*T)+(-3.49E-7*pow(T, 2))) // Dorogokupets et al. 2015
-      return Pv_Doro;
+    return Pv_Doro;
   else if (P > 8.69+6.05E-3*T)
-      return Rwd;
+    return Rwd;
   else if (P > 9.45+2.76E-3*T)
-      return Wds;
+    return Wds;
   else
     return Fo;
 }
@@ -366,7 +366,7 @@ EOS* find_phase_C_simple(double P, double T)
     return NULL;
   P /= 1E10;      // convert microbar to GPa
   
-  if(P <= 1.949+(T+273)/4)  //transition curve from Kennedy and Kennedy (1976)
+  if(P <= 1.949+(T+273)/400)  //transition curve from Kennedy and Kennedy (1976)
     return Graph;
   else
     return Diam;
@@ -432,30 +432,37 @@ EOS* find_phase_water_default(double P, double T)
       
     else
       return IceVII_Bezacier;
-      //return IceVII_FFH2004;  // Examples of choosing other EOSs
-      //return IceVII;
-      //return IceZeng2013FFH;
+    //return IceVII_FFH2004;  // Examples of choosing other EOSs
+    //return IceVII;
+    //return IceZeng2013FFH;
   }
 
   else if(P < 5.10)		// liquid water or Ice VII.
   {
     if(T>1200)			// A dummy melting curve to avoid ice VII EOS extrapolated to temperature too high.
-      return Water_sc_dummy;
+      return Water_sc_Mazevet;
     else
       return IceVII_Bezacier;
   }
-    
   else if(P < 30.9)		// liquid water or Ice VII'.
   {
     if(T>1200)			// A dummy melting curve to avoid Ice VII EOS extrapolated to temperature too high.
-      return Water_sc_dummy;
+      return Water_sc_Mazevet;
     else
       //return IceVIIp;         //Region of possible transitional Ice VII' reported in Grande not used in default
       return IceVII_Bezacier;
-  }  
-  else				// liquid water or Ice X. The melting curve is so uncertain. Assuming all ice above 30.9 GPa.
-    return IceX;
+  }
+  else if (P<700)				// Phase diagram becomes more uncertain over 30.9 GPa
+  {						// use Ice X if T<2250 and P<700 otherwise supercritical similiar to AQUA 
+    if(T<2250)
+      return IceX;
+    else
+      return Water_sc_Mazevet;
+  }
+  else
+    return Water_sc_Mazevet;
 }
+
 
 // ---------------------------------
 // AQUA Haldemann et al. 2020 Tabulated Ice, Liquid, Vapor, Supercritical
@@ -468,6 +475,14 @@ EOS* find_phase_water_tabulated(double P, double T)
 
   P /= 1E10;			// convert microbar to GPa
   return H2O_AQUA;
+
+  if (P < 62.5)
+  {
+    return H2O_AQUA;
+  }
+  else
+    return Water_sc_Mazevet;
+
 }
 
 // ========== Phase Diagram for Atmosphere  ================
@@ -482,6 +497,7 @@ EOS* find_phase_gas_default(double P, double T)
   else if (P < 1E8)
     return Gas_iso;
   else
+    //return vdW_H2;
     return Gas;
 }
 
@@ -528,13 +544,13 @@ EOS* find_phase(double m, double MC, double MM, double MW, double MG, double P, 
     else				// return the outermost existing layer 
     {
       if(MG > 1E-18)
-	return atm.find_phase(P,T);
+        return atm.find_phase(P,T);
       else if(MW > 1E-18)
-	return water.find_phase(P,T);
+        return water.find_phase(P,T);
       else if(MM > 1E-18)
-	return mant.find_phase(P,T);
+        return mant.find_phase(P,T);
       else
-	return core.find_phase(P,T);
+        return core.find_phase(P,T);
     }
   }
   else
@@ -551,13 +567,13 @@ EOS* find_phase(double m, double MC, double MM, double MW, double MG, double P, 
     else				// return the outermost existing layer 
     {
       if(MG > 1E-18)
-	return atm.find_phase(P,T);
+        return atm.find_phase(P,T);
       else if(MW > 1E-18)
-	return water.find_phase(P,T);
+        return water.find_phase(P,T);
       else if(MM > 1E-18)
-	return mant.find_phase(P,T);
+        return mant.find_phase(P,T);
       else
-	return core.find_phase(P,T);
+        return core.find_phase(P,T);
     }
   }
 }  
@@ -582,11 +598,11 @@ EOS* find_phase(double m, vector<PhaseDgm> &Comp, vector<double> M, double P, do
     if (inward)
     {
       if (m < mass_layers*ME)
-	return Comp[i].find_phase(P, T);
+        return Comp[i].find_phase(P, T);
     }
     else
       if (m <= mass_layers*ME)
-	return Comp[i].find_phase(P, T);
+        return Comp[i].find_phase(P, T);
   }
   // if nothing matched, return the outermost existing layer
   return Comp.back().find_phase(P, T);

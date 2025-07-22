@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
   float step=0;
   vector<int> layers={1,1,0,0};
   float rerr=0;
-
+  Water_sc_Mazevet -> modify_dTdP(dTdP_S_H2OSC);
 
   //Parse input file
   try{
@@ -92,80 +92,79 @@ int main(int argc, char* argv[])
     }
     //Get parameters specific to each mode
     switch (input_mode){
-      case 0:
-        Mcomp[0]=options.GetOptionDouble("mass_of_core");
-        Mcomp[1]=options.GetOptionDouble("mass_of_mantle");
-        Mcomp[2]=options.GetOptionDouble("mass_of_hydro");
-        Mcomp[3]=options.GetOptionDouble("mass_of_atm");
-        Tgap[0]=options.GetOptionDouble("temp_jump_3"); 
-        Tgap[1]=options.GetOptionDouble("temp_jump_2");
-        Tgap[2]=options.GetOptionDouble("temp_jump_1");
-        Tgap[3]=options.GetOptionDouble("surface_temp");
-	      outputfile=options.GetOptionString("output_file");
-	      break;
-      case 1:
-        Mcomp[0]=options.GetOptionDouble("mass_of_core");
-        Mcomp[1]=options.GetOptionDouble("mass_of_mantle");
-        Mcomp[2]=options.GetOptionDouble("mass_of_hydro");
-        outputfile=options.GetOptionString("output_file");
-        break;
-      case 2:
-        layer_index=options.GetOptionDouble("layer_index");
-        mass_frac=options.GetOptionDouble("mass_frac");
-        min_mass=options.GetOptionDouble("min_mass");
-        max_mass=options.GetOptionDouble("max_mass");
-        step_mass=options.GetOptionDouble("step_mass");
-        break;
-      case 3:
-        inputfile=options.GetOptionString("input_file");
-        solver=options.GetOptionDouble("solver");
-        Tgap[0]=options.GetOptionDouble("temp_jump_3"); 
-        Tgap[1]=options.GetOptionDouble("temp_jump_2");
-        Tgap[2]=options.GetOptionDouble("temp_jump_1");
-        Tgap[3]=options.GetOptionDouble("surface_temp");
-	      outputfile=options.GetOptionString("output_file");      
-        break;
-      case 4:
-        inputfile=options.GetOptionString("input_file");
-        outputfile=options.GetOptionString("output_file");
-        findlayer=options.GetOptionDouble("find_layer");
-        layers[options.GetOptionDouble("layer_inner")-1]=1;
-        layers[options.GetOptionDouble("layer_outer")-1]=1;
-        minPMR=options.GetOptionDouble("PMR_min");
-        maxPMR=options.GetOptionDouble("PMR_max");
-        step=options.GetOptionDouble("PMR_step");
-        rerr=options.GetOptionDouble("R_error");
-        Tgap[0]=options.GetOptionDouble("temp_jump_3"); 
-        Tgap[1]=options.GetOptionDouble("temp_jump_2");
-        Tgap[2]=options.GetOptionDouble("temp_jump_1");
-        Tgap[3]=options.GetOptionDouble("surface_temp");
-        break;
-      case 5:   
-        break; //must be run from main.cpp
-      case 6:
-        inputfile=options.GetOptionString("input_file");
-        outputfile=options.GetOptionString("output_file");
-        layer_index=options.GetOptionDouble("layer_index");
-        mass_frac=options.GetOptionDouble("mass_frac");   
-        break;
-      case 7:
-        inputfile=options.GetOptionString("input_file");
-        outputfile=options.GetOptionString("output_file");
-        Mcomp[0]=options.GetOptionDouble("mass_of_core");
-        Mcomp[1]=options.GetOptionDouble("mass_of_mantle");
-        Mcomp[2]=options.GetOptionDouble("mass_of_hydro");
-        Mcomp[3]=options.GetOptionDouble("mass_of_atm");
-        Tgap[0]=options.GetOptionDouble("temp_jump_3"); 
-        Tgap[1]=options.GetOptionDouble("temp_jump_2");
-        Tgap[2]=options.GetOptionDouble("temp_jump_1");
-        Tgap[3]=options.GetOptionDouble("surface_temp");
-        break;
+    case 0:
+      Mcomp[0]=options.GetOptionDouble("mass_of_core");
+      Mcomp[1]=options.GetOptionDouble("mass_of_mantle");
+      Mcomp[2]=options.GetOptionDouble("mass_of_hydro");
+      Mcomp[3]=options.GetOptionDouble("mass_of_atm");
+      Tgap[0]=options.GetOptionDouble("temp_jump_3"); 
+      Tgap[1]=options.GetOptionDouble("temp_jump_2");
+      Tgap[2]=options.GetOptionDouble("temp_jump_1");
+      Tgap[3]=options.GetOptionDouble("surface_temp");
+      outputfile=options.GetOptionString("output_file");
+      break;
+    case 1:
+      Mcomp[0]=options.GetOptionDouble("mass_of_core");
+      Mcomp[1]=options.GetOptionDouble("mass_of_mantle");
+      Mcomp[2]=options.GetOptionDouble("mass_of_hydro");
+      outputfile=options.GetOptionString("output_file");
+      break;
+    case 2:
+      layer_index=options.GetOptionDouble("layer_index");
+      mass_frac=options.GetOptionDouble("mass_frac");
+      min_mass=options.GetOptionDouble("min_mass");
+      max_mass=options.GetOptionDouble("max_mass");
+      step_mass=options.GetOptionDouble("step_mass");
+      break;
+    case 3:
+      inputfile=options.GetOptionString("input_file");
+      solver=options.GetOptionDouble("solver");
+      Tgap[0]=options.GetOptionDouble("temp_jump_3"); 
+      Tgap[1]=options.GetOptionDouble("temp_jump_2");
+      Tgap[2]=options.GetOptionDouble("temp_jump_1");
+      Tgap[3]=options.GetOptionDouble("surface_temp");
+      outputfile=options.GetOptionString("output_file");      
+      break;
+    case 4:
+      inputfile=options.GetOptionString("input_file");
+      outputfile=options.GetOptionString("output_file");
+      findlayer=options.GetOptionDouble("find_layer");
+      layers[options.GetOptionDouble("layer_inner")-1]=1;
+      layers[options.GetOptionDouble("layer_outer")-1]=1;
+      minPMR=options.GetOptionDouble("PMR_min");
+      maxPMR=options.GetOptionDouble("PMR_max");
+      step=options.GetOptionDouble("PMR_step");
+      rerr=options.GetOptionDouble("R_error");
+      Tgap[0]=options.GetOptionDouble("temp_jump_3"); 
+      Tgap[1]=options.GetOptionDouble("temp_jump_2");
+      Tgap[2]=options.GetOptionDouble("temp_jump_1");
+      Tgap[3]=options.GetOptionDouble("surface_temp");
+      break;
+    case 5:   
+      break; //must be run from main.cpp
+    case 6:
+      inputfile=options.GetOptionString("input_file");
+      outputfile=options.GetOptionString("output_file");
+      layer_index=options.GetOptionDouble("layer_index");
+      mass_frac=options.GetOptionDouble("mass_frac");   
+      break;
+    case 7:
+      inputfile=options.GetOptionString("input_file");
+      outputfile=options.GetOptionString("output_file");
+      Mcomp[0]=options.GetOptionDouble("mass_of_core");
+      Mcomp[1]=options.GetOptionDouble("mass_of_mantle");
+      Mcomp[2]=options.GetOptionDouble("mass_of_hydro");
+      Mcomp[3]=options.GetOptionDouble("mass_of_atm");
+      Tgap[0]=options.GetOptionDouble("temp_jump_3"); 
+      Tgap[1]=options.GetOptionDouble("temp_jump_2");
+      Tgap[2]=options.GetOptionDouble("temp_jump_1");
+      Tgap[3]=options.GetOptionDouble("surface_temp");
+      break;
     }
-	
-   } catch (SettingsParserException& e) { // This will be triggered if an exception is thrown above.
-       std::cout << "\nException: " << e.what() << "\n"; // e.what() prints the exception message.
-       return EXIT_FAILURE;
-   }
+  } catch (SettingsParserException& e) { // This will be triggered if an exception is thrown above.
+    std::cout << "\nException: " << e.what() << "\n"; // e.what() prints the exception message.
+    return EXIT_FAILURE;
+  }
 
   //Set Phase Diagrams from string in config
   vector<PhaseDgm> Comp = {core, mant, water, atm};
@@ -202,11 +201,11 @@ int main(int argc, char* argv[])
 
 
   //START main code for the 8 input modes
-    // 0: regular solver, 1: temperature-free solver, 2: two-layer solver, 
-    // 3: bulk input mode with regular solver
-    // 4: composition finder, finds third layer mass to match a mass and radius measurement
-    // 5: modify a built-in EOS on they fly, 
-    // 6: iterate over EOS modifications with two-layer solver, 5: iterate over EOS with regular solver
+	// 0: regular solver, 1: temperature-free solver, 2: two-layer solver, 
+	// 3: bulk input mode with regular solver
+	// 4: composition finder, finds third layer mass to match a mass and radius measurement
+	// 5: modify a built-in EOS on they fly, 
+	// 6: iterate over EOS modifications with two-layer solver, 5: iterate over EOS with regular solver
 
   if (input_mode == 0)
   {
@@ -220,7 +219,7 @@ int main(int argc, char* argv[])
     if (!planet)
     {
       for (unsigned int i=0; i < Mcomp.size(); i++)
-	cout<<Mcomp[i]<<", ";
+        cout<<Mcomp[i]<<", ";
       cout<<"\t No solution found."<<endl;
     }
     else
@@ -401,6 +400,7 @@ int main(int argc, char* argv[])
   delete H2O_SeaFreeze;
   delete Water_ExoPlex;
   delete Water;
+  delete Water_sc_Mazevet;
   delete Water_sc_dummy;
   delete IceIh;
   delete IceIh_ExoPlex;
@@ -427,6 +427,12 @@ int main(int argc, char* argv[])
   delete Plat;
   delete Graph;
   delete Diam;
+  delete vdW_H2;
+  delete vdW_He;
+  delete vdW_H2O;
+  delete vdW_CH4;
+  delete vdW_NH3;
+  delete vdW_CO2; 
 
   return 0;
 }

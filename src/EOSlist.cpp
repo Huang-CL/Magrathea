@@ -269,8 +269,14 @@ EOS *Water = new EOS("Water (Valencia)", Water_array, sizeof(Water_array)/2/size
 
 // -----------------------------------
 // Dummy for supercritical water. 
-// DEFAULT
 EOS *Water_sc_dummy = new EOS("Water supercritical Dummy", Water_array, sizeof(Water_array)/2/sizeof(Water_array[0][0]));
+
+// -----------------------------------
+// Supercritical water. Mazevet et al. 2019, A&A 621
+// https://www.ioffe.ru/astro/H2O/index.html
+// DEFAULT
+EOS *Water_sc_Mazevet = new EOS("Water supercritical Mazevet", H2OSC);
+
 
 // -----------------------------------
 // Ice Ih, Feistel & Wagner 2006, Acuna et al. 2021
@@ -403,7 +409,7 @@ EOS *Ice_Dummy = new EOS("Ice Dummy", IceVI_ExoPlex_array, sizeof(IceVI_ExoPlex_
 // Modified EOSs to match Zeng 2013
 double FMNR[2][13] = {{2.45, 2.5, 3.25, 3.5, 3.75, 4, 5, 6, 7, 9, 11, 13, 15}, {37.3, 43.6, 140, 183, 234, 290, 587, 966, 1440, 2703, 4405, 6416, 8893}};
 
-double Zeng2013FFH(double P, double T)
+double Zeng2013FFH(double P, double T, double rho_guess)
 {
   P/=1E10;			// convert to GPa
 
@@ -420,9 +426,50 @@ EOS *IceZeng2013FMNR = new EOS("Ice (FMNR 2009)", FMNR[1], FMNR[0], 13);
 // Adiabtic Ideal Gas, Parameter 5 can be changed for mean molecular weight of gas. 3 g/mol = mix of H/He
 // DEFAULT
 
-double Gas_array[3][2] = {{0,6}, {5,3}, {14,2}};
+double Gas_array[3][2] = {{0,6}, {5,2}, {14,2}};
 
 EOS *Gas = new EOS("Ideal Gas", Gas_array, 3);
+// -----------------------------------
+// van der Waals, H2, 
+
+double vdW_H2_array[5][2] = {{0,6}, {5,2}, {14,2}, {33, 0.2452}, {34, 0.0265}};
+
+EOS *vdW_H2 = new EOS("H2 vdW", vdW_H2_array, 5);
+
+// -----------------------------------
+// van der Waals, He, 
+
+double vdW_He_array[5][2] = {{0,6}, {5,4}, {14,1}, {33, 0.0346}, {34, 0.0238}};
+
+EOS *vdW_He = new EOS("He vdW", vdW_He_array, 5);
+
+// -----------------------------------
+// van der Waals, H2O, 
+
+double vdW_H2O_array[5][2] = {{0,6}, {5,18}, {14,3}, {33, 5.537}, {34, 0.0305}};
+
+EOS *vdW_H2O = new EOS("H2O vdW", vdW_H2O_array, 5);
+
+// -----------------------------------
+// van der Waals, CH4, 
+
+double vdW_CH4_array[5][2] = {{0,6}, {5,16}, {14,3}, {33, 2.303}, {34, 0.0431}};
+
+EOS *vdW_CH4 = new EOS("CH4 vdW", vdW_CH4_array, 5);
+
+// -----------------------------------
+// van der Waals, NH3, 
+
+double vdW_NH3_array[5][2] = {{0,6}, {5,17}, {14,3}, {33, 4.225}, {34, 0.0371}};
+
+EOS *vdW_NH3 = new EOS("NH3 vdW", vdW_NH3_array, 5);
+
+// -----------------------------------
+// van der Waals, CO2, 
+
+double vdW_CO2_array[5][2] = {{0,6}, {5,44}, {14,2}, {33, 3.658}, {34, 0.0429}};
+
+EOS *vdW_CO2 = new EOS("CO2 vdW", vdW_CO2_array, 5);
 
 // -----------------------------------
 // Isothermal Ideal Gas
@@ -492,4 +539,551 @@ double dTdP_gas(double P, double T)
     cout<<"Error: Can't get adiabatic temperature gradient for diatomic gas at P=0."<<endl;
     return numeric_limits<double>::quiet_NaN();
   }
+}
+
+double PH2OSC(double rho,double T)
+// Mazevet et al. 2019, A&A, 621
+// https://www.ioffe.ru/astro/H2O/index.html
+{
+  constexpr double UN_T6   = 0.3157746;             // ha/kB × 1e−6
+  constexpr double C13     = 1.0 / 3.0;
+  constexpr double Zmean   = 10.0 / 3.0;
+  constexpr double CMImean = 18.0 / 3.0;
+  constexpr double DENSCONV = 11.20587 * CMImean;   // g cm⁻³ → n_i  [au]
+  constexpr double TnkCONV  = 8.31447e13 / CMImean; // n_i kT factor [1.0e-6 erg cm⁻³]
+  constexpr double aW = 2.357;
+  constexpr double bW = 340.8;
+  // many extra params:
+  constexpr double P1=2.35, P3=5.9,  P4=3.78, P5=17.0, P7=1.5, P8=0.09;
+  constexpr double QW=0.00123797, PW=2.384, PQ=1.5;
+  constexpr double Q4=4.0, Q1=0.4, Q2=90.0;
+
+  const double T6   = T / 1.0e6;                   // K→MK
+  const double TEMP = T6 / UN_T6;                  // to atomic units (Ha/kB)
+
+  const double DENSI   = rho / DENSCONV;           // ion # density  [au]
+  const double DENSMOL = DENSI / 3.0;              // pseudo‑molecule density
+
+  // r_s (electron density parameter)
+  const double RS  = pow(0.75 / pi / DENSI / Zmean, C13);
+  const double GAME = 1.0 / (RS * TEMP);           // Γ_e
+  const double GAMEsq = sqrt(GAME);
+   
+  //  1) super‑ionic / plasma contribution 
+  const double ZNA    = 1.0 + P8 / RS / GAMEsq;
+  const double ZNA1RS = -P8 / RS / GAMEsq;
+  const double ZNA1G  =  0.5 * ZNA1RS;
+
+  const double ZNB     = P1 * RS / ZNA;
+  const double ZNB1RS  = ZNB * (1.0 - ZNA1RS / ZNA);
+  const double ZNB1G   = -ZNB * ZNA1G / ZNA;
+
+  const double ZNC   = 1.0 + P5 / GAME;
+  const double RS4   = pow(RS, P4);
+  const double ZNC4  = ZNC * sqrt(ZNC);       // ZNC^(1+0.5) = ZNC^1.5
+  const double ZNE   = P3 * RS4 / ZNC4;
+
+  const double ZNE1RS = P4 * ZNE;
+  const double ZNE1G  = ZNE * P7 / ZNC * P5 / GAME;
+
+  const double ZN     = 1.0 + ZNB + ZNE;
+  const double ZN1RS  = ZNB1RS + ZNE1RS;
+  const double ZN1G   = ZNB1G  + ZNE1G;
+
+  const double ZN1R = (ZN1G - ZN1RS) / 3.0;
+
+  const double ZEF  = Zmean / ZN;                 // effective ⟨Z⟩
+  const double ZDR  = -ZN1R / ZN;
+
+  const double DENSEF = DENSI * ZEF;
+
+  //  electron‑gas EOS (ideal Fermi gas) 
+  double CHI, FE, PE, UE, SE, CVE, CHITE, CHIRE;
+  ELECNR(DENSEF, TEMP,
+         CHI, FE, PE, UE, SE, CVE, CHITE, CHIRE);
+
+  const double FNkTsi = FE * ZEF;
+
+  const double FEDR  = PE * (1.0 + ZDR);
+
+  const double FDR = FEDR * ZEF + FE * ZEF * ZDR;
+
+  const double PnkTsi = FDR;
+
+  //  2) non‑ideal molecular piece
+  const double cW    = 1.0 + pow(QW / TEMP, PW);
+  const double bWPQ  = bW * DENSMOL * sqrt(bW * DENSMOL); // (bW*ρ)^1.5
+
+  const double FNkTmol = (-aW * DENSMOL / TEMP + bW * DENSMOL + bWPQ * cW / PQ) / 3.0;
+  const double PnkTmol = (-aW * DENSMOL / TEMP + bW * DENSMOL + bWPQ * cW)      / 3.0;
+
+  //  3) mix molecular + plasma via smooth switch YL/YH
+  const double X   = Q4 * log(Q1 * rho + Q2 * T);
+  const double X1R = Q4 * Q1 * rho   / (Q1 * rho + Q2 * T);
+
+  const double YL  = FERMIF(X);
+  const double YH  = 1.0 - YL;
+
+  const double YH1X = YH * YL;
+
+  const double YH1R = YH1X * X1R;
+
+  const double PnkTni = PnkTmol * YL + PnkTsi * YH + (FNkTsi - FNkTmol) * YH1R;
+
+  //  4) Ideal gas of pseudo‑molecules
+  const double PnkTid = C13;
+
+  //  5) total (non‑ideal + ideal)
+  double PnkT,PGPa;
+  PnkT = PnkTni + PnkTid;
+
+  //  7) auxiliary conversions
+  const double Tnk = TnkCONV * rho * T6;
+  PGPa = PnkT * Tnk / 1.0e10;   // → GPa
+  // PGPa = P/1E10 = PnkT * n k T / 1E10 = PnkT * rho * NA *k / MImean * T / 1E10
+  return PGPa;
+}
+
+
+double dTdP_S_H2O_of_rho(double rho, double T)
+// n_i number per volume
+// N_i number per mass
+// PnkT - pressure / n_i kT, where n_i=2*n_H+n_O=3*n_{H2O}
+// FNkT - free energy / N_i kT (up to an additive constant)
+// UNkT - internal energy / N_i kT
+// CV - heat capacity per unit volume /kN_i
+// CHIT - logarithmic derivative of pressure over temperature at constant density
+// CHIR - logarithmic derivative of pressure over density at constant temperature
+{
+  constexpr double UN_T6   = 0.3157746;             // ha/kB × 1e−6
+  constexpr double C13     = 1.0 / 3.0;
+  constexpr double AUM     = 1822.88848;            // m_u / m_e
+  constexpr double Zmean   = 10.0 / 3.0;
+  constexpr double CMImean = 18.0 / 3.0;
+  constexpr double DENSCONV = 11.20587 * CMImean;   // g cm⁻³ → n_i  [au]
+  constexpr double TnkCONV  = 8.31447e13 / CMImean; // n_i k factor [1e−6 erg cm⁻³]
+  constexpr double aW = 2.357;
+  constexpr double bW = 340.8;
+  constexpr double TCRIT = 0.00205;                 // 647.15 K in Hartree (k_B=1)
+  // many extra params:
+  constexpr double P1=2.35, P3=5.9,  P4=3.78, P5=17.0, P7=1.5, P8=0.09;
+  constexpr double QW=0.00123797, PW=2.384, PQ=1.5;
+  constexpr double Q4=4.0, Q1=0.4, Q2=90.0;
+  constexpr double PC1=0.0069, PC2=0.0031, PC3=0.00558, PC4=0.019;
+  constexpr double SBASE = 4.9;                     // entropy offset
+
+  const double T6   = T / 1.0e6;                   // K→MK
+  const double TEMP = T6 / UN_T6;                  // to atomic units (Ha/kB)
+
+  const double DENSI   = rho / DENSCONV;           // ion # density  [au]
+  const double DENSMOL = DENSI / 3.0;              // pseudo‑molecule density
+
+  // r_s (electron density parameter)
+  const double RS  = pow(0.75 / pi / DENSI / Zmean, C13);
+  const double GAME = 1.0 / (RS * TEMP);           // Γ_e
+  const double GAMEsq = sqrt(GAME);
+   
+  //  1) super‑ionic / plasma contribution 
+  const double ZNA    = 1.0 + P8 / RS / GAMEsq;
+  const double ZNA1RS = -P8 / RS / GAMEsq;
+  const double ZNA1G  =  0.5 * ZNA1RS;
+  const double ZNA2RS = -ZNA1RS;
+  const double ZNA2RSG=  0.5 * ZNA2RS;
+  const double ZNA2G  =  0.5 * ZNA2RSG;
+
+  const double ZNB     = P1 * RS / ZNA;
+  const double ZNB1RS  = ZNB * (1.0 - ZNA1RS / ZNA);
+  const double ZNB1G   = -ZNB * ZNA1G / ZNA;
+
+  const double ZNB2RS  = ZNB1RS * (1.0 - ZNA1RS / ZNA) - ZNB * ZNA2RS / ZNA
+                          + ZNB * pow(ZNA1RS / ZNA, 2);
+  const double ZNB2G   = -ZNB1G * ZNA1G / ZNA - ZNB * ZNA2G / ZNA
+                          + ZNB * pow(ZNA1G / ZNA, 2);
+  const double ZNB2RSG = -ZNB1RS * ZNA1G / ZNA - ZNB * ZNA2RSG / ZNA
+                          + ZNB * ZNA1G * ZNA1RS / (ZNA*ZNA);
+
+  const double ZNC   = 1.0 + P5 / GAME;
+  const double RS4   = pow(RS, P4);
+  const double ZNC4  = ZNC * sqrt(ZNC);       // ZNC^(1+0.5) = ZNC^1.5
+  const double ZNE   = P3 * RS4 / ZNC4;
+
+  const double ZNE1RS = P4 * ZNE;
+  const double ZNE1G  = ZNE * P7 / ZNC * P5 / GAME;
+  const double ZNE2RS = P4 * ZNE1RS;
+  const double ZNE2G  = ZNE1G * (ZNE1G / ZNE + P5 / GAME / ZNC - 1.0);
+  const double ZNE2RSG= P4 * ZNE1G;
+
+  const double ZN     = 1.0 + ZNB + ZNE;
+  const double ZN1RS  = ZNB1RS + ZNE1RS;
+  const double ZN1G   = ZNB1G  + ZNE1G;
+  const double ZN2RS  = ZNB2RS + ZNE2RS;
+  const double ZN2G   = ZNB2G  + ZNE2G;
+  const double ZN2RSG = ZNB2RSG+ ZNE2RSG;
+
+  const double ZN1R = (ZN1G - ZN1RS) / 3.0;
+  const double ZN1T = -ZN1G;
+  const double ZN2R = (ZN2RS - 2.0 * ZN2RSG + ZN2G) / 9.0;
+  const double ZN2T = ZN2G;
+  const double ZN2RT= -(ZN2G - ZN2RSG) / 3.0;
+
+  const double ZEF  = Zmean / ZN;                 // effective ⟨Z⟩
+  const double ZDR  = -ZN1R / ZN;
+  const double ZDT  = -ZN1T / ZN;
+  const double ZDRR = -ZN2R / ZN + pow(ZN1R / ZN, 2);
+  const double ZDTT = -ZN2T / ZN + pow(ZN1T / ZN, 2);
+  const double ZDRT = ZN1R * ZN1T / (ZN*ZN) - ZN2RT / ZN;
+
+  const double DENSEF = DENSI * ZEF;
+
+  //  electron‑gas EOS (ideal Fermi gas) 
+  double CHI, FE, PE, UE, SE, CVE, CHITE, CHIRE;
+  ELECNR(DENSEF, TEMP,
+         CHI, FE, PE, UE, SE, CVE, CHITE, CHIRE);
+
+  const double FNkTsi = FE * ZEF;
+
+  const double FEDR  = PE * (1.0 + ZDR);
+  const double FEDT  = -UE + PE * ZDT;
+  const double FEDRR = PE * (CHIRE - 1.0) * pow(1.0 + ZDR, 2) + PE * ZDRR;
+  const double FEDRT = (PE * (CHITE - 1.0) + PE * (CHIRE - 1.0) * ZDT) *
+                       (1.0 + ZDR) + PE * ZDRT;
+  const double FEDTT = UE - CVE + PE * (CHITE - 1.0) * ZDT * 2.0
+                       + PE * (CHIRE - 1.0) * pow(ZDT, 2)
+                       + PE * ZDTT;
+
+  const double FDR = FEDR * ZEF + FE * ZEF * ZDR;
+  const double FDT = FEDT * ZEF + FE * ZEF * ZDT;
+
+  const double FsiDRR = FEDRR * ZEF + 2.0 * FEDR * ZEF * ZDR
+                         + FE * ZEF * (pow(ZDR, 2) + ZDRR);
+  const double FsiDTT = FEDTT * ZEF + 2.0 * FEDT * ZEF * ZDT
+                         + FE * ZEF * (pow(ZDT, 2) + ZDTT);
+  const double FsiDRT = FEDRT * ZEF + FEDR * ZEF * ZDT + FEDT * ZEF * ZDR
+                         + FE * ZEF * (ZDR * ZDT + ZDRT);
+
+  const double PnkTsi = FDR;
+  const double UNkTsi = -FDT;
+
+  //  2) non‑ideal molecular piece
+  const double cW    = 1.0 + pow(QW / TEMP, PW);
+  const double cW1T  = -PW * pow(QW / TEMP, PW);
+  const double cW2T  = -PW * cW1T;
+  const double bWPQ  = bW * DENSMOL * sqrt(bW * DENSMOL); // (bW*ρ)^1.5
+
+  const double FNkTmol = (-aW * DENSMOL / TEMP + bW * DENSMOL + bWPQ * cW / PQ) / 3.0;
+  const double PnkTmol = (-aW * DENSMOL / TEMP + bW * DENSMOL + bWPQ * cW)      / 3.0;
+  const double UNkTmol = -( aW * DENSMOL / TEMP + bWPQ * cW1T / PQ)              / 3.0;
+
+  const double FmDRR = (-aW * DENSMOL / TEMP + bW * DENSMOL + bWPQ * cW * PQ) / 3.0;
+  const double FmDTT = -( aW * DENSMOL / TEMP - bWPQ * cW2T / PQ) / 3.0;
+  const double FmDRT = ( aW * DENSMOL / TEMP + bWPQ * cW1T) / 3.0;
+
+  //  3) mix molecular + plasma via smooth switch YL/YH
+  const double X   = Q4 * log(Q1 * rho + Q2 * T);
+  const double X1R = Q4 * Q1 * rho   / (Q1 * rho + Q2 * T);
+  const double X1T = Q4 * Q2 * T     / (Q1 * rho + Q2 * T);
+  const double X2R = Q4 * Q1 * Q2 * rho * T / pow(Q1 * rho + Q2 * T, 2);
+  const double X2T = X2R;
+  const double X2RT= -X2R;
+
+  const double YL  = FERMIF(X);
+  const double YH  = 1.0 - YL;
+
+  const double YH1X = YH * YL;
+  const double YH2X = YH1X * (YL - YH);
+
+  const double YH1R = YH1X * X1R;
+  const double YH1T = YH1X * X1T;
+
+  const double YH2R  = YH2X * pow(X1R, 2) + YH1X * X2R;
+  const double YH2T  = YH2X * pow(X1T, 2) + YH1X * X2T;
+  const double YH2RT = YH2X * X1R * X1T        + YH1X * X2RT;
+
+  const double FNkTni = FNkTmol * YL + FNkTsi * YH;
+  const double PnkTni = PnkTmol * YL + PnkTsi * YH + (FNkTsi - FNkTmol) * YH1R;
+  const double UNkTni = UNkTmol * YL + UNkTsi * YH - (FNkTsi - FNkTmol) * YH1T;
+
+  const double FDRR = FmDRR * YL + FsiDRR * YH + 2.0 * (PnkTsi - PnkTmol) * YH1R
+    + (FNkTsi - FNkTmol) * YH2R;
+  const double FDTT = FmDTT * YL + FsiDTT * YH - 2.0 * (UNkTsi - UNkTmol) * YH1T
+    + (FNkTsi - FNkTmol) * YH2T;
+  const double FDRT = FmDRT * YL + FsiDRT * YH + (PnkTsi - PnkTmol) * YH1T
+    - (UNkTsi - UNkTmol) * YH1R + (FNkTsi - FNkTmol) * YH2RT;
+
+  //  4) Ideal gas of pseudo‑molecules
+  const double THLmol = sqrt(2 * pi / (18.0 * AUM * TEMP));
+  const double FNkTid = (log(DENSMOL * pow(THLmol, 3)) - 1.0) / 3.0;
+  const double PnkTid = C13;
+  const double UNkTid = 0.5;
+
+  //  5) total (non‑ideal + ideal)
+  double PnkT,FNkT,UNkT,CV,CHIT,CHIR;
+  FNkT = FNkTni + FNkTid;
+  PnkT = PnkTni + PnkTid;		
+  UNkT = UNkTni + UNkTid;
+
+  CV   = UNkT - FDTT;				
+  CHIR = FDRR / PnkT + 1.0;	
+  CHIT = FDRT / PnkT + 1.0;	
+
+  //  6) thermal corrections (high‑T & low‑T tweaks)
+  const double TTC  = TEMP / TCRIT;
+  const double TL2  = PC4 * TTC;
+  const double ULB  = pow(TL2, 2) * sqrt(TL2);  // (TL2)^2.5
+  const double ULB1 = 1.0 + ULB;
+  const double FL   = log(ULB1 / ULB);
+  const double UL   = 2.5 / ULB1;
+  const double CVL  = UL * (1.0 - 1.5 * ULB) / ULB1;
+
+  const double TTC2 = TTC * TTC;
+  const double ULC1 = 1.0 + TTC2;
+  const double FC   = (PC1 * log(ULC1 / TTC2) + PC2 * atan(TTC)) / TCRIT
+    - PC3 / TEMP;
+  const double UC   = ((2.0 * PC1 * TTC - PC2 * TTC2) / ULC1 - PC3) / TEMP;
+  const double CVC  = 2.0 / TCRIT * (PC1 * (1.0 - TTC2) - PC2 * TTC) / (ULC1 * ULC1);
+
+  FNkT += FL + FC - SBASE;
+  UNkT += UL + UC;
+  CV   += CVL + CVC;
+
+  //  7) auxiliary conversions
+  double nabla_ad = CHIT / (CV*CHIR/PnkT + sq(CHIT));				// d ln T / d ln P
+  double dT_dP_S  = nabla_ad * 1E6 / (PnkT * TnkCONV * rho);
+  // nabla_ad * T / P = nabla_ad * T / (PnkT * n k T) = nabla_ad * T / (PnkT * rho * NA *k / MImean * T)
+  return dT_dP_S;
+}
+
+double H2OSC(double P, double T, double rho_guess)
+// P in GPa
+{
+  if(rho_guess<0.5 || rho_guess>20)
+    rho_guess = 1 + 5*log(P/1E2);
+  return density_solver(P,T,PH2OSC,rho_guess);
+}
+
+double dTdP_S_H2OSC(double P, double T, double &rho_guess)
+{
+  rho_guess = density_solver(P,T,PH2OSC,rho_guess);
+  return dTdP_S_H2O_of_rho(rho_guess, T);
+}
+	
+
+//  H2O SC Mazevet Helper Functions
+//  ELECNR – ideal, non‑relativistic electron Fermi gas
+void ELECNR(double DENSE, double TEMP,
+            double &CHI, double &FEid, double &PEid, double &UEid,
+            double &SEid, double &CVE, double &CHITE, double &CHIRE)
+{
+    static const double SQPI = sqrt(pi);
+    const double CLE  = sqrt(2 * pi/ TEMP);
+    const double FDENS= SQPI * std::pow(CLE, 3) * DENSE / 4.0;
+
+    double X, XDF, XDFF;
+    FINVER(FDENS, 1, X, XDF, XDFF);     // inverse Fermi integral
+    CHI = X;
+
+    double F12, F32;
+    FERINT(X, 1, F12);
+    FERINT(X, 2, F32);
+
+    UEid = F32 / FDENS;
+    PEid = UEid / 1.5;
+    FEid = CHI - PEid;
+    SEid = UEid - FEid;
+
+    const double XDF32 = 1.5 * FDENS * XDF;
+    CHITE = 2.5 - XDF32 / PEid;
+    CHIRE = XDF32 * F12 / F32;
+    CVE   = 1.5 * PEid * CHITE;
+}
+
+//  FERMIF: simple logistic Fermi function 1/(exp(x)+1)
+double FERMIF(double X)
+{
+    if (X > 40.0)  return 0.0;
+    if (X < -40.0) return 1.0;
+    return 1.0 / (exp(X) + 1.0);
+}
+
+
+//  FERINT – Antia (1993) rational fits to F_q(x)
+//            q = N-1/2 with N=0..3 (−½, ½, 3/2, 5/2)
+void FERINT(double X, int N, double &F)
+{
+    if (N < 0 || N > 3) throw std::invalid_argument("FERINT: N out of range");
+
+    // coefficient tables (flattened)
+    static const double A[8][4] = {
+      {1.71446374704454e7,  5.75834152995465e6,  4.32326386604283e4,  6.61606300631656e4},
+      {3.88148302324068e7,  1.30964880355883e7,  8.55472308218786e4,  1.20132462801652e5},
+      {3.16743385304962e7,  1.07608632249013e7,  5.95275291210962e4,  7.67259953168120e4},
+      {1.14587609192151e7,  3.93536421893014e6,  1.77294861572005e4,  2.10427138842443e4},
+      {1.83696370756153e6,  6.42493233715640e5,  2.21876607796460e3,  2.44325236813275e3},
+      {1.14980998186874e5,  4.16031909245777e4,  9.90562948053293e1,  1.02589947781696e2},
+      {1.98276889924768e3,  7.77238678539648e2,  1.0,                  1.0                },
+      {1.0,                 1.0,                 0.0,                  0.0               }
+    };
+
+    static const double B[8][4] = {
+      {9.67282587452899e6,  6.49759261942269e6,  3.25218725353467e4,  1.99078071053871e4},
+      {2.87386436731785e7,  1.70750501625775e7,  7.01022511904373e4,  3.79076097261066e4},
+      {3.26070130734158e7,  1.69288134856160e7,  5.50859144223638e4,  2.60117136841197e4},
+      {1.77657027846367e7,  7.95192647756086e6,  1.95942074576400e4,  7.97584657659364e3},
+      {4.81648022267831e6,  1.83167424554505e6,  3.20803912586318e3,  1.10886130159658e3},
+      {6.13709569333207e5,  1.95155948326832e5,  2.20853967067789e2,  6.35483623268093e1},
+      {3.13595854332114e4,  8.17922106644547e3,  5.05580641737527e0,  1.16951072617142e0},
+      {4.35061725080755e2,  9.02129136642157e1,  1.99507945223266e-2, 3.31482978240026e-3}
+    };
+
+    // polynomial degrees per Antia table
+    static const int LA[4] = {7,7,6,6};
+    static const double C[12][4] = {
+      {-4.46620341924942e-15,  4.85378381173415e-14,  2.80452693148553e-13,  8.42667076131315e-12},
+      {-1.58654991146236e-12,  1.64429113030738e-11,  8.60096863656367e-11,  2.31618876821567e-09},
+      {-4.44467627042232e-10,  3.76794942277806e-09,  1.62974620742993e-08,  3.54323824923987e-07},
+      {-6.84738791621745e-08,  4.69233883900644e-07,  1.63598843752050e-06,  2.77981736000034e-05},
+      {-6.64932238528105e-06,  3.40679845803144e-05,  9.12915407846722e-05,  1.14008027400645e-03},
+      {-3.69976170193942e-04,  1.32212995937796e-03,  2.62988766922117e-03,  2.32779790773633e-02},
+      {-1.12295393687006e-02,  2.60768398973913e-02,  3.85682997219346e-02,  2.39564845938301e-01},
+      {-1.60926102124442e-01,  2.48653216266227e-01,  2.78383256609605e-01,  1.24415366126179e+00},
+      {-8.52408612877447e-01,  1.08037861921488e+00,  9.02250179334496e-01,  3.18831203950106e+00},
+      {-7.45519953763928e-01,  1.91247528779676e+00,  1.0,                 3.42040216997894e+00},
+      { 2.98435207466372e+00,  1.0,                 0.0,                 1.0},
+      { 1.0,                  0.0,                 0.0,                 0.0}
+    };
+
+    static const double D[12][4] = {
+      {-2.23310170962369e-15,  7.28067571760518e-14,  7.01131732871184e-13,  2.94933476646033e-11},
+      {-7.94193282071464e-13,  2.45745452167585e-11,  2.10699282897576e-10,  7.68215783076936e-09},
+      {-2.22564376956228e-10,  5.62152894375277e-09,  3.94452010378723e-08,  1.12919616415947e-06},
+      {-3.43299431079845e-08,  6.96888634549649e-07,  3.84703231868724e-06,  8.09451165406274e-05},
+      {-3.33919612678907e-06,  5.02360015186394e-05,  2.04569943213216e-04,  2.81111224925648e-03},
+      {-1.86432212187088e-04,  1.92040136756592e-03,  5.31999109566385e-03,  3.99937801931919e-02},
+      {-5.69764436880529e-03,  3.66887808001874e-02,  6.39899717779153e-02,  2.27132567866839e-01},
+      {-8.34904593067194e-02,  3.24095226486468e-01,  3.14236143831882e-01,  5.31886045222680e-01},
+      {-4.78770844009440e-01,  1.16434871200131e+00,  4.70252591891375e-01,  3.70866321410385e-01},
+      {-4.99759250374148e-01,  1.34981244060549e+00, -2.15540156936373e-02,  2.27326643192516e-02},
+      { 1.86795964993052e+00,  2.01311836975930e-01,  2.34829436438087e-03,  0.0},
+      { 4.16485970495288e-01, -2.14562434782759e-02,  0.0,                 0.0}
+    };
+
+    static const int LC[4] = {11,10,9,1};
+
+    // choose branch (X<2 or >=2)
+    if (X < 2.0) {
+        double t = exp(X);
+        double up=0.0, down=0.0;
+        for (int i=LA[N]; i>=0; --i) {
+            up   = up   * t + A[i][N];
+            down = down * t + B[i][N];
+        }
+        F = t * up / down;
+    } else {
+        double t = 1.0 / (X*X);
+        double up=0.0, down=0.0;
+        for (int i=LC[N]; i>=0; --i) {
+            up   = up   * t + C[i][N];
+            down = down * t + D[i][N];
+        }
+        F = sqrt(X) * pow(X, N) * up / down;
+    }
+}
+
+//  FINVER – Antia (1993) fits to inverse Fermi integrals X_q(f)
+void FINVER(double F, int N, double &X, double &XDF, double &XDFF)
+{
+    if (N < 0 || N > 3) throw std::invalid_argument("FINVER: N out of range");
+    if (F <= 0.0)       throw std::invalid_argument("FINVER: F must be >0");
+
+    // shortened coefficient tables (same as Fortran)
+    static const double A[6][4] = {
+      {-1.570044577033e4, 1.999266880833e4, 1.715627994191e2, 2.138969250409e2},
+      { 1.001958278442e4, 5.702479099336e3, 1.125926232897e2, 3.539903493971e1},
+      {-2.805343454951e3, 6.610132843877e2, 2.056296753055e1, 1.0},
+      { 4.121170498099e2, 3.818838129486e1, 1.0,                0.0},
+      {-3.174780572961e1, 1.0,                0.0,                0.0},
+      { 1.0,               0.0,                0.0,                0.0}
+    };
+
+    static const double B[7][4] = {
+      {-2.782831558471e4,  1.771804140488e4,  2.280653583157e2,  7.10854551271e2},
+      { 2.886114034012e4, -2.014785161019e3,  1.193456203021e2,  9.873746988121e1},
+      {-1.274243093149e4,  9.130355392717e1,  1.167743113540e1,  1.067755522895e0},
+      { 3.063252215963e3, -1.670718177489e0, -3.226808804038e-1,-1.182798726503e-2},
+      {-4.225615045074e2,  0.0,              3.519268762788e-3,  0.0},
+      { 3.168918168284e1,  0.0,              0.0,                0.0},
+      {-1.008561571363e0,  0.0,              0.0,                0.0}
+    };
+    static const int LA[4] = {5,4,3,2};
+    static const int LB[4] = {6,3,4,3};
+
+    // C & D tables truncated (only first 7 rows used like in Antia fits)
+    static const double C[7][4] = {
+      { 2.206779160034e-8,  -1.277060388085e-2,-6.321828169799e-3, -3.312041011227e-2},
+      {-1.437701234283e-6,   7.187946804945e-2,-2.183147266896e-2,  1.315763372315e-1},
+      { 6.103116850636e-5,  -4.262314235106e-1,-1.057562799320e-1, -4.820942898296e-1},
+      {-1.169411057416e-3,   4.997559426872e-1,-4.657944387545e-1,  5.099038074944e-1},
+      { 1.814141021608e-2,  -1.285579118012e+0,-5.951932864088e-1,  5.495613498630e-1},
+      {-9.588603457639e-2,  -3.930805454272e-1, 3.684471177100e-1,-1.498867562255e+0},
+      { 1.0,                1.0,               1.0,                1.0}
+    };
+
+    static const double D[7][4] = {
+      { 8.827116613576e-8,  -9.745794806288e-3,-4.381942605018e-3, -2.315515517515e-2},
+      {-5.750804196059e-6,   5.485432756838e-2,-1.513236504100e-2,  9.198776585252e-2},
+      { 2.429627688357e-4,  -3.299466243260e-1,-7.850001283886e-2, -3.835879295548e-1},
+      {-4.601959491394e-3,   4.077841975923e-1,-3.407561772612e-1,  5.415026856351e-1},
+      { 6.932122275919e-2,  -1.145531476975e+0,-5.074812565486e-1, -3.847241692193e-1},
+      {-3.217372489776e-1,  -6.067091689181e-2,-1.387107009074e-1,  3.739781456585e-2},
+      { 3.124344749296e+0,   0.0,               0.0,               -3.008504449098e-2}
+    };
+
+    static const int LD[4] = {6,5,5,6};
+
+    // ------- branch F<4 ------------------------------------------------------
+    if (F < 4.0) {
+        double t = F;
+        double up=0.0, up1=0.0, up2=0.0;
+        double dn=0.0, dn1=0.0, dn2=0.0;
+        for (int i=LA[N]; i>=0; --i) {
+            up  = up  * t + A[i][N];
+            if (i>=1) up1 = up1 * t + A[i][N] * i;
+            if (i>=2) up2 = up2 * t + A[i][N] * i * (i-1);
+        }
+        for (int i=LB[N]; i>=0; --i) {
+            dn  = dn  * t + B[i][N];
+            if (i>=1) dn1 = dn1 * t + B[i][N] * i;
+            if (i>=2) dn2 = dn2 * t + B[i][N] * i * (i-1);
+        }
+        X    = log(t * up / dn);
+        XDF  = 1.0/t + up1/up - dn1/dn;
+        XDFF = -1.0/(t*t) + up2/up - pow(up1/up,2) - dn2/dn + pow(dn1/dn,2);
+        return;
+    }
+
+    // ------- branch F≥4 ------------------------------------------------------
+    const double P = -1.0 / (0.5 + N);
+    double t   = pow(F, P);
+    double t1  = P * t / F;
+    double t2  = P * (P - 1.0) * t / (F*F);
+    double up=0.0, up1=0.0, up2=0.0;
+    double dn=0.0, dn1=0.0, dn2=0.0;
+    for (int i=6; i>=0; --i) {
+        up  = up  * t + C[i][N];
+        if (i>=1) up1 = up1 * t + C[i][N] * i;
+        if (i>=2) up2 = up2 * t + C[i][N] * i * (i-1);
+    }
+    for (int i=LD[N]; i>=0; --i) {
+        dn  = dn  * t + D[i][N];
+        if (i>=1) dn1 = dn1 * t + D[i][N] * i;
+        if (i>=2) dn2 = dn2 * t + D[i][N] * i * (i-1);
+    }
+    const double R  = up / dn;
+    const double R1 = (up1 - up * dn1 / dn) / dn;
+    const double R2 = (up2 - (2.0 * up1 * dn1 + up * dn2) / dn + 2.0 * up * pow(dn1/dn,2)) / dn;
+
+    X    = R / t;
+    double RT = (R1 - R / t) / t;
+    XDF  = t1 * RT;
+    XDFF = t2 * RT + pow(t1,2) * (R2 - 2.0*RT) / t;
 }
