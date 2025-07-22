@@ -14,10 +14,44 @@ void compfinder(vector<PhaseDgm> &Comp, int findlayer, vector<int> layers, doubl
 // Loops through multiple partial mass ratios
 
 
-void mcmcsample(vector<PhaseDgm> &Comp, double MassPrior, double MUncPrior, double RadPrior, double RUncPrior,  vector<double> Tgap, vector<double> ave_rho, double P0, bool isothermal, string outfile);
-// Find 3-layer mcmc solutions for mass and radius with uncertainty
+//Structures for MCMC storage and iteration
+struct MCMCRecord {
+    double Mass;       
+    double fCore;        
+    double fMantle;      
+    double fWater;      
+    double fAtm;       
+    double log_likelihood;  
+    double RCore;
+    double RMantle;
+    double RWater;     
+    double RPlanet;
+};
 
-void metropolis_hastings(int n_steps, std::vector<MCMCRecord>& chain);
+struct Params {
+    double Mass;
+    double fCore;
+    double fMantle;
+    double fWater;
+};
+
+struct LikelihoodResult {
+    double log_likelihood;
+    double RCore;
+    double RMantle;
+    double RWater;
+    double RPlanet; 
+};
+
+
+void mcmcsample(vector<PhaseDgm> &Comp, double MassPrior, double MUncPrior, double RadPrior, double RUncPrior,  vector<double> Tgap, vector<double> ave_rho, double P0, bool isothermal, string outfile, int numchains, int steps, int numlayers);
+// Find 2, 3 or 4-layer solutions for mass and radius with uncertainty
+
+LikelihoodResult log_likelihood(vector<PhaseDgm> &Comp, double MassPrior, double MUncPrior, double RadPrior, double RUncPrior,  vector<double> Tgap, vector<double> ave_rho, double P0, bool isothermal, double Mass, double fCore, double fMantle, double fWater);
+//Find planet radius and likelihood calculation following Rogers & Seager 2010 ApJ
+
+void metropolis_hastings(vector<MCMCRecord>& chain,vector<PhaseDgm> &Comp, double MassPrior, double MUncPrior, double RadPrior, double RUncPrior,  vector<double> Tgap, vector<double> ave_rho, double P0, bool isothermal, int steps, int numlayers);
+// MCMC method
 
 
 #endif

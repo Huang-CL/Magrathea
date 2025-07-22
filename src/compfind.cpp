@@ -328,81 +328,191 @@ void compfinder(vector<PhaseDgm> &Comp, int findlayer, vector<int> layers, doubl
   delete[] Rtarg;
 }
 
-void mcmcsample(vector<PhaseDgm> &Comp, double MassPrior, double MUncPrior, double RadPrior, double RUncPrior,  vector<double> Tgap, vector<double> ave_rho, double P0, bool isothermal, string outfile)
-// Find planet radii and radii of layers for an input file of planets
-// Input file must specify planet mass and mass fractions of each layer
-{
-  // Query radius from CSV using nearest-neighbor
-  double RPlanet, RCore, RMantle, RWater;
-  bool found = CalRpMagratheaNN(Mass, fCore, fMantle, fWater, RPlanet, RCore, RMantle, RWater);
 
-  //Find radius using Magrathea
-  vector<double> Mcomp={fCore,fMantle,fWater,fAtm};
-  planet = fitting_method(Comp, Mcomp, Tgap, ave_rho, P0, isothermal);
-  if (!planet)
+void mcmcsample(vector<PhaseDgm> &Comp, double MassPrior, double MUncPrior, double RadPrior, double RUncPrior,  vector<double> Tgap, vector<double> ave_rho, double P0, bool isothermal, string outfile, int numchains, int steps, int numlayers)
+//Overall loop for each chain, may be parallized by uncommenting "#pragma omp" lines
+{
+  ofstream fout(outfile);
+  fout << "Mass\t fCore\t fMantle\t fWater\t fAtm\t log_likelihood\t RCore\t RMantle\t RWater\t RPlanet"<<endl;
+    //#pragma omp parallel for schedule(dynamic) num_threads(3)
+    for (int i = 0; i < numchains; ++i)
     {
-        // No solution. Try something else
-    }
-  
-  // ln(L) = -0.5 [ ((M_model - M_obs)/sigM)^2 + ((R_model - R_obs)/sigR)^2 ]
-  double chi2_mass = std::pow((Mass - M_obs) / sigM, 2);
-  double chi2_rad  = std::pow((RPlanet - R_obs) / sigR, 2);
-  double lnL = -0.5 * (chi2_mass + chi2_rad);
-  // in my matlab code for proposed mass the ratio of log likelihood is  logratio=(rnMp-obsMp)^2.0/(2.0*sigmaMp^2)-(propMp-obsMp)^2.0/(2.0*sigmaMp^2)+(  (calRp-obsRp)^2.0/(2.0*sigmaRp^2)-(propcalRp-obsRp)^2.0/(2.0*sigmaRp^2)  );
-  return {lnL, RPlanet, RCore, RMantle, RWater};
+        vector<MCMCRecord> chain;
+        metropolis_hastings(chain, Comp,
+                            MassPrior, MUncPrior,
+                            RadPrior,  RUncPrior,
+                            Tgap, ave_rho,
+                            P0, isothermal,
+                            steps, numlayers);
 
-  cout<<"test complete"<<endl;
-}
+        //-------------------------- summary print ---------------------------
+        std::ostringstream summary;
+        MCMCRecord last = chain.back();
+        summary << "Chain " << i << " final sample after " << steps << " steps:\n"
+                << "  Mass    = " << last.Mass    << "\n"
+                << "  fCore   = " << last.fCore   << "\n"
+                << "  fMantle = " << last.fMantle << "\n"
+                << "  fWater  = " << last.fWater  << "\n"
+                << "  fAtm    = " << last.fAtm    << "\n";
 
-void metropolis_hastings(int n_steps, std::vector<MCMCRecord>& chain)
-{
-    // Start guess
-    Params current {M_obs, 0.2, 0.3, 0.5};
-    auto [logL_current,RPlanet, RCore, RMantle, RWater] = log_likelihood(current.Mass, current.fCore, current.fMantle, current.fWater);
+        //---------------------- build thread-local output -------------------
+        std::ostringstream local;
+        for (const auto& rec : chain)
+        {
+            local << rec.Mass        << '\t'
+                  << rec.fCore       << '\t'
+                  << rec.fMantle     << '\t'
+                  << rec.fWater      << '\t'
+                  << rec.fAtm        << '\t'
+                  << rec.log_likelihood << '\t'
+                  << rec.RCore       << '\t'
+                  << rec.RMantle     << '\t'
+                  << rec.RWater      << '\t'
+                  << rec.RPlanet     << '\n';
+        }
+        //single critical section for ompenmp
+        //#pragma omp critical
+        {
+            cout << summary.str();        // console output
+            fout << local.str();               // serialised file write
+        }
+    } // end parallel for
+    fout.close();
+    cout << "MCMC chains saved to " << outfile << endl;
+  } 
 
-    // Random engines
-    std::default_random_engine gen;
-    std::normal_distribution<double> prop_dist(0.0, 0.01);  //proposed mcmc step size and direction for mass fractions
-    std::normal_distribution<double> prop_Mass(M_obs, sigM);  //proposed mass
-    std::uniform_real_distribution<double> uniform(0.0, 1.0);
+  void metropolis_hastings(vector<MCMCRecord>& chain,vector<PhaseDgm> &Comp, double MassPrior, double MUncPrior, double RadPrior, double RUncPrior,  vector<double> Tgap, vector<double> ave_rho, double P0, bool isothermal, int steps, int numlayers)
+  //Primary MCMC sampling and walker
+  {
+    /* ---------- common RNG ---------- */
+    random_device rd;
+    default_random_engine gen(rd());
+    normal_distribution<double> prop_Mass(MassPrior, MUncPrior);
+    normal_distribution<double> prop_dist(0.0, 0.1);
+    uniform_real_distribution<double> uniform(0.0, 1.0);
+    uniform_real_distribution<double> log_uniform(log(1e-5), log(0.98)); //for atmosphere choose log uniform
+    normal_distribution<double> prop_logatm(0.0, 0.5); //Atmosphere step proposed
+
+    /* ---------- helpers ---------- */
+    // 1. Generate an initial Params object that obeys the layer‑count rules
+    auto init_params = [&](int L) -> Params {
+        if (L == 2) {
+            double c = uniform(gen);
+            return {MassPrior, c, 1.0 - c, 0.0};
+        }
+        if (L == 3) {
+            double c = uniform(gen);
+            double m = uniform(gen) * (1.0 - c);
+            return {MassPrior, c, m, 1.0 - c - m};
+        }
+        if (L == 4) {
+            double fAtm = std::exp(log_uniform(gen));
+            double c    = uniform(gen) * (1.0 - fAtm);
+            double m    = uniform(gen) * (1.0 - c - fAtm);
+            return {MassPrior, c, m, 1.0 - c - m - fAtm};
+        }
+        throw std::invalid_argument("numlayers must be 2, 3 or 4");
+    };
+
+    // 2. Propose a new Params and return it together with the atmosphere fraction (needed only for L==4)
+    auto propose = [&](const Params& cur, int L) -> std::pair<Params,double> {
+        Params p = cur;
+        p.Mass = std::max(0.01, prop_Mass(gen));   // keep mass > 0.01
+
+        if (L == 2) {
+            p.fCore = cur.fCore + prop_dist(gen);
+            if (p.fCore < 0.0) p.fCore = 0.0;
+            else if (p.fCore > 1.0) p.fCore = 1.0; //modify for prior constraints
+            p.fMantle = 1.0 - p.fCore;
+            p.fWater  = 0.0;
+            return {p, 0.0};
+        }
+
+        if (L == 3) {
+            do {
+                p.fCore   = cur.fCore   + prop_dist(gen);
+                p.fMantle = cur.fMantle + prop_dist(gen);
+            } while (p.fCore < 0.0 || p.fMantle < 0.0 ||
+                     p.fCore + p.fMantle > 1.0); //modify for prior constraints
+            p.fWater = 1.0 - p.fCore - p.fMantle;
+            return {p, 0.0};
+        }
+
+        /* L == 4 */
+        double fAtm;
+        do {
+            p.fCore   = cur.fCore   + prop_dist(gen);
+            p.fMantle = cur.fMantle + prop_dist(gen);
+            fAtm      = std::exp(std::log(1.0 - cur.fCore - cur.fMantle - cur.fWater) +
+                                 prop_logatm(gen));
+            p.fWater  = 1.0 - p.fCore - p.fMantle - fAtm;
+        } while (p.fCore < 0.0 || p.fMantle < 0.0 || p.fWater < 0.0); //modify for prior constraints
+        return {p, fAtm};
+    };
+
+    /* ---------- initial state ---------- */
+    Params current = init_params(numlayers);
+    LikelihoodResult lr = log_likelihood(Comp, MassPrior, MUncPrior, RadPrior, RUncPrior,
+                                         Tgap, ave_rho, P0, isothermal,
+                                         current.Mass, current.fCore, current.fMantle, current.fWater);
+
+    double logL_cur = lr.log_likelihood;
+    double fAtm_cur = (numlayers == 4) ? 1.0 - current.fCore - current.fMantle - current.fWater : 0.0;
 
     chain.clear();
-    chain.reserve(n_steps + 1);
-    double fAtm = 1.0 - current.fCore - current.fMantle - current.fWater;   //using the fact that sum of mass fractions of a exoplanet is 1
-    MCMCRecord record = {current.Mass,current.fCore,current.fMantle,current.fWater,fAtm,logL_current,RPlanet,RCore,RMantle-RCore,RWater-RMantle,RPlanet-RWater};
-    chain.push_back(record);
+    chain.reserve(steps + 1);
+    chain.push_back({current.Mass, current.fCore, current.fMantle, current.fWater,
+                     fAtm_cur, logL_cur, lr.RCore, lr.RMantle, lr.RWater, lr.RPlanet});
 
-    for (int step = 0; step < n_steps; ++step) {
-        
-        Params proposal = current;  //is it unnecessary? 
-        proposal.Mass    = prop_Mass(gen);
-        proposal.fCore   += prop_dist(gen);
-        proposal.fMantle += prop_dist(gen);
-        proposal.fWater += prop_dist(gen);
+    /* ---------- main MH loop ---------- */
+    for (int s = 0; s < steps; ++s) {
+        std::pair<Params,double> prop_pair = propose(current, numlayers);
+        Params  prop      = prop_pair.first;
+        //double  fAtm_prop = prop_pair.second; // (unused except for debugging)
 
-        do {
-            proposal.Mass = prop_Mass(gen); //propose mass sampled from the observed mass and uncertainity 
-        } while (proposal.Mass < 0.100001 || proposal.Mass > 16.0);
+        LikelihoodResult lr_prop = log_likelihood(Comp, MassPrior, MUncPrior, RadPrior, RUncPrior,
+                                                  Tgap, ave_rho, P0, isothermal,
+                                                  prop.Mass, prop.fCore, prop.fMantle, prop.fWater);
 
-        // Propose mass fractions between 0 and (1 - sum of other mass fractions) || withing limits of ratios of core, mamntle and water layers based on solar relative elemental abundances.   
-        do {
-    		proposal.fCore = current.fCore + prop_dist(gen);
-    		proposal.fMantle = current.fMantle + prop_dist(gen);
-    		proposal.fWater = current.fWater + prop_dist(gen);
-		} while (proposal.fCore < 0.0 || proposal.fCore > (1.0-proposal.fMantle-proposal.fWater) || proposal.fMantle < 0.0 || proposal.fMantle > (1.0-proposal.fCore-proposal.fWater) || proposal.fWater < 0.0 || proposal.fWater > (1.0-proposal.fCore-proposal.fMantle)   || (proposal.fMantle/proposal.fCore<(36.0/64.0)) || (proposal.fMantle/(proposal.fWater)<(19.0/81.0) )                     );
+        double log_alpha = lr_prop.log_likelihood - logL_cur;
 
-		
-
-
-        auto [logL_prop,RPlanet, RCore, RMantle, RWater] = log_likelihood(proposal.Mass, proposal.fCore, proposal.fMantle, proposal.fWater);
-        double log_alpha = logL_prop - logL_current;
-
-        if (std::log(uniform(gen)) < log_alpha) {
-            current = proposal; // accept
-            logL_current = logL_prop;
+        if (std::log(uniform(gen)) < log_alpha) {   // accept
+            current  = prop;
+            lr       = lr_prop;
+            logL_cur = lr_prop.log_likelihood;
+            fAtm_cur = (numlayers == 4)
+                         ? 1.0 - current.fCore - current.fMantle - current.fWater
+                         : 0.0;
         }
-        fAtm=1-current.fCore-current.fMantle-current.fWater;
-        record={current.Mass,current.fCore,current.fMantle,current.fWater,fAtm,logL_current,RPlanet,RCore,RMantle-RCore,RWater-RMantle,RPlanet-RWater};  
-        chain.push_back(record);
+
+        chain.push_back({current.Mass, current.fCore, current.fMantle, current.fWater,
+                         fAtm_cur, logL_cur, lr.RCore, lr.RMantle, lr.RWater, lr.RPlanet});
     }
+}
+
+LikelihoodResult log_likelihood(vector<PhaseDgm> &Comp, double MassPrior, double MUncPrior, double RadPrior, double RUncPrior,  vector<double> Tgap, vector<double> ave_rho, double P0, bool isothermal, double Mass, double fCore, double fMantle, double fWater) {
+    // Find planet radius and calculate log likelihood
+    hydro *planet;
+    double  MC, MM, MW, MG;
+    vector<double> Rs;
+    MC = fCore*Mass;
+    MM = fMantle*Mass;
+    MW = fWater*Mass;
+    MG = Mass - (MW+MC+MM);
+    if(MG<1E-14)
+      MG=0;
+    planet = fitting_method(Comp, {MC,MM,MW,MG}, Tgap, ave_rho, P0, isothermal); //Full Solver
+    if (!planet)
+    {
+      return {-1e9, 0, 0, 0, 0};
+    }
+    Rs = planet -> getRs();
+    delete planet;
+
+    // ln(L) = -0.5 [ ((M_model - M_obs)/sigM)^2 + ((R_model - R_obs)/sigR)^2 ]
+    double chi2_mass = pow((Mass - MassPrior) / MUncPrior, 2);
+    double chi2_rad  = pow((Rs.back() - RadPrior) / RUncPrior, 2);
+    double lnL = -0.5 * (chi2_mass + chi2_rad);
+
+    return {lnL, Rs[0], Rs[1], Rs[2], Rs.back()};
 }
