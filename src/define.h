@@ -23,6 +23,8 @@
 #include <sstream>
 #include <iomanip>
 #include <numeric>
+#include <random>
+
 
 using std::cout;
 using std::cin;
@@ -39,6 +41,11 @@ using std::abs; //In C++, it's always sufficient to use std::abs; it's overloade
 using std::runtime_error;
 using std::numeric_limits;
 using std::accumulate;
+using std::default_random_engine;
+using std::normal_distribution;
+using std::uniform_real_distribution;
+using std::lognormal_distribution;
+using std::random_device;
 
 const double pi=3.14159265359;
 const double G=6.67384E-8;

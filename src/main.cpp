@@ -54,6 +54,14 @@ int main(int argc, char* argv[])
   float step=0;
   vector<int> layers={1,1,0,0};
   float rerr=0;
+  float MassPrior=0;
+  float MUncPrior=0;
+  float RadPrior=0;
+  float RUncPrior=0;
+  int numlayers=2;
+  int numchains=1;
+  int chainsteps=10;
+
   Water_sc_Mazevet -> modify_dTdP(dTdP_S_H2OSC);
 
   //Parse input file
@@ -83,7 +91,7 @@ int main(int argc, char* argv[])
     // 6: iterate over EOS modifications with two-layer solver, 5: iterate over EOS with regular solver
     input_mode = options.GetOptionDouble("input_mode");
     //Get Phase Diagrams for modes which require
-    if (input_mode==0 or input_mode==3 or input_mode==4 or input_mode==7)
+    if (input_mode==0 or input_mode==3 or input_mode==4 or input_mode==7 or input_mode==8)
     {
       core_phasedgm=options.GetOptionString("core_phasedgm");
       mantle_phasedgm=options.GetOptionString("mantle_phasedgm");
@@ -160,6 +168,20 @@ int main(int argc, char* argv[])
       Tgap[2]=options.GetOptionDouble("temp_jump_1");
       Tgap[3]=options.GetOptionDouble("surface_temp");
       break;
+    case 8:
+      MassPrior=options.GetOptionDouble("mass_prior");
+      MUncPrior=options.GetOptionDouble("mass_unc");
+      RadPrior=options.GetOptionDouble("radius_prior");
+      RUncPrior=options.GetOptionDouble("radius_unc");
+      numlayers=options.GetOptionDouble("num_layers");
+      numchains=options.GetOptionDouble("num_chains");
+      chainsteps=options.GetOptionDouble("chain_steps");
+      outputfile=options.GetOptionString("output_file");
+      Tgap[0]=options.GetOptionDouble("temp_jump_3"); 
+      Tgap[1]=options.GetOptionDouble("temp_jump_2");
+      Tgap[2]=options.GetOptionDouble("temp_jump_1");
+      Tgap[3]=options.GetOptionDouble("surface_temp");
+      break;
     }
   } catch (SettingsParserException& e) { // This will be triggered if an exception is thrown above.
     std::cout << "\nException: " << e.what() << "\n"; // e.what() prints the exception message.
@@ -168,44 +190,43 @@ int main(int argc, char* argv[])
 
   //Set Phase Diagrams from string in config
   vector<PhaseDgm> Comp = {core, mant, water, atm};
-  if (input_mode==0 or input_mode==3 or input_mode==4 or input_mode==7){
-    if (core_phasedgm=="Fe_default")
-      Comp[0]=core;
-    else if (core_phasedgm=="Fe_fccbcc")
-      Comp[0]=core1;
-    else
-      cout<<"core_phasedgm does not exist, using default"<<endl;
-    if (mantle_phasedgm=="Si_default")
-      Comp[1]=mant;
-    else if (mantle_phasedgm=="Si_simple")
-      Comp[1]=mant1;
-    else if (mantle_phasedgm=="PREM")
-      Comp[1]=mant2;
-    else if (mantle_phasedgm=="C_simple")
-      Comp[1]=mant3;
-    else
-      cout<<"mant_phasedgm does not exist, using default"<<endl;
-    if (hydro_phasedgm=="water_default")
-      Comp[2]=water; 
-    else if (hydro_phasedgm=="water_tabulated")
-      Comp[2]=water1;
-    else
-      cout<<"hydro_phasedgm does not exist, using default"<<endl;
-    if (atm_phasedgm=="gas_default")
-      Comp[3]=atm;
-    else if (atm_phasedgm=="HHe_tabulated")
-      Comp[3]=atm1;
-    else
-      cout<<"atm_phasedgm does not exist, using default"<<endl;
-  }	
+  if (core_phasedgm=="Fe_default")
+    Comp[0]=core;
+  else if (core_phasedgm=="Fe_fccbcc")
+    Comp[0]=core1;
+  else
+    cout<<"core_phasedgm does not exist, using default"<<endl;
+  if (mantle_phasedgm=="Si_default")
+    Comp[1]=mant;
+  else if (mantle_phasedgm=="Si_simple")
+    Comp[1]=mant1;
+  else if (mantle_phasedgm=="PREM")
+    Comp[1]=mant2;
+  else if (mantle_phasedgm=="C_simple")
+    Comp[1]=mant3;
+  else
+    cout<<"mant_phasedgm does not exist, using default"<<endl;
+  if (hydro_phasedgm=="water_default")
+    Comp[2]=water; 
+  else if (hydro_phasedgm=="water_tabulated")
+    Comp[2]=water1;
+  else
+    cout<<"hydro_phasedgm does not exist, using default"<<endl;
+  if (atm_phasedgm=="gas_default")
+    Comp[3]=atm;
+  else if (atm_phasedgm=="HHe_tabulated")
+    Comp[3]=atm1;
+  else
+    cout<<"atm_phasedgm does not exist, using default"<<endl;
 
 
-  //START main code for the 8 input modes
+  //START main code for the 9 input modes
 	// 0: regular solver, 1: temperature-free solver, 2: two-layer solver, 
 	// 3: bulk input mode with regular solver
 	// 4: composition finder, finds third layer mass to match a mass and radius measurement
 	// 5: modify a built-in EOS on they fly, 
-	// 6: iterate over EOS modifications with two-layer solver, 5: iterate over EOS with regular solver
+	// 6: iterate over EOS modifications with two-layer solver, 7: iterate over EOS with regular solver
+  // 8: MCMC mass fraction finder
 
   if (input_mode == 0)
   {
@@ -335,6 +356,15 @@ int main(int argc, char* argv[])
     cout<<"run time "<<deltat<<'s'<<endl;
   }
 
+  else if(input_mode == 8)
+  {
+    double deltat;    
+    gettimeofday(&start_time,NULL);
+    mcmcsample(Comp,MassPrior,MUncPrior,RadPrior,RUncPrior,Tgap,ave_rho,P_surface,false,outputfile,numchains,chainsteps,numlayers);
+    gettimeofday(&end_time, NULL);
+    deltat = ((end_time.tv_sec  - start_time.tv_sec) * 1000000u + end_time.tv_usec - start_time.tv_usec) / 1.e6;
+    cout<<"run time "<<deltat<<'s'<<endl;
+  }
 
   // ============================
   

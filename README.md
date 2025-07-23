@@ -14,7 +14,7 @@ The code integrates the hydrostatic equation in order to shoot for the correct p
 The code returns the pressure, temperature, density, phase, and radius at steps of enclosed mass.
 The code supports 4 layers: core, mantle, hydrosphere, and atmosphere. Each layer has a phase diagram with equations of state (EoS) chosen for each phase.
 The code was developed by [Chenliang Huang](https://huang-cl.github.io/), [David R. Rice](https://davidrrice.github.io/), and [Jason H. Steffen](https://www.jasonhsteffen.com/) at the Univerisity of Nevada, Las Vegas starting in 2017.
-See a [list of works](citations.md) that use MAGRATHEA and [instructions on how to cite](CITATION.md). **If you don't see something on this ReadMe check our publication in this repository: [*MAGRATHEA.pdf*](MAGRATHEA.pdf).** A tutorial and practice projects/problems are found in [Tutorial_Practice_Problems.pdf](Tutorial_Practice_Problems.pdf)
+See a [list of works](citations.md) that use MAGRATHEA and [instructions on how to cite](CITATION.md). **If you don't see something on this ReadMe check our publication in this repository: [*MAGRATHEA.pdf*](MAGRATHEA_publication.pdf).** A tutorial and practice projects/problems are found in [Tutorial_Practice_Problems.pdf](Tutorial_Practice_Problems.pdf)
 
 We encourage the community to contribute to and use MAGRATHEA for their interior modeling needs.
 
@@ -36,7 +36,7 @@ On Ubuntu systems, the GSL package can also be installed from the Ubuntu reposit
 
 On Windows systems, we suggest using WSL and following the above isntructions.
 
-When running many simulations with bulk input modes, OpenMP can be used to run individual planets in parallel, please contact us to get this set up in the code. 
+When running many simulations with bulk input or composition finder modes, OpenMP can be used to run individual planets in parallel, please contact us to get this set up in the code. 
 
 ## Quick Start ##
 
@@ -63,7 +63,7 @@ MAGRATHEA uses a shooting to a fitting-point method with a Runge-Kutta-Fehlberg 
 
 ### Input Modes ##
 
-**There are 7 modes with different functionality described below. These modes can be used with the 7 config (.cfg) files in the `run` directory. The code is then ran with `./planet run/mode_.cfg`.**
+**There are 9 modes with different functionality described below. These modes can be used with the 9 config (.cfg) files in the `run` directory. The code is then ran with `./planet run/mode_.cfg`.**
 
 ### mode0.cfg ###
 The basic capability: calculate the structure of a planet given the mass of each layer.
@@ -126,6 +126,14 @@ MAGRATHEA will use the full solver from mode 0 and for each mass and target radi
 These modes allow for changing an EoS in the model temporarily during a run (changing an EoS pernamently or adding an EoS discussed below). These modes can be used to measure how the uncertainty in a measurement affects a planet's radius. Mode 5 changes an EoS and uses the twolayer function. Mode 6 and Mode 7 iteratively change an EoS from an input file with the twolayer (Mode 2) and fullmodel (Mode 0) respectively.
 
 For the moment, we save documenting how to create an input file for these modes for a later date. Examples of input files that change the EoSs are included in the input directory.
+
+### mode8.cfg ###
+
+This mode is our MCMC method which returns samples of interior solutions for a planet with a mass,mass uncertainty, radius, and radius uncertainty. These samples can be used to create trace and corner plots with `plot/mcmcsolutions.py`. This mode assumes gaussian priors and uniform priors on mass fractions from 0-1. This mode is under continued development; to add constraints please contact the Authors.
+
+In the config file, the user sets the median and one sigma uncertainties for mass and radius. The user also designates the number of layers to solve---either 2 for core/mantle, 3 for core/mantle/hydrosphere, or 4 for core/mantle/hydrosphere/atmosphere. The user then defines the number of chains and the steps per chain to use for the planet. The surface temperature, temperature jumps, and phase diagrams are defined in the same way as mode 0. The above parameters will be used in the `mcmcsample()` function from `src/compfind.cpp`.
+
+MAGRATHEA will use the full solver from mode 0 and step through the parameter space of mass and mass fractions for the given number of layers using a metropolis hastings algorithm. We suggest using at least 3 chains and 1000 steps per chain. The run time can be approximated as chain*steps seconds, but depends on the planet and the user's computer. The output is a tab separated file with the samples of mass and mass fraction of each layer with the calculated log-likelihood and radius of the planet.
 
 ## Build your own planet model ##
 
