@@ -1,5 +1,5 @@
-#ifndef PARSER_H
-#define PARSER
+#ifndef PARSER_H_
+#define PARSER_H_
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -76,4 +76,4 @@ public:
   bool GetOptionBool(std::string name);
 };
 
-#endif
+#endif //PARSER_H_
