@@ -59,7 +59,7 @@ The updates to the model:
 - Upper mantle phases
 - Chambrier, AQUA, and SeaFreeze
 - Supercritical Water
-- Vander Walls
+- Van der Waals
 - Carbon Phase Diagram
 - Updated Hydrosphere
 
