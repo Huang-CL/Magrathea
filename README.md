@@ -34,7 +34,7 @@ should configure, build, and install the GSL package.  A few prerequisites, such
 
 On Ubuntu systems, the GSL package can also be installed from the Ubuntu repository using `sudo apt install libgsl27 libgsl-dev gsl-bin`. 
 
-On Windows systems, we suggest using WSL and following the above isntructions.
+On Windows systems, we suggest using WSL and following the above instructions (some file paths within the code may break in Windows, please use WSL).
 
 When running many simulations with bulk input or composition finder modes, OpenMP can be used to run individual planets in parallel, please contact us to get this set up in the code. 
 
