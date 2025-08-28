@@ -17,6 +17,9 @@ authors:
   - name: Robert Royer
     orcid: 0000-0002-0900-0192
     affiliation: 3
+  - name: Mangesh Daspute
+    orcid: 
+    affiliation: 4
   - name: Jason H. Steffen
     orcid: 0000-0003-2202-384
     affiliation: 3
@@ -30,6 +33,9 @@ affiliations:
    index: 2
  - name: Department of Physics and Astronomy, University of Nevada, Las Vegas, 4505 South Maryland Parkway, Las Vegas, NV 89154, US
    index: 3
+ - name: INSERT MANGESH
+   index: 4
+
 date: 23 September 2025
 bibliography: paper.bib
 
@@ -40,20 +46,17 @@ bibliography: paper.bib
 
 # Statement of need
 
-The code...
+Magrathea is more than a singular planet model, we built it as a platform for users to build their own planet models. 
 
 At least a dozen research groups are now or have used Magrathea, these include...
 
+# Summary of the base code
+
+While in the next section we detail updates to the code, the base solver remains largely unchanged since `@Magrathea'. 
+
 # Major updates in this version
 
-Since publishing the first verison of the code along with CITE, the capabilities, useability, and performance of Magrathea has all been significantly improved and expanded. We separate here lists of updates to functionality and to the materials/physics available for the model. (MIGHT BE BETTER WORKDING THAN THIS) The updates to functionality:
-
-- Input parameters for each mode are moved to input files with .cfg extensions
-- Reordering of the now 9 modes see table
-- Modular phase diagrams
-- P-T-rho-dt/dp tables
-- Secant Method composition solver
-- MCMC composition solver
+Since publishing the first verison of the code along with `@Magrathea', the capabilities, useability, and performance of Magrathea has all been significantly improved and expanded. We separate here lists of updates to to the materials/physics available for the model and the functionality built into the software. 
 
 The updates to the model:
 - Upper mantle phases
@@ -62,6 +65,14 @@ The updates to the model:
 - Van der Waals
 - Carbon Phase Diagram
 - Updated Hydrosphere
+
+The updates to functionality:
+- Input parameters for each mode are moved to input files with .cfg extensions
+- Reordering of the now 9 modes see table
+- Modular phase diagrams
+- P-T-rho-dt/dp tables
+- Secant Method composition solver
+- MCMC composition solver
 
 
 # Mathematics
@@ -106,6 +117,6 @@ Figure sizes can be customized by adding an optional second parameter:
 
 # Acknowledgements
 
-We acknowledge contributions from 
+We acknowledge the many researchers using the Magrathea code base; we appreicate each contribution to science and the code. We thank Douglas Adams for the timeless stories compiled in the "Hitchikers Guide to the Galaxy" which inspired the name of the code. 
 
 # References
