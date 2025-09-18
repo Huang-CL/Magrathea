@@ -194,6 +194,8 @@ int main(int argc, char* argv[])
     Comp[0]=core;
   else if (core_phasedgm=="Fe_fccbcc")
     Comp[0]=core1;
+  else if (core_phasedgm=="SiC_default")
+    Comp[0]=PhaseDgm("SiC", find_phase_SiC_default);
   else
     cout<<"core_phasedgm does not exist, using default"<<endl;
   if (mantle_phasedgm=="Si_default")
@@ -204,6 +206,8 @@ int main(int argc, char* argv[])
     Comp[1]=mant2;
   else if (mantle_phasedgm=="C_simple")
     Comp[1]=mant3;
+  else if (mantle_phasedgm=="SiC_default")
+    Comp[1]=PhaseDgm("SiC", find_phase_SiC_default);
   else
     cout<<"mant_phasedgm does not exist, using default"<<endl;
   if (hydro_phasedgm=="water_default")
@@ -389,6 +393,8 @@ int main(int argc, char* argv[])
   delete Si_liquid;
   delete Si_Liquid_Wolf;
   delete Si_Dummy;
+  delete SiC_B3_Vinet;
+  delete SiC_B1_Vinet;
   delete Fo;
   delete Wds;
   delete Rwd;

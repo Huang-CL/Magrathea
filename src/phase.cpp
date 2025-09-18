@@ -607,3 +607,25 @@ EOS* find_phase(double m, vector<PhaseDgm> &Comp, vector<double> M, double P, do
   // if nothing matched, return the outermost existing layer
   return Comp.back().find_phase(P, T);
 }
+
+EOS* find_phase_SiC_default(double P, double T)
+{
+  if (P <= 0 || T <= 0)
+  {
+    return NULL;
+  }
+
+  P /= 1E10;  // convert microbar to GPa
+
+  double transition_pressure = 69.0 - 0.001 * (T - 300.0);
+
+  if (P < transition_pressure) {
+    if (verbose && P > 10.0) 
+      cout << "SiC Phase: Using B3 at P=" << P << " GPa, T=" << T << " K (transition at " << transition_pressure << " GPa)" << endl;
+    return SiC_B3_Vinet;  // Low pressure zinc blende structure (Vinet EOS)
+  } else {
+    if (verbose)
+      cout << "SiC Phase: Using B1 at P=" << P << " GPa, T=" << T << " K (transition at " << transition_pressure << " GPa)" << endl;
+    return SiC_B1_Vinet;  // High pressure rock salt structure (Vinet EOS)
+  }
+}
