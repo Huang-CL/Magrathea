@@ -204,6 +204,8 @@ int main(int argc, char* argv[])
     Comp[1]=mant2;
   else if (mantle_phasedgm=="C_simple")
     Comp[1]=mant3;
+  else if (mantle_phasedgm=="SiC")
+    Comp[1]=mant4;
   else
     cout<<"mant_phasedgm does not exist, using default"<<endl;
   if (hydro_phasedgm=="water_default")
@@ -440,6 +442,8 @@ int main(int argc, char* argv[])
   delete Plat;
   delete Graph;
   delete Diam;
+  delete SiC_B3_Vinet;
+  delete SiC_B1_Vinet;
   delete vdW_H2;
   delete vdW_He;
   delete vdW_H2O;
@@ -449,3 +453,4 @@ int main(int argc, char* argv[])
 
   return 0;
 }
+
