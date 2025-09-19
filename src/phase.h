@@ -65,6 +65,9 @@ EOS* find_phase_water_tabulated(double P, double T);
 EOS* find_phase_gas_default(double P, double T);
 EOS* find_phase_HHe_tabulated(double P, double T);
 
+//Silicon Carbide
+EOS* find_phase_SiC_default(double P, double T);
+
 EOS* find_phase(double m, double MC, double MM, double MW, double MG, double P, double T, bool inward = false);
 // given the accumulated mass (in g), P (in cgs) and T, return the corresponding phase.  If inward = true, return the outer component at the mass transition boundary
 EOS* find_phase(double m, vector<PhaseDgm>& Comp, vector<double> M, double P, double T, bool inward = false);
