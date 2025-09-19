@@ -246,7 +246,7 @@ double dunaeva_phase_curve(double P, double a, double b, double c, double d, dou
   return a + b*P + c*log(P) + d/P + e*sqrt(P);
 }
  
-// ========== Phase Diagram for Core  ================
+// ========== Phase Diagrams for Core  ================
 // ---------------------------------
 // Fe Default: hcp and Liquid iron
 EOS* find_phase_Fe_default(double P, double T)
@@ -260,13 +260,18 @@ EOS* find_phase_Fe_default(double P, double T)
 
   // Default Core
   if( T > 12.8*P + 2424 && T > 13.7*P + 2328)   // melting curve from Dorogokupets et al. 2017, Scientific Reports. fcc and hcp Fe melting curve.
-    return Fe_liquid;
+  {  
+    if(P<80 || T>10000)
+      return Fe_liquid2;
+    else
+      return Fe_liquid;
+  }
   else
     return Fe_hcp;             // use hcp Iron for all regions.
 }
 
 // ---------------------------------
-// Fe fccbcc: Includes low pressure fcc and bcc iron
+// Fe_fccbcc: Includes low pressure fcc and bcc iron
 EOS* find_phase_Fe_fccbcc(double P, double T)
 {
   if (P <= 0 || T <= 0)
@@ -298,7 +303,7 @@ EOS* find_phase_Fe_fccbcc(double P, double T)
   }
 }
 
-// ========== Phase Diagram for Mantle  ================
+// ========== Phase Diagrams for Mantle  ================
 // ---------------------------------
 // Si Default: Upper Mantle: Fo, Wds, Rwd, and liquid ; Lower Mantle: Brg, PPv
 EOS* find_phase_Si_default(double P, double T)
@@ -314,7 +319,7 @@ EOS* find_phase_Si_default(double P, double T)
   else if (T > 1830*pow(1+P/4.6, 0.33)) // Melting curve from Belonoshko et al. 2005 Eq. 2
     return Si_Liquid_Wolf;
   else if (P > 24.3+(-2.12E-4*T)+(-3.49E-7*pow(T, 2))) // Dorogokupets et al. 2015
-    return Pv_Doro;
+    return Si_Pv;
   else if (P > 8.69+6.05E-3*T)
     return Rwd;
   else if (P > 9.45+2.76E-3*T)
@@ -392,11 +397,139 @@ EOS* find_phase_SiC(double P, double T)
     return SiC_B1_Vinet;  // High pressure rock salt structure (Vinet EOS)
 }
  
-// ========== Phase Diagram for Hydrosphere  ================
+// ========== Phase Diagrams for Hydrosphere  ================
 
 // ---------------------------------
-// H2O Water/Ice boundaries primarily form Dunaeva et al. 2010
+// H2O Water/Ice/Gas boundaries 
 EOS* find_phase_water_default(double P, double T)
+// input P in cgs
+{
+  P /= 1E10;			// convert microbar to GPa
+  if (P <= 0 || T <= 0)
+  {
+    return NULL;
+  }
+  //Below supercritical point, Liquid/Vapor/Ice Ih
+  if(P<0.022064) 
+  {
+    if(P<0.022064*exp((647.096/T)*(-7.85951783*(1-T/647.096)+1.84408259*pow(1-T/647.096,1.5)-11.7866497*pow(1-T/647.096,3)+22.6807411*pow(1-T/647.096,6)))||T>647.096) //Vapor Line Wagner & PruB 22
+    {
+      if(T<1000)  //use simplified EOS above 1000 K, IAPWS below
+        return Water_Vap_IAPWS; //IAPWS-R6-95
+      else
+        return vdW_H2O; //Van Der Walls Gas
+    }
+    else if(T<-32.26706488*pow(P,3)-143.6159774*pow(P,2)-74.97759097*P+273.1683519) //Ice Ih melt line, SeaFreeze fitted polynomial
+      return IceIh_SF;
+    else if(T>490)
+      return Water_IAPWS;
+    else
+      return Water_SF;
+  }
+  // Ice Ih, III, Water Triple Point (includes Ice II region) SeaFreeze
+  else if( P < 0.207592 )		
+  {
+    if(T > -32.26706488*pow(P,3)-143.6159774*pow(P,2)-74.97759097*P+273.1683519) //Ice Ih melt line, SeaFreeze fitted polynomial
+    {
+      if(T<490)
+        return Water_SF;
+      else if(T>1000) 
+        return vdW_H2O;
+      else
+        return Water_Vap_IAPWS;
+    }
+    else if(P < 3.986300903e-09*pow(T,3)-1.789026292e-06*pow(T,2)+0.0009677787797*T+0.02631882383) // Ih to II transition, SeaFreeze fitted polynomial
+      return IceIh_SF;
+    else
+      return IceII_SF;
+  }
+  // III, V, Water Triple Point, (Includes Ice II reigon) SeaFreeze
+  else if( P < 0.350109 )		
+  {
+    if(T > 99.49717929*pow(P,3)-158.5333434*pow(P,2)+100.0993404*P+236.281993) //Ice III Melt line, SeaFreeze fitted polynomial
+    {
+      if(T>1280) //Use Brown <1280 K and Mazevet >1280K, there will be a density decrease if transitioning from Brown -> Mazevet
+        return Water_sc_Mazevet;
+      else
+        return Water_Brown;
+    }
+    else if(P > 3.986300903e-09*pow(T,3)-1.789026292e-06*pow(T,2)+0.0009677787797*T+0.02631882383 && T<10.6802119*pow(P,3)-60.79880497*pow(P,2)+108.5464607*P+218.0347735) //IceII region, SeaFreeze fitted polynomial
+      return IceII_SF;
+    else if(P < 1.153769845e-08*pow(T,3)-7.956399761e-06*pow(T,2)-0.001642755909*T+0.1140942871) //Small remaining IceIh region, SeaFreeze
+      return IceIh_SF;
+    else
+      return IceIII_SF;
+  }
+  // V, VI, Water Triple Point SeaFreeze
+  else if(P < 0.634399)		
+  {
+    if(T > 47.24417282*pow(P,3)-120.4230091*pow(P,2)+143.9050041*P+218.5209061) //Ice V Melt line, SeaFreeze fitted polynomial
+    {
+      if(T>1280)
+        return Water_sc_Mazevet; //there will be a density decrease if transitioning from Brown -> Mazevet 
+      else
+        return Water_Brown;
+    }
+    else if(T<8.754511801*pow(P,3)-42.36539788*pow(P,2)-114.2410848*P+294.9938885 && T<10.6802119*pow(P,3)-60.79880497*pow(P,2)+108.5464607*P+218.0347735) //IceII region, SeaFreeze fitted polynomial
+      return IceII_SF;
+    else if(P< 2.669414392e-08*pow(T,3)-1.786325179e-05*pow(T,2)+0.003113786951*T+0.2759414249) //Small remaining IceIII, SeaFreeze 
+      return IceIII_SF;
+    else
+      return IceV_SF;
+  }
+  // Water, Ice VI, Ice VII Triple Point, SeaFreeze
+  else if(P < 2.216)		
+  {
+    if(T>5.711742978*pow(P,3)-39.67340784*pow(P,2)+125.6893825*P+208.5585936 || T>355) //Ice VI Melt line, SeaFreeze fitted polynomial
+    {
+      if(T>1280)
+        return Water_sc_Mazevet;
+      else
+        return Water_Brown;
+    }
+    else if(P< -3.607661344e-08*pow(T,3)+1.032010899e-05*pow(T,2)-0.002592049235*T+1.070211316 && T<8.754511801*pow(P,3)-42.36539788*pow(P,2)-114.2410848*P+294.9938885) //Remaining IceII region
+      return IceII_SF;
+    else if(P< -1.970275298e-08*pow(T,3)-1.858690183e-06*pow(T,2)+0.003737731993*T+0.1540994852) //Remaining IceV region
+      return IceV_SF;
+    else if(T>-1.4699e5+6.10791e-6*P*1e9+8.1529e3*log(P*1e9)-8.8439e-1*sqrt(P*1e9)) // IceVI-VII transition AQUA
+      return IceVI_SF;
+    else
+      return IceVII_Bezacier;
+  }
+  // Ice VII, X, Water Triple Point. Region of possible transitional Ice VII' reported in Grande not used in default
+  else if(P < 30.9)		
+  {
+    if(P<2.17+1.253*(pow(T/355,3.0)-1) || T>1023)	// Ice VII Melting curve Datchi et al. 2000 Phys. Rev. B 61, 6535
+    {
+      if(T>1280)
+        return Water_sc_Mazevet;
+      else
+        return Water_Brown;
+    }
+    else
+    {
+      if(T<700) //Avoid extrpolating Bezacier to high temperatures where dT/dP_S is too high
+        return IceVII_Bezacier;
+      else
+        return IceVII_Fei;
+    }
+  }
+  // Phase diagram becomes more uncertain over 30.9 GPa
+  else if (P<700)			
+  {					// use Ice X if T<2250 and P<700 otherwise supercritical similiar to AQUA 
+    if(P<pow(10.0, exp(1.7818*pow(T/1634.6, 0.2408) + 0.8310*pow(T/1634.6, -1.0) - 0.1444*pow(T/1634.6, -3.0)) - 1.0)/1e9 || T>2250)	// Ice X Melting curve AQUA
+      return Water_sc_Mazevet;
+    else
+      return IceX;
+  }
+  else
+    return Water_sc_Mazevet;
+}
+
+// ---------------------------------
+// H2O Water/Ice boundaries primarily from Dunaeva et al. 2010
+//Simplified phase diagram with major phases as used in Huang et al. 22
+EOS* find_phase_water_legacy(double P, double T)
 // input P in cgs
 {
   P /= 1E10;			// convert microbar to GPa
@@ -452,9 +585,6 @@ EOS* find_phase_water_default(double P, double T)
       
     else
       return IceVII_Bezacier;
-    //return IceVII_FFH2004;  // Examples of choosing other EOSs
-    //return IceVII;
-    //return IceZeng2013FFH;
   }
 
   else if(P < 5.10)		// liquid water or Ice VII.
@@ -495,14 +625,6 @@ EOS* find_phase_water_tabulated(double P, double T)
 
   P /= 1E10;			// convert microbar to GPa
   return H2O_AQUA;
-
-  if (P < 62.5)
-  {
-    return H2O_AQUA;
-  }
-  else
-    return Water_sc_Mazevet;
-
 }
 
 // ========== Phase Diagram for Atmosphere  ================
@@ -538,14 +660,15 @@ EOS* find_phase_HHe_tabulated(double P, double T)
 
 PhaseDgm core("core", find_phase_Fe_default); //Phase Diagrams for Core
 PhaseDgm core1("core1", find_phase_Fe_fccbcc); 
-PhaseDgm mant("mantle", find_phase_Si_default); //Phase Diagram for Mantle
+PhaseDgm mant("mantle", find_phase_Si_default); //Phase Diagrams for Mantle
 PhaseDgm mant1("mantle1", find_phase_Si_simple); 
 PhaseDgm mant2("mantle2", find_phase_PREM); 
 PhaseDgm mant3("mantle3", find_phase_C_simple); //Phase Diagram for Carbon Mantle
-PhaseDgm mant4("mantle4", find_phase_SiC); //Phase Diagram for Carbon Mantle
-PhaseDgm water("water", find_phase_water_default); //Phase Diagram for Hydrosphere
+PhaseDgm mant4("mantle4", find_phase_SiC); //Phase Diagram for Carbide Mantle
+PhaseDgm water("water", find_phase_water_default); //Phase Diagrams for Hydrosphere
 PhaseDgm water1("water1", find_phase_water_tabulated);
-PhaseDgm atm("atm", find_phase_gas_default); //Phase Diagram for Atmosphere
+PhaseDgm water2("water2", find_phase_water_legacy);
+PhaseDgm atm("atm", find_phase_gas_default); //Phase Diagrams for Atmosphere
 PhaseDgm atm1("atm1", find_phase_HHe_tabulated);
 
 EOS* find_phase(double m, double MC, double MM, double MW, double MG, double P, double T, bool inward)
@@ -628,3 +751,4 @@ EOS* find_phase(double m, vector<PhaseDgm> &Comp, vector<double> M, double P, do
   // if nothing matched, return the outermost existing layer
   return Comp.back().find_phase(P, T);
 }
+

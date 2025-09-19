@@ -137,7 +137,7 @@ MAGRATHEA will use the full solver from mode 0 and step through the parameter sp
 
 ## Build your own planet model ##
 
-MAGRATHEA is built for model flexibility with transparent storage structures for equations of state (EoS). We make it easy for users to build a reproduceable model and cite the material measurements that have gone into the model.
+MAGRATHEA is built for model flexibility with transparent storage structures for equations of state (EoS) and phase diagrams. We make it easy for users to build a reproduceable model and cite the material measurements that have gone into the model.
 
 The built-in EoSs for various planet building materials and phases are listed in the file `EOSlist.h`.  The detailed definition of each one can be found in `EOSlist.cpp`.
 
@@ -224,8 +224,9 @@ Mantle |  "Si_default" | Upper Mantle: Fo, Wds, Rwd, and liquid ; Lower Mantle: 
 &nbsp; | "C_simple" | Graphite and Diamond, Carbon Mantle
 &nbsp; | "SiC" | Silicon Carbide Mantle
 &nbsp; | "PREM" | PREM tabulated mantle
-Hydrosphere | "water_default" | H2O Water/Ice boundaries primarily form Dunaeva et al. 2010
+Hydrosphere | "water_default" | H2O Water/Ice/Vapor/Supercritical, Inspired by AQUA, but with some modifications
 &nbsp; | "water_tabulated" | AQUA Haldemann et al. 2020 Tabulated Ice, Liquid, Vapor, Supercritical
+&nbsp; | "water_legacy" | H2O Water/Ice boundaries primarily form Dunaeva et al. 2010, our original model
 Atmosphere | "gas_default" | Ideal Gas: Isothermal for P<100 bar. Adiabatic ideal gas for P > 100 bar
 &nbsp; | "HHe_tabulated" | H/He Gas: Isothermal ideal for P<100 bar, P>100 bar: tabulated real gas, Chabrier & Debras 2021 Y=0.275
 
