@@ -536,6 +536,19 @@ double Diamond_array[][2] = {{0,2},{1,5.7304},{2,432.4},{3,3.793},{5,mC},{7,1887
 
 EOS *Diam = new EOS("Diamond",Diamond_array,sizeof(Diamond_array)/2/sizeof(Diamond_array[0][0]));
 
+// Silicon Carbide B3 (Zinc Blende) - Vinet EOS for better high-pressure extrapolation
+// Based on Miozzi et al. 2018 parameters but using Vinet equation
+double SiC_B3_Vinet_array[][2] = {{0, 2}, {1, 12.47}, {2, 224}, {3, 4.08}, {5, 40.096}, {7, 1200}, {8, 1.06}, {10, 0}, {14, 2}, {17, 6.2}, {16, 300}};
+
+EOS *SiC_B3_Vinet = new EOS("SiC B3 Vinet (Miozzi)", SiC_B3_Vinet_array, sizeof(SiC_B3_Vinet_array)/2/sizeof(SiC_B3_Vinet_array[0][0]));
+
+// Silicon Carbide B1 (Rock Salt) - Vinet EOS for better high-pressure extrapolation  
+// Based on Miozzi et al. 2018 parameters but using Vinet equation
+// Added thermal parameters to match original B1 implementation
+double SiC_B1_Vinet_array[][2] = {{0, 2}, {1, 9.90}, {2, 339}, {3, 3.06}, {5, 40.096}, {7, 1200}, {8, 0.50}, {9, 1.67}, {10, 0}, {14, 2}, {16, 300}};
+
+EOS *SiC_B1_Vinet = new EOS("SiC B1 Vinet (Miozzi)", SiC_B1_Vinet_array, sizeof(SiC_B1_Vinet_array)/2/sizeof(SiC_B1_Vinet_array[0][0]));
+
 // ==========  OTHER  ================
 
 // -----------------------------------
@@ -1116,3 +1129,4 @@ void FINVER(double F, int N, double &X, double &XDF, double &XDFF)
     XDF  = t1 * RT;
     XDFF = t2 * RT + pow(t1,2) * (R2 - 2.0*RT) / t;
 }
+
