@@ -358,8 +358,9 @@ EOS* find_phase_PREM(double P, double T)
   else
     return Si_PREM;
 }
+
 //-----------------------------------
-// C Default
+// Carbon Mantle
 EOS* find_phase_C_simple(double P, double T)
 {
   if (P <= 0 || T <= 0)
@@ -370,6 +371,25 @@ EOS* find_phase_C_simple(double P, double T)
     return Graph;
   else
     return Diam;
+}
+
+//-----------------------------------
+// Silicon Carbide Mantle
+EOS* find_phase_SiC(double P, double T)
+{
+  if (P <= 0 || T <= 0)
+  {
+    return NULL;
+  }
+
+  P /= 1E10;  // convert microbar to GPa
+
+  double transition_pressure = 69.0 - 0.001 * (T - 300.0);
+
+  if (P < transition_pressure) 
+    return SiC_B3_Vinet;  // Low pressure zinc blende structure (Vinet EOS)
+  else 
+    return SiC_B1_Vinet;  // High pressure rock salt structure (Vinet EOS)
 }
  
 // ========== Phase Diagram for Hydrosphere  ================
@@ -522,6 +542,7 @@ PhaseDgm mant("mantle", find_phase_Si_default); //Phase Diagram for Mantle
 PhaseDgm mant1("mantle1", find_phase_Si_simple); 
 PhaseDgm mant2("mantle2", find_phase_PREM); 
 PhaseDgm mant3("mantle3", find_phase_C_simple); //Phase Diagram for Carbon Mantle
+PhaseDgm mant4("mantle4", find_phase_SiC); //Phase Diagram for Carbon Mantle
 PhaseDgm water("water", find_phase_water_default); //Phase Diagram for Hydrosphere
 PhaseDgm water1("water1", find_phase_water_tabulated);
 PhaseDgm atm("atm", find_phase_gas_default); //Phase Diagram for Atmosphere
@@ -606,26 +627,4 @@ EOS* find_phase(double m, vector<PhaseDgm> &Comp, vector<double> M, double P, do
   }
   // if nothing matched, return the outermost existing layer
   return Comp.back().find_phase(P, T);
-}
-
-EOS* find_phase_SiC_default(double P, double T)
-{
-  if (P <= 0 || T <= 0)
-  {
-    return NULL;
-  }
-
-  P /= 1E10;  // convert microbar to GPa
-
-  double transition_pressure = 69.0 - 0.001 * (T - 300.0);
-
-  if (P < transition_pressure) {
-    if (verbose && P > 10.0) 
-      cout << "SiC Phase: Using B3 at P=" << P << " GPa, T=" << T << " K (transition at " << transition_pressure << " GPa)" << endl;
-    return SiC_B3_Vinet;  // Low pressure zinc blende structure (Vinet EOS)
-  } else {
-    if (verbose)
-      cout << "SiC Phase: Using B1 at P=" << P << " GPa, T=" << T << " K (transition at " << transition_pressure << " GPa)" << endl;
-    return SiC_B1_Vinet;  // High pressure rock salt structure (Vinet EOS)
-  }
 }
