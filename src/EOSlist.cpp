@@ -255,6 +255,16 @@ double dTdP_Si_Dummy (double P, double T)
 // ==========  Water  ================
 
 // -----------------------------------
+// Water, Bollengier et al. (2019), as tabulated through SeaFreeze, Journaux et al. 2020, JGR Planets, 124, 1
+//DEFAULT
+EOS *Water_SF = new EOS("Water (Bollengier/SF)", "./tabulated/SFwater1.txt");
+
+// -----------------------------------
+// Water Liquid, IAPWS-R6-95, Wagner & PruB 2022, JPCRD, 31, 387
+//DEFAULT
+EOS *Water_IAPWS = new EOS("Water (IAPWS)", "./tabulated/water_IAPWS95.txt");
+
+// -----------------------------------
 // Liquid water, ExoPlex, unkown source
 double Water_ExoPlex_array[][2] = {{0,1}, {1,18.797}, {2,2.06}, {3,6.29}, {4,-0.9175}, {5,18.01528}, {20,4.184}};
 
@@ -262,21 +272,45 @@ EOS *Water_ExoPlex = new EOS("Water (ExoPlex)", Water_ExoPlex_array, sizeof(Wate
 
 // -----------------------------------
 // Liquid water, Valencia et al. 2007, ApJ, 656:545
-// DEFAULT
 double Water_array[][2] = {{0,0}, {1,18.047}, {2,2.18}, {5,18.01528}};
 
 EOS *Water = new EOS("Water (Valencia)", Water_array, sizeof(Water_array)/2/sizeof(Water_array[0][0]));
 
 // -----------------------------------
-// Dummy for supercritical water. 
-EOS *Water_sc_dummy = new EOS("Water supercritical Dummy", Water_array, sizeof(Water_array)/2/sizeof(Water_array[0][0]));
+// Water & Super Critical, Brown 2018, Fluid Phase Equilib., 463, 18, tabulated by SeaFreeze
+// DEFAULT
+EOS *Water_Brown = new EOS("Water SC (Brown)", "./tabulated/water_Brown.txt");
 
 // -----------------------------------
 // Supercritical water. Mazevet et al. 2019, A&A 621
 // https://www.ioffe.ru/astro/H2O/index.html
 // DEFAULT
-EOS *Water_sc_Mazevet = new EOS("Water supercritical Mazevet", H2OSC);
+EOS *Water_sc_Mazevet = new EOS("Water SC (Mazevet)", H2OSC);
 
+// -----------------------------------
+// Water/Ice, SeaFreeze tabulated, Journaux et al. 2020, JGR Planets, 124, 1
+// DEFAULT
+EOS *IceIh_SF = new EOS("Ice Ih (SeaFreeze)", "./tabulated/SFiceih.txt");
+
+// -----------------------------------
+// Water/Ice, SeaFreeze tabulated, Journaux et al. 2020, JGR Planets, 124, 1
+// DEFAULT
+EOS *IceII_SF = new EOS("Ice II (SeaFreeze)", "./tabulated/SFiceii.txt");
+
+// -----------------------------------
+// Water/Ice, SeaFreeze tabulated, Journaux et al. 2020, JGR Planets, 124, 1
+// DEFAULT
+EOS *IceIII_SF = new EOS("Ice III (SeaFreeze)", "./tabulated/SFiceiii.txt");
+
+// -----------------------------------
+// Water/Ice, SeaFreeze tabulated, Journaux et al. 2020, JGR Planets, 124, 1
+// DEFAULT
+EOS *IceV_SF = new EOS("Ice V (SeaFreeze)", "./tabulated/SFiceV.txt");
+
+// -----------------------------------
+// Water/Ice, SeaFreeze tabulated, Journaux et al. 2020, JGR Planets, 124, 1
+// DEFAULT
+EOS *IceVI_SF= new EOS("Ice VI (SeaFreeze)", "./tabulated/SFiceVI.txt");
 
 // -----------------------------------
 // Ice Ih, Feistel & Wagner 2006, Acuna et al. 2021
@@ -425,48 +459,43 @@ EOS *IceZeng2013FMNR = new EOS("Ice (FMNR 2009)", FMNR[1], FMNR[0], 13);
 // -----------------------------------
 // Adiabtic Ideal Gas, Parameter 5 can be changed for mean molecular weight of gas. 3 g/mol = mix of H/He
 // DEFAULT
-
 double Gas_array[3][2] = {{0,6}, {5,2}, {14,2}};
 
 EOS *Gas = new EOS("Ideal Gas", Gas_array, 3);
+
 // -----------------------------------
 // van der Waals, H2, 
-
 double vdW_H2_array[5][2] = {{0,6}, {5,2}, {14,2}, {33, 0.2452}, {34, 0.0265}};
 
 EOS *vdW_H2 = new EOS("H2 vdW", vdW_H2_array, 5);
 
 // -----------------------------------
 // van der Waals, He, 
-
 double vdW_He_array[5][2] = {{0,6}, {5,4}, {14,1}, {33, 0.0346}, {34, 0.0238}};
 
 EOS *vdW_He = new EOS("He vdW", vdW_He_array, 5);
 
 // -----------------------------------
 // van der Waals, H2O, 
-
+//Default Hydrosphere
 double vdW_H2O_array[5][2] = {{0,6}, {5,18}, {14,3}, {33, 5.537}, {34, 0.0305}};
 
 EOS *vdW_H2O = new EOS("H2O vdW", vdW_H2O_array, 5);
 
 // -----------------------------------
 // van der Waals, CH4, 
-
 double vdW_CH4_array[5][2] = {{0,6}, {5,16}, {14,3}, {33, 2.303}, {34, 0.0431}};
 
 EOS *vdW_CH4 = new EOS("CH4 vdW", vdW_CH4_array, 5);
 
 // -----------------------------------
 // van der Waals, NH3, 
-
 double vdW_NH3_array[5][2] = {{0,6}, {5,17}, {14,3}, {33, 4.225}, {34, 0.0371}};
 
 EOS *vdW_NH3 = new EOS("NH3 vdW", vdW_NH3_array, 5);
 
 // -----------------------------------
 // van der Waals, CO2, 
-
 double vdW_CO2_array[5][2] = {{0,6}, {5,44}, {14,2}, {33, 3.658}, {34, 0.0429}};
 
 EOS *vdW_CO2 = new EOS("CO2 vdW", vdW_CO2_array, 5);
@@ -474,23 +503,27 @@ EOS *vdW_CO2 = new EOS("CO2 vdW", vdW_CO2_array, 5);
 // -----------------------------------
 // Isothermal Ideal Gas
 // DEFAULT
-
 double Gas_iso_array[3][2] = {{0,6}, {5,3}, {14,0}};
 
 EOS *Gas_iso = new EOS("Isothermal Ideal Gas", Gas_iso_array, 3);
 
 // -----------------------------------
 // Water Vapor Ideal Gas, same as adiabatic but 5 and 14 changed for water
-
 double watervapor_array[3][2] = {{0,6}, {5,18}, {14,3}};
 
 EOS *watervapor = new EOS("Water vapor", watervapor_array, 3);
+
+// -----------------------------------
+// Water Vapor, IAPWS-R6-95, Wagner & PruB 2022, JPCRD, 31, 387
+// Default Hydrosphere
+EOS *Water_Vap_IAPWS = new EOS("H20 Vapor (IAPWS)", "./tabulated/water_IAPWS95.txt");
 
 // -----------------------------------
 // H/He, Chabrier & Debras 2021 Apj, Y=0.275
 EOS *Gas_hhe = new EOS("H/He (Chabrier)", "./tabulated/ChabrierHHe0275.txt");
 
 // ==========  CARBON  ================
+
 // Graphite (BME), Seager et al. 2007, ApJ
 double Graph_array[][2] = {{0,0},{1,5.33822},{2,33.8},{3,8.9},{5,mC}};   
 
@@ -503,38 +536,22 @@ double Diamond_array[][2] = {{0,2},{1,5.7304},{2,432.4},{3,3.793},{5,mC},{7,1887
 
 EOS *Diam = new EOS("Diamond",Diamond_array,sizeof(Diamond_array)/2/sizeof(Diamond_array[0][0]));
 
-// Silicon Carbide B3 (Zinc Blende) - Vinet EOS for better high-pressure extrapolation
-// Based on Miozzi et al. 2018 parameters but using Vinet equation
-double SiC_B3_Vinet_array[][2] = {{0, 2}, {1, 12.47}, {2, 224}, {3, 4.08}, {5, 40.096}, {7, 1200}, {8, 1.06}, {10, 0}, {14, 2}, {17, 6.2}, {16, 300}};
-
-EOS *SiC_B3_Vinet = new EOS("SiC B3 Vinet (Miozzi)", SiC_B3_Vinet_array, sizeof(SiC_B3_Vinet_array)/2/sizeof(SiC_B3_Vinet_array[0][0]));
-
-// Silicon Carbide B1 (Rock Salt) - Vinet EOS for better high-pressure extrapolation  
-// Based on Miozzi et al. 2018 parameters but using Vinet equation
-// Added thermal parameters to match original B1 implementation
-double SiC_B1_Vinet_array[][2] = {{0, 2}, {1, 9.90}, {2, 339}, {3, 3.06}, {5, 40.096}, {7, 1200}, {8, 0.50}, {9, 1.67}, {10, 0}, {14, 2}, {16, 300}};
-
-EOS *SiC_B1_Vinet = new EOS("SiC B1 Vinet (Miozzi)", SiC_B1_Vinet_array, sizeof(SiC_B1_Vinet_array)/2/sizeof(SiC_B1_Vinet_array[0][0]));
-
-
 // ==========  OTHER  ================
 
 // -----------------------------------
 // Gold, Heinz & Jeanloz 1983, J. Appl. Phys. (included for a Hitchiker's-related joke)
-
 double Gold_BM3_array[][2] = {{0,0}, {1,10.215}, {2,166.65}, {3,5.4823}, {5,196.96657}, {7,170}, {8,2.95}, {11,1.7}, {14,1}};
 
 EOS *Gold_BM3 = new EOS("Gold", Gold_BM3_array, sizeof(Gold_BM3_array)/2/sizeof(Gold_BM3_array[0][0]));
+
 // -----------------------------------
 // Gold, Matsui et al. 2010, J. Phys. (included for a Hitchiker's-related joke)
-
 double Gold_array[][2] = {{0,2}, {1,10.215}, {2,167}, {3,6}, {5,196.96657}, {7,170}, {8,2.97}, {9,1.6}, {14,1}};
 
 EOS *Gold = new EOS("Gold", Gold_array, sizeof(Gold_array)/2/sizeof(Gold_array[0][0]));
 
 // -----------------------------------
 // Platinum, Matsui et al. 2009, J. Appl. Phys. (included for a Hitchiker's-related joke)
-
 double Plat_array[][2] = {{0,2}, {1,9.0902}, {2,273}, {3,5.20}, {5,195.084}, {7,230}, {8,2.7}, {9,1.1}, {14,1}};
 
 EOS *Plat = new EOS("Plat", Plat_array, sizeof(Plat_array)/2/sizeof(Plat_array[0][0]));
@@ -869,7 +886,7 @@ double H2OSC(double P, double T, double rho_guess)
 // P in GPa
 {
   if(rho_guess<0.5 || rho_guess>20)
-    rho_guess = 1 + 5*log(P/1E2);
+    rho_guess = max(1 + 0.5*log(P/5E10),0.1);
   return density_solver(P,T,PH2OSC,rho_guess);
 }
 
@@ -1099,4 +1116,3 @@ void FINVER(double F, int N, double &X, double &XDF, double &XDFF)
     XDF  = t1 * RT;
     XDFF = t2 * RT + pow(t1,2) * (R2 - 2.0*RT) / t;
 }
-

@@ -56,16 +56,15 @@ EOS* find_phase_Si_default(double P, double T);
 EOS* find_phase_Si_simple(double P, double T);
 EOS* find_phase_PREM(double P, double T);
 EOS* find_phase_C_simple(double P, double T);
-EOS* find_phase_SiC_default(double P, double T);
 
 // Hydrosphere
 EOS* find_phase_water_default(double P, double T);
 EOS* find_phase_water_tabulated(double P, double T);
+EOS* find_phase_water_legacy(double P, double T);
 
 //Atmsophere
 EOS* find_phase_gas_default(double P, double T);
 EOS* find_phase_HHe_tabulated(double P, double T);
-
 
 EOS* find_phase(double m, double MC, double MM, double MW, double MG, double P, double T, bool inward = false);
 // given the accumulated mass (in g), P (in cgs) and T, return the corresponding phase.  If inward = true, return the outer component at the mass transition boundary
@@ -79,7 +78,7 @@ struct phase_params
   PhaseDgm* cmpn;
 };
 
-extern PhaseDgm core, core1, mant, mant1, mant2, mant3, mant4, water, water1, atm, atm1;
-// Atmosphere doesn't support self-consistent phase diagram.  Multiple components with each masses specifid have to be constructed in order to use multi-phase atmosphere.
+extern PhaseDgm core, core1, mant, mant1, mant2, mant3, water, water1, water2, atm, atm1;
+// Atmosphere doesn't support self-consistent phase diagram.  Multiple components with each masses specified have to be constructed in order to use multi-phase atmosphere.
 
 #endif	// PHASE_H_

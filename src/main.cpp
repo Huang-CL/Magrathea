@@ -204,14 +204,14 @@ int main(int argc, char* argv[])
     Comp[1]=mant2;
   else if (mantle_phasedgm=="C_simple")
     Comp[1]=mant3;
-  else if (mantle_phasedgm=="SiC")
-    Comp[1]=mant4;
   else
     cout<<"mant_phasedgm does not exist, using default"<<endl;
   if (hydro_phasedgm=="water_default")
     Comp[2]=water; 
   else if (hydro_phasedgm=="water_tabulated")
     Comp[2]=water1;
+  else if (hydro_phasedgm=="water_legacy")
+    Comp[2]=water2;
   else
     cout<<"hydro_phasedgm does not exist, using default"<<endl;
   if (atm_phasedgm=="gas_default")
@@ -391,8 +391,6 @@ int main(int argc, char* argv[])
   delete Si_liquid;
   delete Si_Liquid_Wolf;
   delete Si_Dummy;
-  delete SiC_B3_Vinet;
-  delete SiC_B1_Vinet;
   delete Fo;
   delete Wds;
   delete Rwd;
@@ -405,10 +403,17 @@ int main(int argc, char* argv[])
   delete Ice_Seager;
   delete H2O_AQUA;
   delete H2O_SeaFreeze;
+  delete Water_SF;
+  delete Water_Brown;
+  delete Water_IAPWS;
   delete Water_ExoPlex;
   delete Water;
   delete Water_sc_Mazevet;
-  delete Water_sc_dummy;
+  delete IceIh_SF;
+  delete IceII_SF;
+  delete IceIII_SF;
+  delete IceV_SF;
+  delete IceVI_SF;
   delete IceIh;
   delete IceIh_ExoPlex;
   delete IceVI_ExoPlex;
@@ -430,6 +435,7 @@ int main(int argc, char* argv[])
   delete Gas_iso;
   delete Gas_hhe;
   delete watervapor;
+  delete Water_Vap_IAPWS;
   delete Gold;
   delete Plat;
   delete Graph;
