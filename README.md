@@ -221,7 +221,8 @@ Core | "Fe_default" | hcp and Liquid iron
 &nbsp; | "Fe_fccbcc" | Includes low pressure fcc and bcc iron
 Mantle |  "Si_default" | Upper Mantle: Fo, Wds, Rwd, and liquid ; Lower Mantle: Brg, PPv
 &nbsp; | "Si_simple" | Brg, PPv, and liquid 
-&nbsp; | "C_simple" | Graphite and Diamond 
+&nbsp; | "C_simple" | Graphite and Diamond, Carbon Mantle
+&nbsp; | "SiC" | Silicon Carbide Mantle
 &nbsp; | "PREM" | PREM tabulated mantle
 Hydrosphere | "water_default" | H2O Water/Ice/Vapor/Supercritical, Inspired by AQUA, but with some modifications
 &nbsp; | "water_tabulated" | AQUA Haldemann et al. 2020 Tabulated Ice, Liquid, Vapor, Supercritical
