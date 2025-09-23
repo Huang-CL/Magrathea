@@ -898,7 +898,7 @@ double dTdP_S_H2O_of_rho(double rho, double T)
 double H2OSC(double P, double T, double rho_guess)
 // P in GPa
 {
-  if(rho_guess<0.5 || rho_guess>20)
+  if(!(rho_guess>0.5 && rho_guess<20))
     rho_guess = max(1 + 0.5*log(P/5E10),0.1);
   return density_solver(P,T,PH2OSC,rho_guess);
 }

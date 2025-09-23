@@ -365,7 +365,7 @@ EOS::EOS(string phaseinput, double params[][2], double bparams[], int length, in
       break;
     case 4:
       K0pp=params[i][1];
-      break;
+      break;
     case 5:
       mmol=params[i][1];
       break;
@@ -1014,7 +1014,6 @@ double EOS::density(double P, double T, double rho_guess)
   
   else if(eqntype == 7)		// interpolate an input file
   {
-
     P /= 1E10;
     double rho;
     if(tabletype == 4) //Search for Rho in 3D table need Temp and Press
@@ -1842,15 +1841,6 @@ double EOS::density(double P1, double T1, double rho, double P2, double &T2)
 
   else
   {
-    if (!gsl_finite(mmol))
-      cout<<"Error: The mean molecular weight of "<<phasetype<<" unknown."<<endl;
-  
-    if(rho < 0.5 || !gsl_finite(rho))		// rho will be set to negative if it is unknown.
-      rho = density(V0) + P2/1E13;
-  
-    P1 /= 1E10;			// convert pressure from microbar to GPa
-    P2 /= 1E10;
-
     if (eqntype >= 8 && (!gsl_finite(n)||!gsl_finite(gamma0)||!gsl_finite(gamma0p)||!gsl_finite(V0)||!gsl_finite(beta)||!gsl_finite(T0)||!(bn>0)))
     {
       cout<<"Error: Don't have enough input parameters to calculate the density of "<<phasetype<<" using RTpress style EOS."<<endl;
@@ -1878,68 +1868,13 @@ double EOS::density(double P1, double T1, double rho, double P2, double &T2)
       T2 = numeric_limits<double>::quiet_NaN();
       return numeric_limits<double>::quiet_NaN();
     }
-    double dTdV = dTdV_S(volume(rho), P1, T1);
-
-    int iter = 0, max_iter = 100;
-    const gsl_root_fdfsolver_type *TPL = gsl_root_fdfsolver_newton;
-    gsl_root_fdfsolver *s = gsl_root_fdfsolver_alloc (TPL);
-    gsl_function_fdf FDF;
-
-    double rho2 = rho, rho1=rho;
-
-    struct EOS_params params = {{P2, T1, rho, dTdV}, this};
-
-    FDF.f = &P_EOS_S;
-    FDF.df = &dP_EOS_S;
-    FDF.fdf = &PdP_EOS_S;
-    FDF.params = &params;
-  
-    int status;
-    gsl_root_fdfsolver_set (s, &FDF, rho2);
     
-    do
-    {
-      iter++;
-
-      status = gsl_root_fdfsolver_iterate (s);
-      rho1 = rho2;
-      dTdV = dTdV_S(volume(rho1), P1, T1);
-      params.x[3] = dTdV;
-      rho2 = gsl_root_fdfsolver_root (s);
-      if (rho2<0.95*rho1)// limit the step size of each iteration to increase stability.
-      {
-        rho2 = 0.95*rho1;
-        gsl_root_fdfsolver_set (s, &FDF, rho2);
-      }
-      else if (rho2>1.05*rho1)
-      {
-        rho2 = 1.05*rho1;
-        gsl_root_fdfsolver_set (s, &FDF, rho2);
-      }
-
-      T2 = T1 + mmol/sq(rho2)*(rho-rho2)*dTdV; // 
-      status = gsl_root_test_delta (rho1, rho2, 1E-16, rho_eps_rel);
-    }
-    while (status == GSL_CONTINUE && gsl_finite(rho) && iter < max_iter);
-
-    if (!gsl_finite(rho2))
-    {
-      if (verbose)
-        cout<<"Warning: Can't find the density for "<<phasetype<<" at pressure "<<P2<<" GPa and temperature "<<T1<<" K, initial guessed density:"<<rho<<". V0, K0, K0p: "<<V0<<' '<<K0<<' '<<K0p<<". Likely no solution exist for this physical condition under the EOS used."<<endl;
-      
-      gsl_root_fdfsolver_free (s);
-      return numeric_limits<double>::quiet_NaN();
-    }
-    else if (status == GSL_CONTINUE)
-    {
-      if (verbose)
-        cout<<"Warning: Can't find the density for "<<phasetype<<" at pressure "<<P2<<" GPa and temperature "<<T1<<" K within maximum interation "<<max_iter<<", initial guessed density:"<<rho<<". V0, K0, K0p: "<<V0<<' '<<K0<<' '<<K0p<<endl;
-      
-      gsl_root_fdfsolver_free (s);
-      return numeric_limits<double>::quiet_NaN();
-    }
-    gsl_root_fdfsolver_free (s);
-    return rho2;
+    // Use dTdP_S for adiabatic temperature gradient calculation
+    if(rho < 0.01 || !gsl_finite(rho))          // rho will be set to negative if it is unknown.
+      rho = density(V0) + P2/1E13;
+    
+    T2 = T1 + dTdP_S(P1/1E10, T1, rho) * (P2/1E10 - P1/1E10);
+    return density(P2, T2, rho);
   }
 }
 
@@ -2020,14 +1955,14 @@ double density_solver(double P, double T, double (*pressure_func)(double rho, do
     status = gsl_root_fdfsolver_iterate (s);
     rho0 = rho;
     rho = gsl_root_fdfsolver_root (s);
-    if (rho<0.95*rho0)// limit the step size of each iteration to increase stability.
+    if (rho<0.8*rho0)// limit the step size of each iteration to increase stability.
     {
-      rho = 0.95*rho0;
+      rho = 0.8*rho0;
       gsl_root_fdfsolver_set (s, &FDF, rho);
     }
-    else if (rho>1.05*rho0)
+    else if (rho>1.2*rho0)
     {
-      rho = 1.05*rho0;
+      rho = 1.2*rho0;
       gsl_root_fdfsolver_set (s, &FDF, rho);
     }
 
