@@ -46,33 +46,42 @@ bibliography: paper.bib
 
 # Statement of need
 
-Magrathea is more than a singular planet model, we built it as a platform for users to build their own planet models. 
+Understanding the internal structure of exoplanets is a key step in connecting mass–radius measurements to composition, formation, and evolution. Observational programs with *Kepler*, *TESS*, and JWST now routinely measure the densities of small planets, but interior degeneracies make inference strongly dependent on the assumptions of the chosen structural model. Researchers therefore require codes that are both transparent and adaptable to new physics, equations of state, and phase diagrams. 
 
-At least a dozen research groups are now or have used Magrathea, these include...
+Magrathea is designed as such a platform. Rather than providing only a single planet model, it allows users to construct and test their own interior prescriptions. Since its first publication [@Huang:2022], Magrathea has been adopted by more than a dozen groups for applications ranging from volatile-rich super-Earths to habitability analyses [@Rice:2025; @Childs:2023]. Recent work using Magrathea has quantified uncertainties in the interiors of the TRAPPIST-1 planets [@Rice:2025], demonstrating the importance of propagating both observational and model uncertainties. By releasing the code openly and continuing to expand its physical fidelity and usability, Magrathea provides a flexible, community-driven alternative to black-box or closed-source solvers.
 
 # Summary of the base code
 
-While in the next section we detail updates to the code, the base solver remains largely unchanged since `@Magrathea'. 
+The base solver of Magrathea is a one-dimensional, spherically symmetric planet interior integrator written in C++. The code supports up to four fully differentiated layers—iron core, silicate mantle, water/ice hydrosphere, and atmosphere—with user-defined mass fractions. For a given configuration, Magrathea integrates the equations of hydrostatic equilibrium, mass conservation, temperature profile (isothermal or isentropic), and equation of state (EOS) using a shooting-to-fitting-point method with adaptive Runge–Kutta integration. The solver returns the radius of the planet, the radii of each compositional boundary, and profiles of pressure, temperature, density, and phase as functions of enclosed mass.
+
+A distinctive feature of Magrathea is its modular EOS and phase diagram library. Each layer can host multiple phases, with transitions determined by pressure–temperature conditions. Users may select from a large library of tabulated or analytic EOSs, or add new ones via straightforward interfaces in the source. This flexibility makes Magrathea well suited both for forward modeling of specific exoplanets and for exploring how uncertainties in high-pressure physics affect planetary interiors.
+
 
 # Major updates in this version
 
-Since publishing the first verison of the code along with `@Magrathea', the capabilities, useability, and performance of Magrathea has all been significantly improved and expanded. We separate here lists of updates to to the materials/physics available for the model and the functionality built into the software. 
+Since the initial release [@Huang:2022], Magrathea has undergone significant improvements in physics coverage, numerical methods, and usability. We summarize the key updates here.
 
-The updates to the model:
-- Upper mantle phases
-- Chambrier, AQUA, and SeaFreeze
-- Supercritical Water
-- Van der Waals
-- Carbon Phase Diagram
-- Updated Hydrosphere
+**New physical models and materials**
+- Inclusion of upper-mantle polymorphs of Mg\(_2\)SiO\(_4\) (forsterite, wadsleyite, ringwoodite) and phase transitions to bridgmanite and post-perovskite MgSiO\(_3\) [@Rice:2025].
+- Expanded hydrosphere treatment with updated high-pressure ices and water phases, including supercritical water and recent experimental constraints [@Huang:2021].
+- Support for advanced EOS formulations, including Chabrier EOS for hydrogen/helium, AQUA and SeaFreeze water models, and van der Waals gases.
+- A carbon phase diagram module enabling models of carbon-rich interiors.
 
-The updates to functionality:
-- Input parameters for each mode are moved to input files with .cfg extensions
-- Reordering of the now 9 modes see table
-- Modular phase diagrams
-- P-T-rho-dt/dp tables
-- Secant Method composition solver
-- MCMC composition solver
+**New functionality and solvers**
+- Modular phase diagram handling, allowing users to mix, replace, or extend layer definitions.
+- Support for tabulated P–T–ρ–∇T EOS tables, in addition to analytic forms.
+- New composition finder solvers:  
+  - a secant-method routine that determines the mass of an unknown layer given a target mass and radius;  
+  - an MCMC-based routine for probabilistic composition inference, usable with posterior samples from observations.
+- Reordered and expanded run modes (now nine in total) to cover bulk planet input, two-layer approximations, EOS modification, and inverse retrieval problems.
+
+**Usability and performance**
+- Migration of all run parameters into `.cfg` input files, improving reproducibility and scripting.
+- Improved error handling and convergence diagnostics at phase boundaries.
+- Parallelization of bulk runs and composition finder routines with OpenMP, enabling efficient inference across thousands of mass–radius samples.
+- More consistent default tolerances for the ODE integrators, reducing numerical artifacts while preserving speed.
+
+Together, these updates transform Magrathea from a flexible forward solver into a broader platform for both forward modeling and statistical inference of exoplanet interiors. The new features have already been demonstrated in recent applications to the TRAPPIST-1 system [@Rice:2025], where the composition finder enabled quantification of model-dependent uncertainties in water mass fraction.
 
 
 # Mathematics
