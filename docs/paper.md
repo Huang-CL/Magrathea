@@ -20,6 +20,9 @@ authors:
   - name: Mangesh Daspute
     orcid: 
     affiliation: 4
+  - name: Krishang Mittal
+    orcid: 
+    affiliation: 5   
   - name: Jason H. Steffen
     orcid: 0000-0003-2202-384
     affiliation: 3
@@ -35,8 +38,10 @@ affiliations:
    index: 3
  - name: INSERT MANGESH
    index: 4
+ - name: Department of Astronomy, University of Wisconsin–Madison, 475 N. Charter Street, Madison, WI, 53706, USA
+   index: 5
 
-date: 23 September 2025
+date: 26 September 2025
 bibliography: paper.bib
 
 
