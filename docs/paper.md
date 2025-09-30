@@ -47,38 +47,55 @@ bibliography: paper.bib
 
 # Summary
 
-
+In our first publication, @Huang:2022, we listed a number of future updates which are now completed along with a host of other expansions to the code's available physics and features.
 
 # Statement of need
 
-Understanding the internal structure of exoplanets is a key step in connecting mass–radius measurements to composition, formation, and evolution. Observational programs with *Kepler*, *TESS*, and JWST now routinely measure the densities of small planets, but interior degeneracies make inference strongly dependent on the assumptions of the chosen structural model. Researchers therefore require codes that are both transparent and adaptable to new physics, equations of state, and phase diagrams. 
+Essential to understanding the formation and evolution of a planet, is constraining the composition of the planet. Observations of mass and radius alone are not sufficient, since many different interiors can yield the same density. Interior structure solvers are therefore essential tools for connecting observed properties to the underlying distribution of iron, silicate, volatiles, and atmosphere. With observational programs routinely measuring the densities of small to large planets, researchers require codes with models that are transparent and flexible---able to adapt to our changing understanding of planet minerology. 
 
-Magrathea is designed as such a platform. Rather than providing only a single planet model, it allows users to construct and test their own interior prescriptions. Since its first publication [@Huang:2022], Magrathea has been adopted by more than a dozen groups for applications ranging from volatile-rich super-Earths to habitability analyses [@Rice:2025; @Childs:2023]. Recent work using Magrathea has quantified uncertainties in the interiors of the TRAPPIST-1 planets [@Rice:2025], demonstrating the importance of propagating both observational and model uncertainties. By releasing the code openly and continuing to expand its physical fidelity and usability, Magrathea provides a flexible, community-driven alternative to black-box or closed-source solvers.
+Magrathea is designed as such a platform. Rather than enforcing a fixed planet model, Magrathea provides a framework in which users can define their own phase diagrams, equations of state (EOSs), and thermal structures. This adaptability has led to broad uptake: at least a dozen groups now use Magrathea. DESCRIBE A FEW WORKS. By continuing to expand its physical fidelity and usability, Magrathea enables the community to keep pace with rapidly improving exoplanet data and experimental constraints on planetary materials.
 
 # Summary of the base code
 
-The base solver of Magrathea is a one-dimensional, spherically symmetric integrator of the equations of hydrostatic equilibrium, mass continuity, and energy transport written in C++. For a user-defined planet consisting of up to four differentiated layers, the code integrates inward and outward solutions using a shooting-to-fitting-point method with adaptive Runge–Kutta–Fehlberg stepping. The solver returns the radius of the planet, the radii of each compositional boundary, and profiles of pressure, temperature, density, and phase as functions of enclosed mass.
+The core solver of Magrathea is a one-dimensional, spherically symmetric integrator of the equations of hydrostatic equilibrium, mass continuity, and energy transport written in C++. For a user-defined planet consisting of up to four differentiated layers, the code integrates inward and outward solutions using a shooting-to-fitting-point method with adaptive Runge–Kutta–Fehlberg stepping. The solver returns the radius of the planet, the radii of each compositional boundary, and profiles of pressure, temperature, density, and phase as functions of enclosed mass.
 
-A distinctive feature of Magrathea is its modular EOS and phase diagram library. Each layer can host multiple phases, with transitions determined by pressure–temperature conditions. Users may select from a large library of tabulated or analytic EOSs, or add new ones via straightforward interfaces in the source. This flexibility makes Magrathea well suited both for forward modeling of specific exoplanets and for exploring how uncertainties in high-pressure physics affect planetary interiors.
+A key design choice is **modularity**:
+- Support for a large variety of EOS forms, including Birch–Murnaghan, Vinet, Holzapfel, Keane, van der Waals gases, and tabulated EOSs are implemented in `EOS.cpp`.
+- EOSs parameters are defined and stored in a large library (70+ EOSs) in `EOSlist.cpp`.  
+- Phase diagrams for each layer define which material is used at a given P-T condition in `phase.cpp`.
+- The hydrostatic integration routines are implemented in `hydro.cpp`.  
+
+MAGRATHEA offers **nine run modes** through human-readable `.cfg` files:  
+1. **Full solver** define mass in each layer retrieve radius and interior conditions.  
+2. **Temperature-free solver** for isothermal interiors.  
+3. **Two-layer mode** for rapid mass–radius curves.  
+4. **Bulk mode** for ensembles of planets.  
+5. **Composition finder**: determine an unknown layer mass to match observed M and R using a secant method.  
+6. **On-the-fly EOS modification** for testing parameter uncertainties.  
+7. **Iterated EOS modification** with two-layer solver.  
+8. **Iterated EOS modification** with full solver.  
+9. **MCMC composition retrieval** for probabilistic inference given mass, radius, and corresponding uncertainties.  
+
+This diversity makes Magrathea not just a solver but a *platform* for testing planetary interior hypotheses.
 
 
 # Major updates in this version
 
-Since the initial release [@Huang:2022], Magrathea has undergone significant improvements in physics coverage, numerical methods, and usability. We summarize the key updates here.
+Since the initial release [@Huang:2022], Magrathea has undergone major expansions in physics, solvers, and usability. We summarize the key updates here.
 
 **New physical models and materials**
-- Inclusion of upper-mantle polymorphs of Mg\(_2\)SiO\(_4\) (forsterite, wadsleyite, ringwoodite) and phase transitions to bridgmanite and post-perovskite MgSiO\(_3\) [@Rice:2025].
-- Expanded hydrosphere treatment with updated high-pressure ices and water phases, including supercritical water and recent experimental constraints [@Huang:2021].
-- Support for advanced EOS formulations, including Chabrier EOS for hydrogen/helium, AQUA and SeaFreeze water models, and van der Waals gases.
-- A carbon phase diagram module enabling models of carbon-rich interiors.
+- Inclusion of upper-mantle polymorphs of Mg\(_2\)SiO\(_4\) (forsterite, wadsleyite, ringwoodite) [CITE] FIGURE.
+- A new default hydrosphere treatment with updated H2O ices [@Journaux:2020], liquid, gas [IAPWS], and supercritical [Mazevet] largely inspired by the AQUA package [CITE] FIGURE.
+- Additional gas EOSs CHAMBRIER solar-metalicity table for hydrogen/helium and van der Waals gases.
+- EOS and phase diagram for phases of carbon and silicate carbide.
+- A number of other materials including: AQUA table, fcc and bcc iron, the mantle materials from STIXRUDE
 
 **New functionality and solvers**
-- Modular phase diagram handling, allowing users to mix, replace, or extend layer definitions.
-- Support for tabulated P–T–ρ–∇T EOS tables, in addition to analytic forms.
+- Modular phase diagram handling, allowing users to store and call in the run different compositions (e.g. swapping a magnesium silicate mantle for a carbon mantle).
+- Support for tabulated P–T–ρ–∇T EOS tables using bilinear interpolation.
 - New composition finder solvers:  
-  - a secant-method routine that determines the mass of an unknown layer given a target mass and radius;  
+  - a secant-method routine that determines the mass of an unknown layer given a target mass, radius and ratio between the other layers;  
   - an MCMC-based routine for probabilistic composition inference, usable with posterior samples from observations.
-- Reordered and expanded run modes (now nine in total) to cover bulk planet input, two-layer approximations, EOS modification, and inverse retrieval problems.
 
 **Usability and performance**
 - Migration of all run parameters into `.cfg` input files, improving reproducibility and scripting.
