@@ -531,10 +531,18 @@ EOS *Graph = new EOS("Graph",Graph_array,sizeof(Graph_array)/2/sizeof(Graph_arra
 
 // -----------------------------------
 // Diamond (Vinet), Benedict et al. 2018, Phys Rev B
-// Uses the 1 terms from the double Debye model found in Benedict et al (2014)
-double Diamond_array[][2] = {{0,2},{1,5.7304},{2,432.4},{3,3.793},{5,mC},{7,1887.8},{8,0.5836},{9,1},{10,0.499},{14,1},{15,6}};
+// Uses the 1 terms from the double Debye model found in Benedict et al (2018)
+
+double Diamond_array[][2] = {{0,2},{1,3.43467},{2,432.4},{3,3.793},{5,mC},{7,1887.8},{8,0.5836},{9,1},{10,0.499},{14,1},{15,6}};
 
 EOS *Diam = new EOS("Diamond",Diamond_array,sizeof(Diamond_array)/2/sizeof(Diamond_array[0][0]));
+// -----------------------------------
+// BC8 (Vinet), Benedict et al. 2018, Phys  Rev B
+// Uses the 1 terms from the double Debye model found in Benedict et al (2018)
+
+double BC8_array[][2] = {{0,2},{1,3.75902},{2,221.2},{3,4.697},{5,mC},{7,2800.6},{8,0.561},{9,1},{10,0.449},{14,1},{15,6}};
+
+EOS *BC8 = new EOS("BC8",BC8_array,sizeof(BC8_array)/2/sizeof(BC8_array[0][0]));
 
 // Silicon Carbide B3 (Zinc Blende) - Vinet EOS for better high-pressure extrapolation
 // Based on Miozzi et al. 2018 parameters but using Vinet equation
@@ -1129,4 +1137,5 @@ void FINVER(double F, int N, double &X, double &XDF, double &XDFF)
     XDF  = t1 * RT;
     XDFF = t2 * RT + pow(t1,2) * (R2 - 2.0*RT) / t;
 }
+
 
