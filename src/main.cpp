@@ -442,6 +442,7 @@ int main(int argc, char* argv[])
   delete Plat;
   delete Graph;
   delete Diam;
+  delete BC8;
   delete SiC_B3_Vinet;
   delete SiC_B1_Vinet;
   delete vdW_H2;
@@ -453,4 +454,5 @@ int main(int argc, char* argv[])
 
   return 0;
 }
+
 
