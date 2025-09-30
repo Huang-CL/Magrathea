@@ -41,7 +41,7 @@ affiliations:
  - name: Department of Astronomy, University of Wisconsin–Madison, 475 N. Charter Street, Madison, WI, 53706, USA
    index: 5
 
-date: 26 September 2025
+date: 1 October 2025
 bibliography: paper.bib
 
 
@@ -88,48 +88,8 @@ Since the initial release [@Huang:2022], Magrathea has undergone significant imp
 
 Together, these updates transform Magrathea from a flexible forward solver into a broader platform for both forward modeling and statistical inference of exoplanet interiors. The new features have already been demonstrated in recent applications to the TRAPPIST-1 system [@Rice:2025], where the composition finder enabled quantification of model-dependent uncertainties in water mass fraction.
 
+![A few new phase diagrams in the code._Left, default mantle with lower pressure phases from INSERT. Center, default hydrosphere compiled from many sources: A: INSERT, B: INSERT. Right, carbon phase diagram in dark and SiC phase diagram in light grey. On each the P-T conditions inside a 100% composition planet of X Earth-mass with three different tempaeratures. \label{fig:example}](figure.png)
 
-# Mathematics
-
-Single dollars ($) are required for inline mathematics e.g. $f(x) = e^{\pi/x}$
-
-Double dollars make self-standing equations:
-
-$$\Theta(x) = \left\{\begin{array}{l}
-0\textrm{ if } x < 0\cr
-1\textrm{ else}
-\end{array}\right.$$
-
-You can also use plain \LaTeX for equations
-\begin{equation}\label{eq:fourier}
-\hat f(\omega) = \int_{-\infty}^{\infty} f(x) e^{i\omega x} dx
-\end{equation}
-and refer to \autoref{eq:fourier} from text.
-
-# Citations
-
-Citations to entries in paper.bib should be in
-[rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
-format.
-
-If you want to cite a software repository URL (e.g. something on GitHub without a preferred
-citation) then you can do it with the example BibTeX entry below for @fidgit.
-
-For a quick reference, the following citation commands can be used:
-- `@author:2001`  ->  "Author et al. (2001)"
-- `[@author:2001]` -> "(Author et al., 2001)"
-- `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
-
-# Figures
-
-Figures can be included like this:
-![Caption for example figure.\label{fig:example}](figure.png)
-and referenced from text using \autoref{fig:example}.
-
-Figure sizes can be customized by adding an optional second parameter:
-![Caption for example figure.](figure.png){ width=20% }
-
-# Acknowledgements
 
 We acknowledge the many researchers using the Magrathea code base; we appreicate each contribution to science and the code. We thank Douglas Adams for the timeless stories compiled in the "Hitchikers Guide to the Galaxy" which inspired the name of the code. 
 
