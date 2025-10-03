@@ -36,7 +36,7 @@ affiliations:
    index: 2
  - name: Department of Physics and Astronomy, University of Nevada, Las Vegas, 4505 South Maryland Parkway, Las Vegas, NV 89154, US
    index: 3
- - name: INSERT MANGESH
+ - name: Department of Physics, Ariel University, Ariel 40700, Israel
    index: 4
  - name: Department of Astronomy, University of Wisconsin–Madison, 475 N. Charter Street, Madison, WI, 53706, USA
    index: 5
