@@ -47,7 +47,7 @@ bibliography: paper.bib
 
 # Summary
 
-Magrathea is an open-source C++ code for modeling the internal structure of differentiated planets. The initial release [@Huang:2022] introduced the base solver, a modular framework for defining equations of state (EOSs) and phase diagrams, and outlined a series of planned extensions. Many of those updates are now realized in this version, together with additional expansions to the physics library, inference solvers, and usability features. The result is a more versatile platform that supports a broader range of planetary compositions, offers new tools for composition retrieval, and provides clearer pathways for users to adapt the code to their own models.
+Magrathea is an open-source C++ code for modeling the internal structure of differentiated planets. The initial release @Huang:2022 introduced the base solver, a modular framework for defining equations of state (EOSs) and phase diagrams, and outlined a series of planned extensions. Many of those updates are now realized in this version, together with additional expansions to the physics library, inference solvers, and usability features. The result is a more versatile platform that supports a broader range of planetary compositions, offers new tools for composition retrieval, and provides clearer pathways for users to adapt the code to their own models.
 
 
 # Statement of need
@@ -94,7 +94,7 @@ Since the initial release [@Huang:2022], Magrathea has undergone major expansion
 **New functionality and solvers**
 - **Composition finders:**  
   - A secant-method routine that determines the mass of a third unknown layer given a target mass, radius, and ratio between the other two layers looped over layer ratios and mass and radius posterior draws.
-  - An MCMC-based routine following [@Rogers:2010] for probabilistic composition inference given mass, radius, and associated uncertainties with Metropolis–Hastings method.
+  - An MCMC-based routine following @Rogers:2010 and @Dorn:2015 for probabilistic composition inference given mass, radius, and associated uncertainties with Metropolis–Hastings method.
 - **Tabulated EOSs:** Support for tabulated P–T–ρ–∇T_S EOS tables using bilinear interpolation.
 - **Modular phase diagrams** Allow users to store and call in the run different compositions (e.g. swapping a magnesium silicate mantle for a carbon mantle).
 
