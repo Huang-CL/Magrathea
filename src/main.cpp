@@ -449,7 +449,34 @@ int main(int argc, char* argv[])
   delete vdW_H2O;
   delete vdW_CH4;
   delete vdW_NH3;
-  delete vdW_CO2; 
+  delete vdW_CO2;
+  delete Anorthite;
+  delete Spinel;
+  delete Fayalite;
+  delete Fe_Wadsleyite;
+  delete Fe_Ringwoodite;
+  delete Enstatite;
+  delete Ferrosilite;
+  delete Diopside;
+  delete Hedenbergite;
+  delete HP_clinopyroxene;
+  delete Mg_Akimotoite;
+  delete Fe_Akimotoite;
+  delete Pyrope;
+  delete Mg_Majorite;
+  delete Almandine;
+  delete Grossular;
+  delete Quartz;
+  delete Coesite;
+  delete Stishovite;
+  delete Seifertite;
+  delete Fe_Post_Perovskite;
+  delete Fe_Perovskite;
+  delete HP_Clinoferrosilite;
+  delete Periclase;
+  delete Wustite;
+  delete Kyanite;
+  delete Nepheline;
 
   return 0;
 }
