@@ -52,14 +52,14 @@ bibliography: paper.bib
 
 # Summary
 
-Magrathea is an open-source C++ code for modeling the internal structure of differentiated planets. The initial release @Huang:2022 introduced the base solver, a modular framework for defining equations of state (EOSs) and phase diagrams, and outlined a series of planned extensions. Many of those updates are now realized in this version, together with additional expansions to the physics library, inference solvers, and usability features. The result is a more versatile platform that supports a broader range of planetary compositions, offers new tools for composition retrieval, and provides clearer pathways for users to adapt the code to their own models.
+Magrathea is an open-source C++ code for modeling the internal structure of differentiated planets. The initial release, @Huang:2022, introduced the base solver, a modular framework for defining equations of state (EOSs) used within phase diagrams for each differentiated layer, and outlined a series of planned extensions. Many of those updates are now realized in this version, together with additional expansions to the physics library, inference solvers, and usability features. The result is a more versatile platform that supports a broader range of planetary compositions, offers new tools for composition retrieval, and provides clearer pathways for users to adapt the code to their own models.
 
 
 # Statement of need
 
 Constraining a planet’s composition is essential for understanding its formation and evolution. Observations of mass and radius alone are not sufficient, since many different interiors can yield the same density. Interior structure solvers are therefore essential tools for connecting observed properties to the underlying distribution of iron, silicate, volatiles, and atmosphere. With observational programs routinely measuring the densities of small to large planets, researchers require codes with models that are transparent and flexible---able to adapt to our changing understanding of planet mineralogy. 
 
-Magrathea is designed as such a platform. Rather than enforcing a fixed planet model, Magrathea provides a framework in which users can define their own phase diagrams, equations of state (EOSs), and thermal structures. This adaptability has led to broad uptake: Magrathea has been used to draw mass–radius diagrams and infer interiors of observed planets [@Desai2024; @Daspute:2025, @Rice:2025, @Taylor:2025], to connect theoretical composition models to observables [@Steffen:2025; Dou:2024, @Childs:2023], and to incorporate new high-pressure equation of state (EOS) measurements into planetary modeling [@Huang:2021]. By continuing to expand its physical fidelity and usability, Magrathea enables the community to keep pace with rapidly improving exoplanet data and experimental constraints on planetary materials.
+Magrathea is designed as such a platform. Rather than enforcing a fixed planet model, Magrathea provides a framework in which users can define their own phase diagrams, equations of state (EOSs), and thermal structures. This adaptability has led to broad uptake: Magrathea has been used to draw mass–radius diagrams and infer interiors of observed planets [@Desai2024; @Daspute:2025, @Rice:2025, @Taylor:2025], to connect theoretical composition models to observables [@Steffen:2025; @Dou:2024, @Childs:2023], and to incorporate new high-pressure equation of state (EOS) measurements into planetary modeling [@Huang:2021]. A list of other open source interior models can be found in @Acuna:2025. By continuing to expand Magrathea's physical fidelity and usability, the software enables the community to keep pace with rapidly improving exoplanet data and experimental constraints on planetary materials.
 
 # Summary of the base code
 
@@ -82,7 +82,7 @@ MAGRATHEA offers **nine run modes** through human-readable `.cfg` files:
 8. **Iterated EOS modification** with full solver.  
 9. **MCMC composition retrieval** for probabilistic inference given mass, radius, and corresponding uncertainties.  
 
-This diversity makes Magrathea not just a solver but a *platform* for testing interior models.
+This diversity makes Magrathea not just a solver but a platform for testing interior models.
 
 
 # Major updates in this version
@@ -111,9 +111,9 @@ Since the initial release [@Huang:2022], Magrathea has undergone major expansion
 
 Together, these updates establish Magrathea as a platform not only for flexible forward modeling but also for statistical inference of exoplanet interiors. By expanding the physics library, adding composition retrieval solvers, and improving usability, the code now enables a wider range of applications than in its initial release.  
 
-Development of Magrathea is ongoing. Planned future expansions include versatile methods for mixing compositions, improved treatments of thermal evolution, and coupling to an atmosphere model. By continuing to integrate new experimental and theoretical results, Magrathea will remain a robust and adaptable tool for interpreting the increasing number and precision of exoplanet observations.
+Development of Magrathea is ongoing. Planned future expansions include building versatile methods for mixing materials, adding treatments of thermal evolution, and coupling to an atmosphere model. By continuing to integrate new experimental and theoretical results, Magrathea will remain a robust and adaptable tool for interpreting the increasing number and precision of exoplanet observations.
 
-![A few new phase diagrams in the code._Left, default mantle with lower pressure phases from INSERT. Center, default hydrosphere compiled from many sources: A: INSERT, B: INSERT. Right, carbon phase diagram in dark and SiC phase diagram in light grey. On each the P-T conditions inside a 100% composition planet of X Earth-mass with three different temperatures. \label{fig:phases}](figure.png)
+![New phase diagrams in the code._Left, default hydrosphere compiled from many sources---A: low pressure ice/liquid [@Journaux:2020], B: ice-VII [@Bezacier:2014,@Sotin:2007], C: ice-X [@Grande:2022], D: IAPWS-95 liquid/gas [@Wagner:2002], E: supercritical [@Brown:2018], F: van der Waals gas, G: supercritical [@Mazevet:2019]. Center, default mantle with lower pressure Mg\(_2\)SiO\(_4\) phases. Right, carbon phase diagram in dark and SiC phase diagram in light grey. On each the P-T conditions inside a 100% composition planet of one Earth-mass with two or three different temperatures. \label{fig:phases}](phase_panels.pdf)
 
 
 # Acknowledgements
