@@ -22,7 +22,10 @@ authors:
     affiliation: 4
   - name: Krishang Mittal
     orcid: 
-    affiliation: 5   
+    affiliation: 5
+  - name: Baptiste Journaux
+    orcid: 0000-0002-0957-3177
+    affiliation: 6
   - name: Jason H. Steffen
     orcid: 0000-0003-2202-384
     affiliation: 3
@@ -40,6 +43,8 @@ affiliations:
    index: 4
  - name: Department of Astronomy, University of Wisconsin–Madison, 475 N. Charter Street, Madison, WI, 53706, USA
    index: 5
+ - name: Department of Earth and Space Science, University of Washington, Seattle, WA 98195, United States
+   index: 6 
 
 date: 1 October 2025
 bibliography: paper.bib
