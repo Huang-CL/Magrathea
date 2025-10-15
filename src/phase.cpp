@@ -372,10 +372,12 @@ EOS* find_phase_C_simple(double P, double T)
     return NULL;
   P /= 1E10;      // convert microbar to GPa
   
-  if(P <= 1.949+(T+273)/400)  //transition curve from Kennedy and Kennedy (1976)
-    return Graph;
-  else
+  if (P>=970.679+(-1.52854E-2*T)+(-5.72152E-7*pow(T,2))) // Transition from Benedict et al (2018)
+    return BC8;
+  else if (P>=1.949+(T+273)/400)  // Transition from Kennedy and Kennedy (1976)
     return Diam;
+  else
+    return Graph;
 }
 
 //-----------------------------------
@@ -751,4 +753,5 @@ EOS* find_phase(double m, vector<PhaseDgm> &Comp, vector<double> M, double P, do
   // if nothing matched, return the outermost existing layer
   return Comp.back().find_phase(P, T);
 }
+
 
