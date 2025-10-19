@@ -5,9 +5,9 @@ build:
     python: "3.11"
   jobs:
     pre_build:
-      - doxygen Doxyfile
+      - doxygen docs/rtd/Doxyfile
 sphinx:
-  configuration: docs/conf.py
+  configuration: docs/rtd/conf.py
 python:
   install:
-    - requirements: docs/requirements.txt
+    - requirements: docs/rtd/requirements.txt
