@@ -5,7 +5,7 @@
 **Excerpt from The Hitchhiker's Guide to the Galaxy, Page 634784, Section 5a, Entry: MAGRATHEA**
 
 Planet interior structure code for astronomers, planetary scientists, mice, and more. 
-
+[➡️ Read the Docs](https://magrathea.readthedocs.io/en/latest/)
 
 ## What is this repository for? ##
 
