@@ -1,0 +1,29 @@
+# Doxygen config for Magrathea
+PROJECT_NAME           = Magrathea
+OUTPUT_DIRECTORY       = docs/_doxygen
+CREATE_SUBDIRS         = NO
+
+# Adjust INPUT to where your headers and sources are.
+# If your code is in ./src and ./include, set INPUT = ./src ./include
+INPUT                  = ./
+EXCLUDE                = docs
+FILE_PATTERNS          = *.h *.hpp *.hh *.hxx *.c *.cc *.cpp
+RECURSIVE              = YES
+
+# XML for Breathe
+GENERATE_XML           = YES
+XML_OUTPUT             = xml
+
+# HTML disabled; Sphinx handles HTML
+GENERATE_HTML          = NO
+
+# Extraction knobs
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+JAVADOC_AUTOBRIEF      = YES
+WARN_IF_UNDOCUMENTED   = YES
+QUIET                  = YES
+
+# Treat brief on same line as comment
+MULTILINE_CPP_IS_BRIEF = YES
