@@ -1,6 +1,6 @@
 # Doxygen config for Magrathea
 PROJECT_NAME           = Magrathea
-OUTPUT_DIRECTORY       = docs/_doxygen
+OUTPUT_DIRECTORY = docs/rtd/_doxygen
 CREATE_SUBDIRS         = NO
 
 # Adjust INPUT to where your headers and sources are.
