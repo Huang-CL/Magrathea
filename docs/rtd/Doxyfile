@@ -4,7 +4,7 @@ OUTPUT_DIRECTORY = docs/rtd/_doxygen
 CREATE_SUBDIRS         = NO
 
 # Adjust INPUT to where your headers and sources are.
-INPUT                  = ./src
+INPUT                  = ../../src
 EXCLUDE                = docs
 FILE_PATTERNS          = *.h *.hpp *.hh *.hxx *.c *.cc *.cpp
 RECURSIVE              = YES
@@ -20,6 +20,7 @@ GENERATE_HTML          = NO
 EXTRACT_ALL            = YES
 EXTRACT_PRIVATE        = NO
 EXTRACT_STATIC         = YES
+EXTRACT_LOCAL_CLASSES = YES
 JAVADOC_AUTOBRIEF      = YES
 WARN_IF_UNDOCUMENTED   = YES
 QUIET                  = YES
