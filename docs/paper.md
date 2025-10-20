@@ -108,6 +108,7 @@ Since the initial release [@Huang:2022], Magrathea has undergone major expansion
 - **Parallelization:** Bulk runs and composition finder routines can exploit OpenMP, enabling execution with multiple threads across cores.
 - **Diagnostics:** More informative error messages when solutions fail to converge.
 - **Tutorial and practice problems:** A guided set of examples now resides in the `docs/` folder, making the code accessible to new users.
+- **Tutorial and documentation:** A guided set of examples and practice problems now resides in the `docs/' folder, and an online documentation site is available at [magrathea.readthedocs.io](https://magrathea.readthedocs.io).
 
 Together, these updates establish Magrathea as a platform not only for flexible forward modeling but also for statistical inference of exoplanet interiors. By expanding the physics library, adding composition retrieval solvers, and improving usability, the code now enables a wider range of applications than in its initial release.  
 
