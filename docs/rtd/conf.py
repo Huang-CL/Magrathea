@@ -28,12 +28,11 @@ breathe_default_project = "Magrathea"
 
 # Exhale configuration
 exhale_args = {
-    "containmentFolder": "./api",
-    "rootFileName": "library_root.rst",
-    "rootFileTitle": "C++ API Reference",
-    "doxygenStripFromPath": os.path.abspath(".."),
-    "createTreeView": True,
-    "afterTitleDescription": "Auto-generated C++ reference for Magrathea.",
+    "containmentFolder":     "./docs_api",
+    "rootFileName":          "library_root.rst",
+    "rootFileTitle":         "C++ API",
+    "doxygenStripFromPath":  "../../src",
+    "createTreeView":        True,
 }
 
 myst_enable_extensions = ["colon_fence", "dollarmath", "linkify"]
