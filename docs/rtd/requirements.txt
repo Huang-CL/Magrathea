@@ -3,3 +3,4 @@ myst-parser
 breathe
 exhale
 sphinx-rtd-theme
+linkify-it-py
