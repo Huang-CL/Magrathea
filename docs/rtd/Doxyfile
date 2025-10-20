@@ -4,8 +4,7 @@ OUTPUT_DIRECTORY = docs/rtd/_doxygen
 CREATE_SUBDIRS         = NO
 
 # Adjust INPUT to where your headers and sources are.
-# If your code is in ./src and ./include, set INPUT = ./src ./include
-INPUT                  = ./
+INPUT                  = ./src
 EXCLUDE                = docs
 FILE_PATTERNS          = *.h *.hpp *.hh *.hxx *.c *.cc *.cpp
 RECURSIVE              = YES
