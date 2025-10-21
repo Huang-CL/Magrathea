@@ -9,6 +9,7 @@ It also hosts an auto-generated **C++ API Reference** from the source code.
 
 getting-started
 user-guide/run-modes
+models/phasediagrams
 models/eos
 ```
 
