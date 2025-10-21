@@ -101,14 +101,13 @@ Since the initial release [@Huang:2022], Magrathea has undergone major expansion
   - A secant-method routine that determines the mass of a third unknown layer given a target mass, radius, and ratio between the other two layers looped over layer ratios and mass and radius posterior draws.
   - An Markov chain Monte Carlo based routine following @Rogers:2010 and @Dorn:2015 for probabilistic composition inference given mass, radius, and associated uncertainties with Metropolis–Hastings method.
 - **Tabulated EOSs:** Support for tabulated P–T–ρ–∇T_S EOS tables using bilinear interpolation.
-- **Modular phase diagrams** Allow users to store and call in the run different compositions (e.g. swapping a magnesium silicate mantle for a carbon mantle).
+- **Modular phase diagrams** Allow users to store multiple phase-diagram configurations and call them in the configuration file—for example, toggling between a silicate-based and carbon-based mantle phase diagram.
 
 **Usability**
 - **Input handling:** All input parameters migrated to `run/*.cfg` files with descriptive keys and documentation, improving reproducibility and scripting.
 - **Parallelization:** Bulk runs and composition finder routines can exploit OpenMP, enabling execution with multiple threads across cores.
 - **Diagnostics:** More informative error messages when solutions fail to converge.
-- **Tutorial and practice problems:** A guided set of examples now resides in the `docs/` folder, making the code accessible to new users.
-- **Tutorial and documentation:** A guided set of examples and practice problems now resides in the `docs/' folder, and an online documentation site is available at [magrathea.readthedocs.io](https://magrathea.readthedocs.io).
+- **Tutorial and documentation:** A guided set of examples and practice problems now resides in the `docs/` folder, and an online documentation site is available at [magrathea.readthedocs.io](https://magrathea.readthedocs.io).
 
 Together, these updates establish Magrathea as a platform not only for flexible forward modeling but also for statistical inference of exoplanet interiors. By expanding the physics library, adding composition retrieval solvers, and improving usability, the code now enables a wider range of applications than in its initial release.  
 
