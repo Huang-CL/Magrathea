@@ -99,7 +99,7 @@ Since the initial release [@Huang:2022], Magrathea has undergone expansions in p
 - **Composition finders:**  
   - A secant-method routine that determines the mass of a third unknown layer given a target mass, radius, and ratio between the other two layers looped over layer ratios and mass and radius posterior draws.
   - An Markov chain Monte Carlo based routine following @Rogers:2010 and @Dorn:2015 for probabilistic composition inference given mass, radius, and associated uncertainties with Metropolis–Hastings method.
-- **Tabulated EOSs:** Support for tabulated $P$–$T$–$\rho$–$\nabla T_S$ EOS tables using bilinear interpolation.
+- **Tabulated EOSs:** Support for tabulated \(P\)\text{–}\(T\)\text{–}\(\rho\)\text{–}\(\nabla T_{S}\) EOS tables using bilinear interpolation.
 - **Modular phase diagrams** Allow users to store multiple phase-diagram configurations and call them in the configuration file—for example, toggling between a silicate-based and carbon-based mantle phase diagram.
 
 **Usability**
