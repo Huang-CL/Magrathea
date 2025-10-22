@@ -1,6 +1,6 @@
-# MAGRATHEA Run Modes and Configuration Reference
+# Run Modes and .cfg files
 
-MAGRATHEA uses human-readable `.cfg` configuration files to control each planetary interior calculation.  
+MAGRATHEA uses human-readable `.cfg` configuration files to control each planetary interior calculation found in `\run`.  
 Each file specifies global solver parameters, numerical tolerances, and mode-specific inputs.
 
 ---
