@@ -68,7 +68,7 @@ The core solver of Magrathea is a one-dimensional, spherically symmetric integra
 A key design choice is **modularity**:
 
 - A large variety of EOS forms are supported in `EOS.cpp`, including Birch–Murnaghan, Vinet, Holzapfel, Keane, van der Waals gases, and tabulated.
-- Parameters for each material's EOS are defined and stored in a library of 70+ EOSs in `EOSlist.cpp`.  
+- Parameters for each material's EOS are defined and stored in a library of 70+ EOSs in `EOSlist.cpp`.
 - Phase diagrams for each layer define which material is used at a given P-T condition in `phase.cpp`.
 
 MAGRATHEA offers **nine run modes** through human-readable `.cfg` files:  
