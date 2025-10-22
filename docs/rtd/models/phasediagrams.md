@@ -1,6 +1,6 @@
-# Phase Diagrams in MAGRATHEA
+# Phase Diagrams
 
-This page explains **what phase diagrams do**, lists the **built‑in phase diagrams** (with the exact names you use in `.cfg` files), and shows **how to add new ones**. The summary is based on `phase.cpp/phase.h` and the project README.
+This page explains **what phase diagrams do**, lists the **built‑in phase diagrams** (with the exact names you use in `.cfg` files), and shows **how to add new ones**. Phase diagrams are found in `phase.cpp` & `phase.h`.
 
 ---
 
