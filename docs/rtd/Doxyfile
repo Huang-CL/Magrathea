@@ -4,9 +4,9 @@ OUTPUT_DIRECTORY = docs/rtd/_doxygen
 CREATE_SUBDIRS         = NO
 
 # Adjust INPUT to where your headers and sources are.
-INPUT                  = ../../src
+INPUT                  = src
 EXCLUDE                = docs
-FILE_PATTERNS          = *.h *.hpp *.hh *.hxx *.c *.cc *.cpp
+FILE_PATTERNS          = *.h *.cpp
 RECURSIVE              = YES
 
 # XML for Breathe
