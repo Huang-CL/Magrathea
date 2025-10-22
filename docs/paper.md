@@ -1,5 +1,5 @@
 ---
-title: 'Magrathea v3: planetary interior structure code in C++'
+title: 'Magrathea v2: planetary interior structure code in C++'
 tags:
   - C++
   - astronomy
@@ -46,7 +46,7 @@ affiliations:
  - name: Department of Earth and Space Science, University of Washington, Seattle, WA 98195, United States
    index: 6 
 
-date: 1 October 2025
+date: 23 October 2025
 bibliography: paper.bib
 
 
@@ -59,17 +59,16 @@ Magrathea is an open-source C++ code for modeling the internal structure of diff
 
 Constraining a planet’s composition is essential for understanding its formation and evolution. Observations of mass and radius alone are not sufficient, since many different interiors can yield the same bulk density. Interior structure solvers are therefore essential tools for exploring this degeneracy and constraining the possible distributions of iron, silicate, volatiles, and atmosphere. With observational programs routinely measuring the densities of small to large planets, researchers require codes with models that are transparent and flexible---able to adapt to our changing understanding of planet mineralogy. 
 
-Magrathea is designed as such a platform. Rather than enforcing a fixed planet model, Magrathea provides a framework in which users can define their own phase diagrams, equations of state (EOSs), and thermal structures. This adaptability has led to broad uptake: Magrathea has been used to generate mass–radius diagrams and infer interiors of observed planets [@Desai:2024; @Daspute:2025, @Rice:2025, @Taylor:2025], to connect theoretical composition models to observables [@Steffen:2025; @Dou:2024, @Childs:2023], and to incorporate new high-pressure equation of state (EOS) measurements into planetary modeling [@Huang:2021]. A list of other open source interior models can be found in @Acuna:2025. With the continued expansion of the physics and usability, Magrathea helps the community keep up with the growing precision of exoplanet observations and experimental constraints on planetary materials.
+Magrathea is designed as such a platform. Rather than enforcing a fixed planet model, Magrathea provides a framework in which users can define their own phase diagrams, equations of state (EOSs), and thermal profiles. This adaptability has led to broad uptake: Magrathea has been used to generate mass–radius diagrams and infer interiors of observed planets [@Desai:2024; @Daspute:2025; @Rice:2025; @Taylor:2025], to connect theoretical composition models to observables [@Steffen:2025; @Dou:2024; @Childs:2023], and to incorporate new high-pressure equation of state (EOS) measurements into planetary modeling [@Huang:2021]. A list of other open source interior models can be found in @Acuna:2025. With the continued expansion of the physics and usability, Magrathea helps the community keep up with the growing precision of exoplanet observations and experimental constraints on planetary materials.
 
 # Summary of the base code
 
-The core solver of Magrathea is a one-dimensional, spherically symmetric integrator of the equations of hydrostatic equilibrium, mass continuity, and energy transport written in C++. For a user-defined planet consisting of up to four differentiated layers, the code integrates inward and outward solutions using a shooting-to-fitting-point method with adaptive Runge–Kutta–Fehlberg stepping. The solver returns the radius of the planet, the radii of each compositional boundary, and profiles of pressure, temperature, density, and phase as functions of enclosed mass.
+The core solver of Magrathea is a one-dimensional, spherically symmetric integrator of the equations of hydrostatic equilibrium, mass continuity, and energy transport written in C++. For a user-defined planet consisting of up to four differentiated layers, the code integrates inward and outward solutions using a shooting-to-fitting-point method with adaptive Runge–Kutta–Fehlberg stepping. The solver returns the radius of the planet, the radii of each compositional boundary, and profiles of pressure, temperature, density, and phase as functions of enclosed mass. The hydrostatic integration routines are implemented in `hydro.cpp`. 
 
 A key design choice is **modularity**:
 - A large variety of EOS forms are supported in `EOS.cpp`, including Birch–Murnaghan, Vinet, Holzapfel, Keane, van der Waals gases, and tabulated.
 - Parameters for EOSs are defined and stored in a large library (70+ EOSs) in `EOSlist.cpp`.  
 - Phase diagrams for each layer define which material is used at a given P-T condition in `phase.cpp`.
-- The hydrostatic integration routines are implemented in `hydro.cpp`.  
 
 MAGRATHEA offers **nine run modes** through human-readable `.cfg` files:  
 1. **Full solver** takes masses for each layer and returns the planet’s radius and interior profiles.  
@@ -82,7 +81,7 @@ MAGRATHEA offers **nine run modes** through human-readable `.cfg` files:
 8. **Iterated EOS modification** with full solver.  
 9. **MCMC composition retrieval** for probabilistic inference given mass, radius, and corresponding uncertainties.  
 
-This range of modes makes Magrathea not just a solver but a platform for exploring interior models.
+This modularity and range of modes makes Magrathea not just a solver but a platform for exploring interior models.
 
 
 # Major updates in this version
@@ -94,18 +93,18 @@ Since the initial release [@Huang:2022], Magrathea has undergone expansions in p
 - **Default Hydrosphere:** Updated H\(_2\)O EOSs and phase boundaries with ices [@Journaux:2020], liquid, gas [@Wagner:2002], and supercritical [@Mazevet:2019, with 2021 entropy correction] largely inspired by the AQUA package [@Haldemann:2020], see \autoref{fig:phases}.
 - **Additional Gas EOSs:** Including the solar-metalicity table for hydrogen/helium from [@Chabrier:2021] and van der Waals gases.
 - **Carbon Mantles:** EOSs and phase diagrams for phases of carbon [@Benedict:2014] and silicon carbide [@Miozzi:2018], see \autoref{fig:phases}.
-- **EOS library growth:** Dozens of additional EOSs: AQUA table [@Haldemann:2020], fcc- and bcc-iron [@Dorogokupets:2017], and the mantle materials from [@Stixrude:2011].
+- **EOS library growth:** Dozens of additional EOSs: AQUA table [@Haldemann:2020], fcc- and bcc-iron [@Dorogokupets:2017], and the mantle materials from @Stixrude:2011.
 
 **New functionality and solvers**
 - **Composition finders:**  
   - A secant-method routine that determines the mass of a third unknown layer given a target mass, radius, and ratio between the other two layers looped over layer ratios and mass and radius posterior draws.
   - An Markov chain Monte Carlo based routine following @Rogers:2010 and @Dorn:2015 for probabilistic composition inference given mass, radius, and associated uncertainties with Metropolis–Hastings method.
-- **Tabulated EOSs:** Support for tabulated P–T–ρ–∇T_S EOS tables using bilinear interpolation.
+- **Tabulated EOSs:** Support for tabulated $P$–$T$–$\rho$–$\nabla T_S$ EOS tables using bilinear interpolation.
 - **Modular phase diagrams** Allow users to store multiple phase-diagram configurations and call them in the configuration file—for example, toggling between a silicate-based and carbon-based mantle phase diagram.
 
 **Usability**
 - **Input handling:** All input parameters migrated to `run/*.cfg` files with descriptive keys and documentation, improving reproducibility and scripting.
-- **Parallelization:** Bulk runs and composition finder routines can exploit OpenMP, enabling execution with multiple threads across cores.
+- **Parallelization:** Bulk runs and composition finder routines can exploit OpenMP in `compfind.cpp`, enabling execution with multiple threads across cores.
 - **Diagnostics:** More informative error messages when solutions fail to converge.
 - **Tutorial and documentation:** A guided set of examples and practice problems now resides in the `docs/` folder, and an online documentation site is available at [magrathea.readthedocs.io](https://magrathea.readthedocs.io).
 
@@ -118,6 +117,6 @@ Development of Magrathea is ongoing. Planned future expansions include building 
 
 # Acknowledgements
 
-We acknowledge the many researchers using the Magrathea code base; we appreciate each contribution to science and the code. We thank Douglas Adams for the timeless stories compiled in the "Hitchikers Guide to the Galaxy" which inspired the name of the code. 
+We acknowledge the many researchers using the Magrathea code base; we appreciate each contribution to science and the code. We thank Douglas Adams for the timeless stories compiled in the "Hitchikers Guide to the Galaxy" which inspired the name of the code. We acknowledge support from the College of Sciences and the Nevada Center for Astrophysics at the University of Nevada, Las Vegas. A.V. acknowledges support by ISF grants 770/21 and 773/21. C.H. is sponsored by Shanghai Pujiang Program (grant NO. 23PJ1414900).
 
 # References
