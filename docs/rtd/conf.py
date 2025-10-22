@@ -20,7 +20,7 @@ templates_path = ["_templates"]
 exclude_patterns = ["_build", "_doxygen"]
 
 html_theme = "sphinx_rtd_theme"
-html_static_path = ["_static"]
+#html_static_path = ["_static"]
 
 # Breathe configuration
 breathe_projects = { "Magrathea": "./_doxygen/xml" }
