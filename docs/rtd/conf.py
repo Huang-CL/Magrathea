@@ -31,7 +31,7 @@ exhale_args = {
     "containmentFolder":     "./docs_api",
     "rootFileName":          "library_root.rst",
     "rootFileTitle":         "C++ API",
-    "doxygenStripFromPath":  "../../src",
+    "doxygenStripFromPath":  "src",
     "createTreeView":        True,
 }
 
