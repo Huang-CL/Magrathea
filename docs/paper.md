@@ -89,8 +89,8 @@ This modularity and range of modes makes Magrathea not just a solver but a platf
 Since the initial release [@Huang:2022], Magrathea has undergone expansions in physics, solvers, and usability. We summarize the key updates here.
 
 **New physical models and materials**
-- **Default Mantle:** Added upper-mantle polymorphs of Mg\(_2\)SiO\(_4\) (forsterite, wadsleyite, ringwoodite) [@Dorogokupets:2015], see \autoref{fig:phases}.
-- **Default Hydrosphere:** Updated H\(_2\)O EOSs and phase boundaries with ices [@Journaux:2020], liquid, gas [@Wagner:2002], and supercritical [@Mazevet:2019, with 2021 entropy correction] largely inspired by the AQUA package [@Haldemann:2020], see \autoref{fig:phases}.
+- **Default Mantle:** Added upper-mantle polymorphs of Mg$_2$SiO$_4\$ (forsterite, wadsleyite, ringwoodite) [@Dorogokupets:2015], see \autoref{fig:phases}.
+- **Default Hydrosphere:** Updated H$_2$O EOSs and phase boundaries with ices [@Journaux:2020], liquid, gas [@Wagner:2002], and supercritical [@Mazevet:2019, with 2021 entropy correction] largely inspired by the AQUA package [@Haldemann:2020], see \autoref{fig:phases}.
 - **Additional Gas EOSs:** Including the solar-metalicity table for hydrogen/helium from [@Chabrier:2021] and van der Waals gases.
 - **Carbon Mantles:** EOSs and phase diagrams for phases of carbon [@Benedict:2014] and silicon carbide [@Miozzi:2018], see \autoref{fig:phases}.
 - **EOS library growth:** Dozens of additional EOSs: AQUA table [@Haldemann:2020], fcc- and bcc-iron [@Dorogokupets:2017], and the mantle materials from @Stixrude:2011.
@@ -99,7 +99,7 @@ Since the initial release [@Huang:2022], Magrathea has undergone expansions in p
 - **Composition finders:**  
   - A secant-method routine that determines the mass of a third unknown layer given a target mass, radius, and ratio between the other two layers looped over layer ratios and mass and radius posterior draws.
   - An Markov chain Monte Carlo based routine following @Rogers:2010 and @Dorn:2015 for probabilistic composition inference given mass, radius, and associated uncertainties with Metropolis–Hastings method.
-- **Tabulated EOSs:** Support for tabulated \(P\)\text{–}\(T\)\text{–}\(\rho\)\text{–}\(\nabla T_{S}\) EOS tables using bilinear interpolation.
+- **Tabulated EOSs:** Support for tabulated $P$–$T$–$\rho$–$\nabla T_S$ EOS tables using bilinear interpolation.
 - **Modular phase diagrams** Allow users to store multiple phase-diagram configurations and call them in the configuration file—for example, toggling between a silicate-based and carbon-based mantle phase diagram.
 
 **Usability**
@@ -112,7 +112,7 @@ Together, these updates make Magrathea a platform for both forward modeling and 
 
 Development of Magrathea is ongoing. Planned future expansions include building versatile methods for mixing materials, adding treatments of thermal evolution, and coupling to an atmosphere model. By continuing to integrate new experimental and theoretical results, Magrathea will remain a robust and adaptable tool for interpreting the increasing number and precision of exoplanet observations.
 
-![New phase diagrams in the code._Left, default hydrosphere compiled from many sources---A: low pressure ice/liquid [@Journaux:2020], B: ice-VII [@Bezacier:2014,@Sotin:2007], C: ice-X [@Grande:2022], D: IAPWS-95 liquid/gas [@Wagner:2002], E: supercritical [@Brown:2018], F: van der Waals gas, G: supercritical [@Mazevet:2019]. Center, default mantle with lower pressure Mg\(_2\)SiO\(_4\) phases. Right, carbon phase diagram in dark and SiC phase diagram in light grey. On each plot is shown the P-T conditions inside a 100% composition planet of one Earth-mass with two or three different outer temperatures. The density inside of the planet is shown by each plot's colorbar and the radius of the planet is denoted in the legend. \label{fig:phases}](phase_panels.pdf)
+![New phase diagrams in the code._Left, default hydrosphere compiled from many sources---A: low pressure ice/liquid [@Journaux:2020], B: ice-VII [@Bezacier:2014,@Sotin:2007], C: ice-X [@Grande:2022], D: IAPWS-95 liquid/gas [@Wagner:2002], E: supercritical [@Brown:2018], F: van der Waals gas, G: supercritical [@Mazevet:2019]. Center, default mantle with lower pressure Mg$_2$SiO$_4$ phases. Right, carbon phase diagram in dark and SiC phase diagram in light grey. On each plot is shown the P-T conditions inside a 100% composition planet of one Earth-mass with two or three different outer temperatures. The density inside of the planet is shown by each plot's colorbar and the radius of the planet is denoted in the legend. \label{fig:phases}](phase_panels.pdf)
 
 
 # Acknowledgements
