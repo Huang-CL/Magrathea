@@ -63,7 +63,7 @@ Magrathea is designed as such a platform. Rather than enforcing a fixed planet m
 
 # Summary of the base code
 
-The core solver of Magrathea is a one-dimensional, spherically symmetric integrator of the equations of hydrostatic equilibrium, mass continuity, and energy transport written in C++. For a user-defined planet consisting of up to four differentiated layers, the code integrates inward and outward solutions using a shooting-to-fitting-point method with adaptive Runge–Kutta–Fehlberg stepping. The solver returns the radius of the planet, the radii of each compositional boundary, and profiles of pressure, temperature, density, and phase as functions of enclosed mass. The hydrostatic integration routines are implemented in `hydro.cpp`. 
+The core solver of Magrathea is a one-dimensional, spherically symmetric integrator of the equations of hydrostatic equilibrium, mass continuity, and energy transport written in C++. For a user-defined planet consisting of up to four differentiated layers, the code integrates inward and outward solutions using a shooting-to-fitting-point method with adaptive Runge–Kutta–Fehlberg stepping. The solver returns the radius of the planet, the radii of each compositional boundary, and profiles of pressure, temperature, density, and phase as functions of enclosed mass. Solving one planet is computationally cheap taking approximately one second for most configurations.
 
 A key design choice is **modularity**:
 - A large variety of EOS forms are supported in `EOS.cpp`, including Birch–Murnaghan, Vinet, Holzapfel, Keane, van der Waals gases, and tabulated.
