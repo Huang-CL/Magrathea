@@ -18,5 +18,5 @@ models/eos
 :caption: Reference
 
 reference/api-reference-guide
-api/library_root
+docs_api/library_root
 ```
