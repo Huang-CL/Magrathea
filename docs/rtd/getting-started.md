@@ -1,4 +1,4 @@
-# MAGRATHEA: Quick Installation and First Run
+# Installation and First Run
 
 MAGRATHEA is an open-source **1-D planetary interior structure solver** written in C++.  
 It is designed for astronomers, planetary scientists, and students who want to model the internal structure of differentiated planets.
