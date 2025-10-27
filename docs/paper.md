@@ -71,7 +71,7 @@ A key design choice is **modularity**:
 - Parameters for each material's EOS are defined and stored in a library of 70+ EOSs in `EOSlist.cpp`.
 - Phase diagrams for each layer define which material is used at a given P-T condition in `phase.cpp`.
 
-MAGRATHEA offers **nine run modes** through human-readable `.cfg` files:  
+Magrathea offers **nine run modes** through human-readable `.cfg` files:  
 1. **Full solver** takes masses for each layer and returns the planet’s radius and interior profiles.  
 2. **Temperature-free solver** for isothermal interiors.  
 3. **Two-layer mode** for rapid mass–radius curves.  
@@ -93,7 +93,7 @@ Since the initial release [@Huang:2022], Magrathea has undergone expansions in p
 
 - **Default Mantle:** Added upper-mantle polymorphs of Mg$_2$SiO$_4$ (forsterite, wadsleyite, ringwoodite) [@Dorogokupets:2015], see \autoref{fig:phases}.
 - **Default Hydrosphere:** Updated H$_2$O EOSs and phase boundaries for ices [@Journaux:2020], liquid, gas [@Wagner:2002], and supercritical [@Mazevet:2019, with 2021 entropy correction] largely inspired by the AQUA package [@Haldemann:2020], see \autoref{fig:phases}.
-- **Additional Gas EOSs:** Including the solar-metalicity table for hydrogen/helium from [@Chabrier:2021] and van der Waals gases.
+- **Additional Gas EOSs:** Including the solar-metalicity table for hydrogen/helium from @Chabrier:2021 and van der Waals gases.
 - **Carbon Mantles:** EOSs and phase diagrams for phases of carbon [@Benedict:2014] and silicon carbide [@Miozzi:2018], see \autoref{fig:phases}.
 - **EOS library growth:** Including the AQUA table [@Haldemann:2020], fcc- and bcc-iron [@Dorogokupets:2017], and the mantle materials from @Stixrude:2011.
 
