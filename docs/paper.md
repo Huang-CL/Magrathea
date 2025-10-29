@@ -52,7 +52,7 @@ bibliography: paper.bib
 
 # Summary
 
-Magrathea is an open-source C++ code for modeling the internal structure of differentiated planets. The initial release, @Huang:2022, introduced the base solver, a modular framework for defining equations of state (EOSs) used within phase diagrams for each differentiated layer, and outlined a series of planned extensions. Many of those updates are now implemented. Magrathea v2 is a more versatile platform that supports a winder range of compositions, adds new tools for composition retrieval, and makes it easier for users to adapt the code to their own models.
+Magrathea is an open-source C++ code for modeling the internal structure of differentiated planets. The initial release, @Huang:2022, introduced the base solver, a modular framework for defining equations of state (EOSs) used within phase diagrams for each differentiated layer, and outlined a series of planned extensions. Many of those updates are now implemented. Magrathea v2 is a more versatile platform that supports a wider range of compositions, adds new tools for composition retrieval, and makes it easier for users to adapt the code to their own models.
 
 
 # Statement of need
@@ -101,7 +101,7 @@ Since the initial release [@Huang:2022], Magrathea has undergone expansions in p
 
 - **Composition finders:**  
   - A secant-method routine that determines the mass of a third unknown layer given a target mass, radius, and ratio between the other two layers looped over layer ratios and mass and radius posterior draws.
-  - An Markov chain Monte Carlo based routine following @Rogers:2010 and @Dorn:2015 for probabilistic composition inference given mass, radius, and associated uncertainties with Metropolis–Hastings method.
+  - A Markov chain Monte Carlo based routine following @Rogers:2010 and @Dorn:2015 for probabilistic composition inference given mass, radius, and associated uncertainties with Metropolis–Hastings method.
 - **Tabulated EOSs:** Support for tabulated $P$–$T$–$\rho$–$\nabla T_S$ EOS tables using bilinear interpolation.
 - **Modular phase diagrams** Allow users to store multiple phase-diagram configurations and call them in the configuration file—for example, toggling between a silicate-based and carbon-based mantle phase diagram.
 
