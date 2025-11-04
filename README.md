@@ -6,6 +6,7 @@
 
 Planet interior structure code for astronomers, planetary scientists, mice, and more. 
 
+[➡️ Read the Docs](https://magrathea.readthedocs.io/en/latest/)&nbsp;&nbsp;&nbsp;&nbsp;[➡️ v1 Pub.](https://arxiv.org/abs/2201.03094)&nbsp;&nbsp;&nbsp;&nbsp;[➡️ v2 Pub.](https://arxiv.org/abs/2510.23733)
 
 ## What is this repository for? ##
 
@@ -14,7 +15,7 @@ The code integrates the hydrostatic equation in order to shoot for the correct p
 The code returns the pressure, temperature, density, phase, and radius at steps of enclosed mass.
 The code supports 4 layers: core, mantle, hydrosphere, and atmosphere. Each layer has a phase diagram with equations of state (EoS) chosen for each phase.
 The code was developed by [Chenliang Huang](https://huang-cl.github.io/), [David R. Rice](https://davidrrice.github.io/), and [Jason H. Steffen](https://www.jasonhsteffen.com/) at the Univerisity of Nevada, Las Vegas starting in 2017.
-See a [list of works](citations.md) that use MAGRATHEA and [instructions on how to cite](CITATION.md). **If you don't see something on this ReadMe check our publication in this repository: [*MAGRATHEA.pdf*](MAGRATHEA_publication.pdf).** A tutorial and practice projects/problems are found in [Tutorial_Practice_Problems.pdf](Tutorial_Practice_Problems.pdf)
+See a [list of works](citations.md) that use MAGRATHEA and [instructions on how to cite](CITATION.md). For further documentation visit our Read the Docs and our publications above. A tutorial and practice projects/problems are found in [docs/Tutorial_Practice_Problems.pdf](docs/Tutorial_Practice_Problems.pdf)
 
 We encourage the community to contribute to and use MAGRATHEA for their interior modeling needs.
 
