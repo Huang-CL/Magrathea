@@ -544,6 +544,14 @@ double BC8_array[][2] = {{0,2},{1,3.75902},{2,221.2},{3,4.697},{5,mC},{7,2800.6}
 
 EOS *BC8 = new EOS("BC8",BC8_array,sizeof(BC8_array)/2/sizeof(BC8_array[0][0]));
 
+// ------------------------------------
+// Graphite (High Temperature Vinet), Lowitzer et al. 2006, Phys Rev B
+
+double Graph_Lowitzer_array[][2] = {{0,2},{1,21.2461},{2,38},{3,9},{5,mC},{14,1},{15,6},{16,300},{17,32},{18,0}};
+
+EOS *Graph_Lowitzer = new EOS("Graph_Lowitzer",Graph_Lowitzer_array,sizeof(Graph_Lowitzer_array)/2/sizeof(Graph_Lowitzer_array[0][0]));
+
+//------------------------------------
 // Silicon Carbide B3 (Zinc Blende) - Vinet EOS for better high-pressure extrapolation
 // Based on Miozzi et al. 2018 parameters but using Vinet equation
 double SiC_B3_Vinet_array[][2] = {{0, 2}, {1, 12.47}, {2, 224}, {3, 4.08}, {5, 40.096}, {7, 1200}, {8, 1.06}, {10, 0}, {14, 2}, {17, 6.2}, {16, 300}};
