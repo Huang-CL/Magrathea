@@ -547,7 +547,7 @@ EOS *BC8 = new EOS("BC8",BC8_array,sizeof(BC8_array)/2/sizeof(BC8_array[0][0]));
 // ------------------------------------
 // Graphite (High Temperature Vinet), Lowitzer et al. 2006, Phys Rev B
 
-double Graph_Lowitzer_array[][2] = {{0,2},{1,21.2461},{2,38},{3,9},{5,mC},{14,1},{15,6},{16,300},{17,32},{18,0}};
+double Graph_Lowitzer_array[][2] = {{0,2},{1,21.2461},{2,38},{3,9},{5,mC},{14,1},{15,6},{16,300},{17,32},{18,0},{20,0.714345}};
 
 EOS *Graph_Lowitzer = new EOS("Graph_Lowitzer",Graph_Lowitzer_array,sizeof(Graph_Lowitzer_array)/2/sizeof(Graph_Lowitzer_array[0][0]));
 
@@ -1364,5 +1364,6 @@ void FINVER(double F, int N, double &X, double &XDF, double &XDFF)
     XDF  = t1 * RT;
     XDFF = t2 * RT + pow(t1,2) * (R2 - 2.0*RT) / t;
 }
+
 
 
