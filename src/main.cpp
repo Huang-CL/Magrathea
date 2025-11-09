@@ -478,6 +478,7 @@ int main(int argc, char* argv[])
   delete Wustite;
   delete Kyanite;
   delete Nepheline;
+  delete Graph_Lowitzer;
 
   return 0;
 }
