@@ -377,7 +377,7 @@ EOS* find_phase_C_simple(double P, double T)
   else if (P>=1.949+(T+273)/400)  // Transition from Kennedy and Kennedy (1976)
     return Diam;
   else
-    return Graph;
+    return Graph_Lowitzer;
 }
 
 //-----------------------------------
