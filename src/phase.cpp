@@ -377,7 +377,7 @@ EOS* find_phase_C_simple(double P, double T)
   else if (P>=1.949+(T+273)/400)  // Transition from Kennedy and Kennedy (1976)
     return Diam;
   else
-    return Graph_Lowitzer;
+    return Graph;
 }
 
 //-----------------------------------
@@ -418,8 +418,10 @@ EOS* find_phase_water_default(double P, double T)
     {
       if(T<1000)  //use simplified EOS above 1000 K, IAPWS below
         return Water_Vap_IAPWS; //IAPWS-R6-95
+      else if(T<1700)
+        return vdW_H2O_lo; //Van Der Walls Gas
       else
-        return vdW_H2O; //Van Der Walls Gas
+        return vdW_H2O_hi; //Van Der Walls Gas
     }
     else if(T<-32.26706488*pow(P,3)-143.6159774*pow(P,2)-74.97759097*P+273.1683519) //Ice Ih melt line, SeaFreeze fitted polynomial
       return IceIh_SF;
@@ -435,10 +437,12 @@ EOS* find_phase_water_default(double P, double T)
     {
       if(T<490)
         return Water_SF;
-      else if(T>1000) 
-        return vdW_H2O;
-      else
+      else if(T<1000) 
         return Water_Vap_IAPWS;
+      else if(T<1700)
+        return vdW_H2O_lo;
+      else
+        return vdW_H2O_hi;
     }
     else if(P < 3.986300903e-09*pow(T,3)-1.789026292e-06*pow(T,2)+0.0009677787797*T+0.02631882383) // Ih to II transition, SeaFreeze fitted polynomial
       return IceIh_SF;

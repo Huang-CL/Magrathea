@@ -2,6 +2,8 @@
 
 EOS::EOS():phasetype(""),eqntype(0), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha0(numeric_limits<double>::quiet_NaN()), alpha1(0), xi(0), cp_a(numeric_limits<double>::quiet_NaN()), cp_b(0), cp_c(0), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), a_vdW(numeric_limits<double>::quiet_NaN()),b_vdW(numeric_limits<double>::quiet_NaN()),Debye_approx(false), thermal_type(0), rhotable(NULL), Ptable(NULL), temptable(NULL), adiabattable(NULL), bn(0), accP(NULL), accT(NULL), spline(NULL), spline2drho(NULL), spline2dadi(NULL), nline(0), tlen(0)
 {
+  shA = shB = shC = shD = shE = std::numeric_limits<double>::quiet_NaN();
+  has_shomate = false;
   density_extern=NULL;
   entropy_extern=NULL;
   dTdP = NULL;
@@ -9,6 +11,8 @@ EOS::EOS():phasetype(""),eqntype(0), V0(numeric_limits<double>::quiet_NaN()), K0
 
 EOS::EOS(string phaseinput, double params[][2], int length):phasetype(phaseinput),eqntype(0), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha0(numeric_limits<double>::quiet_NaN()), alpha1(0), xi(0), cp_a(numeric_limits<double>::quiet_NaN()), cp_b(0), cp_c(0), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), a_vdW(numeric_limits<double>::quiet_NaN()),b_vdW(numeric_limits<double>::quiet_NaN()),Debye_approx(false), thermal_type(0), rhotable(NULL), Ptable(NULL), temptable(NULL), adiabattable(NULL), bn(0), accP(NULL), accT(NULL), spline(NULL), spline2drho(NULL), spline2dadi(NULL), nline(0), tlen(0)
 {
+  shA = shB = shC = shD = shE = std::numeric_limits<double>::quiet_NaN();
+  has_shomate = false;
   density_extern=NULL;
   entropy_extern=NULL;
   dTdP = NULL;
@@ -122,6 +126,11 @@ EOS::EOS(string phaseinput, double params[][2], int length):phasetype(phaseinput
     case 34:
       b_vdW = params[i][1];
       break;
+    case 35: shA = params[i][1]; has_shomate = true; break;
+    case 36: shB = params[i][1]; has_shomate = true; break;
+    case 37: shC = params[i][1]; has_shomate = true; break;
+    case 38: shD = params[i][1]; has_shomate = true; break;
+    case 39: shE = params[i][1]; has_shomate = true; break;
     default:
       cout<<"Error: Incorrect index "<<round(params[i][0])<<" for EOS constructor "<<phasetype<<endl;
       exit(1);
@@ -162,6 +171,8 @@ EOS::EOS(string phaseinput, double params[][2], int length):phasetype(phaseinput
 
 EOS::EOS(string phaseinput, string filename):phasetype(phaseinput),eqntype(7), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha0(numeric_limits<double>::quiet_NaN()), alpha1(0), xi(0), cp_a(numeric_limits<double>::quiet_NaN()), cp_b(0), cp_c(0), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), a_vdW(numeric_limits<double>::quiet_NaN()),b_vdW(numeric_limits<double>::quiet_NaN()),Debye_approx(false), thermal_type(0), rhotable(NULL), Ptable(NULL), temptable(NULL), adiabattable(NULL), bn(0), accP(NULL), accT(NULL), spline(NULL), spline2drho(NULL), spline2dadi(NULL), nline(0), tlen(0)
 {
+  shA = shB = shC = shD = shE = std::numeric_limits<double>::quiet_NaN();
+  has_shomate = false;
   ifstream fin;
   string sline;
   fin.open(filename.c_str());
@@ -295,6 +306,8 @@ EOS::EOS(string phaseinput, string filename):phasetype(phaseinput),eqntype(7), V
 
 EOS::EOS(string phaseinput, double (*f)(double P, double T, double rho_guess), double (*g)(double rho, double T)):phasetype(phaseinput),eqntype(0), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha0(numeric_limits<double>::quiet_NaN()), alpha1(0), xi(0), cp_a(numeric_limits<double>::quiet_NaN()), cp_b(0), cp_c(0), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), a_vdW(numeric_limits<double>::quiet_NaN()),b_vdW(numeric_limits<double>::quiet_NaN()),Debye_approx(false), rhotable(NULL), Ptable(NULL), bn(0), accP(NULL), accT(NULL), spline(NULL), spline2drho(NULL), spline2dadi(NULL), nline(0), tlen(0)
 {
+  shA = shB = shC = shD = shE = std::numeric_limits<double>::quiet_NaN();
+  has_shomate = false;
   density_extern=f;
   entropy_extern=g;
   dTdP = NULL;
@@ -309,6 +322,8 @@ EOS::EOS(string phaseinput, double (*f)(double P, double T, double rho_guess), d
 
 EOS::EOS(string phaseinput, double *Plist, double *rholist, int len_list):phasetype(phaseinput),eqntype(7), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha0(numeric_limits<double>::quiet_NaN()), alpha1(0), xi(0), cp_a(numeric_limits<double>::quiet_NaN()), cp_b(0), cp_c(0), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), a_vdW(numeric_limits<double>::quiet_NaN()),b_vdW(numeric_limits<double>::quiet_NaN()),Debye_approx(false), thermal_type(0), bn(0), accT(NULL), spline2drho(NULL), spline2dadi(NULL), nline(len_list), tlen(0)
 {
+  shA = shB = shC = shD = shE = std::numeric_limits<double>::quiet_NaN();
+  has_shomate = false;
   density_extern=NULL;
   entropy_extern=NULL;
   dTdP = NULL;
@@ -339,6 +354,8 @@ EOS::EOS(string phaseinput, double *Plist, double *rholist, int len_list):phaset
 
 EOS::EOS(string phaseinput, double params[][2], double bparams[], int length, int blength):phasetype(phaseinput),eqntype(8), V0(numeric_limits<double>::quiet_NaN()), K0(numeric_limits<double>::quiet_NaN()), K0p(numeric_limits<double>::quiet_NaN()), K0pp(numeric_limits<double>::quiet_NaN()), mmol(numeric_limits<double>::quiet_NaN()), P0(0), Theta0(numeric_limits<double>::quiet_NaN()), gamma0(numeric_limits<double>::quiet_NaN()), beta(numeric_limits<double>::quiet_NaN()), gammainf(numeric_limits<double>::quiet_NaN()), gamma0p(numeric_limits<double>::quiet_NaN()), e0(numeric_limits<double>::quiet_NaN()), g(numeric_limits<double>::quiet_NaN()), T0(300), alpha0(numeric_limits<double>::quiet_NaN()), alpha1(0), xi(0), cp_a(numeric_limits<double>::quiet_NaN()), cp_b(0), cp_c(0), at1(numeric_limits<double>::quiet_NaN()), at2(numeric_limits<double>::quiet_NaN()), at3(numeric_limits<double>::quiet_NaN()), at4(numeric_limits<double>::quiet_NaN()), ap1(numeric_limits<double>::quiet_NaN()), ap2(numeric_limits<double>::quiet_NaN()), ap3(numeric_limits<double>::quiet_NaN()), ap4(numeric_limits<double>::quiet_NaN()), n(-1), Z(-1), a_vdW(numeric_limits<double>::quiet_NaN()),b_vdW(numeric_limits<double>::quiet_NaN()),Debye_approx(false), thermal_type(8), rhotable(NULL), Ptable(NULL), bn(blength), accP(NULL), accT(NULL), spline(NULL), spline2drho(NULL), spline2dadi(NULL), nline(0), tlen(0)
 {
+  shA = shB = shC = shD = shE = std::numeric_limits<double>::quiet_NaN();
+  has_shomate = false;
   // construction EOS for RTpress
   density_extern=NULL;
   entropy_extern=NULL;
@@ -455,6 +472,11 @@ EOS::EOS(string phaseinput, double params[][2], double bparams[], int length, in
     case 34:
       b_vdW = params[i][1];
       break;
+    case 35: shA = params[i][1]; has_shomate = true; break;
+    case 36: shB = params[i][1]; has_shomate = true; break;
+    case 37: shC = params[i][1]; has_shomate = true; break;
+    case 38: shD = params[i][1]; has_shomate = true; break;
+    case 39: shE = params[i][1]; has_shomate = true; break;
     default:
       cout<<"Error: Incorrect index "<<round(params[i][0])<<" for EOS constructor "<<phasetype<<endl;
       exit(1);
@@ -625,7 +647,11 @@ void EOS::modifyEOS(double params[][2], int length)  // modify the constructed E
     case 34:
       b_vdW = params[i][1];
       break;
-
+    case 35: shA = params[i][1]; has_shomate = true; break;
+    case 36: shB = params[i][1]; has_shomate = true; break;
+    case 37: shC = params[i][1]; has_shomate = true; break;
+    case 38: shD = params[i][1]; has_shomate = true; break;
+    case 39: shE = params[i][1]; has_shomate = true; break;
     default:
       cout<<"Error: Incorrect index "<<round(params[i][0])<<" for EOS constructor "<<phasetype<<endl;
       exit(1);
@@ -775,7 +801,11 @@ void EOS::modifyEOS(int index, double value)	     // modify one value of the EOS
   case 34:
     b_vdW = value;
     break;
-  
+  case 35: shA = value; has_shomate = true; break;
+  case 36: shB = value; has_shomate = true; break;
+  case 37: shC = value; has_shomate = true; break;
+  case 38: shD = value; has_shomate = true; break;
+  case 39: shE = value; has_shomate = true; break;
   default:
     cout<<"Error: Incorrect index "<<index<<" for EOS constructor "<<phasetype<<endl;
     exit(1);
@@ -972,7 +1002,7 @@ double EOS::Pth(double V, double T)
     return 1E-10 * gamma*(Eth-Eth0)/V;	  // convert to GPa
 }
 
-double EOS::adiabatic_index()
+double EOS::adiabatic_index() const
 // get the adiabatic index for ideal gas.  Vibrational freedom is always ignored.
 // Note: For van der Waals gas, the adiabatic index C_p/C_v is no longer a constant.
 // But Cv is still relates to the internal degrees of freedom of the gas molecules (translational, rotational, vibrational).
@@ -992,6 +1022,27 @@ double EOS::adiabatic_index()
     return 1.;
   else			// polyatomic gas
     return 4./3.;
+}
+
+double EOS::gamma_shomate(double T) const
+{
+  // NIST/JANAF Shomate: Cp°(T) = A + B t + C t^2 + D t^3 + E / t^2,  t = T/1000
+  // Returns gamma(T) = Cp / (Cp - R), with R molar gas constant.
+  static const double Rm = 8.314462618; // J/mol/K
+  if (!has_shomate || !gsl_finite(T) || T <= 0.0)
+    return adiabatic_index(); // fallback to existing bucketed gamma
+
+  const double t = T / 1000.0;
+  const double Cp = shA + shB*t + shC*t*t + shD*t*t*t + shE/(t*t); // J/mol/K
+  const double Cv = Cp - Rm;
+  // Guard against pathological near-critical regions or bad coeffs:
+  if (!gsl_finite(Cp) || !gsl_finite(Cv) || Cv <= 0.0) return 1.05;
+  // Clamp to a reasonable physical range for stability:
+  double g = Cp / Cv;
+  if (!gsl_finite(g)) g = 1.05;
+  if (g < 1.01) g = 1.01;
+  if (g > 1.67) g = 1.67;
+  return g;
 }
   
 double EOS::density(double P, double T, double rho_guess)
@@ -1280,7 +1331,7 @@ double EOS::entropy(double rho, double T)
 // ideal gas,  S ~ nR log(T^(1/(gamma-1))*V) + const.  For better performance and more concise code, here returns T rho^{1-gamma}.
     // van der Waals, returns T (V-b)^{gamma-1}.
   {
-    gamma = this->adiabatic_index();
+    double gamma = (has_shomate ? gamma_shomate(T) : this->adiabatic_index());
     if (!gsl_finite(a_vdW) || !gsl_finite(b_vdW))
       return T*pow(rho,1-gamma);
     else
@@ -1579,7 +1630,7 @@ double EOS::dTdV_S(double V, double P, double T)
       exit(1);
     }
 
-    double gamma = adiabatic_index();
+    double gamma = (has_shomate ? gamma_shomate(T) : adiabatic_index());
     if (!gsl_finite(a_vdW) || !gsl_finite(b_vdW))
       return (1-gamma)*T/V;
     else
@@ -1662,7 +1713,7 @@ double EOS::dTdm(double m, double r, double rho, double P, double T)
       exit(1);
     }
 
-    double gamma = adiabatic_index();
+    double gamma = (has_shomate ? gamma_shomate(T) : adiabatic_index());
     if (!gsl_finite(a_vdW) || !gsl_finite(b_vdW))
       return -(gamma-1)*mp*mmol*G*m/(gamma*kb*rho*4*pi*pow(r,4));
     else
@@ -1711,7 +1762,7 @@ double EOS::dTdP_S(double P, double T, double &rho_guess)
       exit(1);
     }
 
-    double gamma = adiabatic_index();
+    double gamma = (has_shomate ? gamma_shomate(T) : adiabatic_index());
     if (!gsl_finite(a_vdW) || !gsl_finite(b_vdW))
       return (gamma-1)*T/(gamma*P);
     else
@@ -1991,3 +2042,4 @@ double density_solver(double P, double T, double (*pressure_func)(double rho, do
 
   return rho;
 }
+

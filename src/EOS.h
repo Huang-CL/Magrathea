@@ -42,7 +42,7 @@ struct EOS
   // type 8-13 the same as 0-5 but for RTpress style. 8 BM3, 9 BM4, 10 Vinet, 11 Holzapfel, 12 Keane, 13 Choukroun
   
   double Pth(double rho, double T); // thermal pressure in GPa, and electron pressure or anharmonic if provided.
-  double adiabatic_index();	    // get the adiabatic index for ideal gas.  Vibrational freedom is always ignored.
+  double adiabatic_index() const;	    // get the adiabatic index for ideal gas.  Vibrational freedom is always ignored.
   double density(double P, double T, double rho_guess); // input P in cgs (microbar), at given temperature, return density in g/cm^3
   double (*density_extern)(double P, double T, double rho_guess);		// using external function, input P, T in cgs, return density in g/cm^3
   double (*entropy_extern)(double rho, double T);	// using the external entropy function.
@@ -106,6 +106,8 @@ struct EOS
   // return volume in cm^3/mol, take density in g/cm^3
   double density(double P1, double T1, double rho_guess, double P2, double &T2);
   // Given the pressure (cgs), temperature, density of the previous step, the pressure of the next step, return the temperature and density at the new pressure. This solver doesn't conserve the entropy well enough. Only used as an approximation in the first integration step from the core of the planet where dTdm has 0/0 limit.
+  double gamma_shomate(double T) const;
+  // helper to compute gamma(T) from Shomate Cp° coefficients
 
 private:
   string phasetype;
@@ -114,6 +116,9 @@ private:
   double at1, at2, at3, at4, ap1, ap2, ap3, ap4;
   int n, Z;
   double a_vdW, b_vdW;         // van der Waals constants.
+  // --- Shomate Cp°(T) for gas, NIST/JANAF (molar: J/mol/K) ---
+  double shA, shB, shC, shD, shE;   // A..E are enough for Cp°(T); F..H not needed for gamma
+  bool   has_shomate;
   bool Debye_approx;		       // Debye approximate or Einstein approximate.
   int thermal_type;		       // Indicates the thermal type of the phase.  0 indicates no temperature profile available, 1 indicates entropy method, 2 indicates the temperature gradient method, 3 indicates ideal gas, 4 indicates the EOS is fitted along the isentrope, 5 indicates no Theta0, 6 indicates has Theta 0 but no electron pressure, 7 indicates has electron pressure as well, type 8, RTpress style, type 9 thermal expansion
   double *rhotable, *Ptable, *temptable, *adiabattable;	// density table in cgs, Ptable in GPa.
