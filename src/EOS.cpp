@@ -1036,10 +1036,13 @@ double EOS::gamma_shomate(double T) const
   const double Cp = shA + shB*t + shC*t*t + shD*t*t*t + shE/(t*t); // J/mol/K
   const double Cv = Cp - Rm;
   // Guard against pathological near-critical regions or bad coeffs:
-  if (!gsl_finite(Cp) || !gsl_finite(Cv) || Cv <= 0.0) return 1.05;
-  // Clamp to a reasonable physical range for stability:
+  if (!gsl_finite(Cp) || !gsl_finite(Cv) || Cv < 1)
+    return adiabatic_index();
+  // fallback to existing bucketed gamma
   double g = Cp / Cv;
-  if (!gsl_finite(g)) g = 1.05;
+  if (!gsl_finite(g))
+    return adiabatic_index();
+  // fallback to existing bucketed gamma
   if (g < 1.01) g = 1.01;
   if (g > 1.67) g = 1.67;
   return g;
