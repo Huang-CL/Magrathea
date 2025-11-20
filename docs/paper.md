@@ -94,7 +94,7 @@ Since the initial release [@Huang:2022], Magrathea has undergone expansions in p
 - **Default Mantle:** Added upper-mantle polymorphs of Mg$_2$SiO$_4$ (forsterite, wadsleyite, ringwoodite) [@Dorogokupets:2015], see \autoref{fig:phases}.
 - **Default Hydrosphere:** Updated H$_2$O EOSs and phase boundaries for ices [@Journaux:2020], liquid, gas [@Wagner:2002], and supercritical [@Mazevet:2019, with 2021 entropy correction] largely inspired by the AQUA package [@Haldemann:2020], see \autoref{fig:phases}.
 - **Additional Gas EOSs:** Including the solar-metallicity table for hydrogen/helium from @Chabrier:2021 and van der Waals gases.
-- **Carbon Mantles:** EOSs and phase diagrams for phases of carbon [Lowitzer:2006; @Benedict:2014] and silicon carbide [@Miozzi:2018], see \autoref{fig:phases}.
+- **Carbon Mantles:** EOSs and phase diagrams for phases of carbon [@Lowitzer:2006; @Benedict:2014] and silicon carbide [@Miozzi:2018], see \autoref{fig:phases}.
 - **EOS library growth:** Including the AQUA table [@Haldemann:2020], fcc- and bcc-iron [@Dorogokupets:2017], and the mantle materials from @Stixrude:2011.
 
 **New functionality and solvers**
