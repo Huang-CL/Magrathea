@@ -482,6 +482,13 @@ double vdW_H2O_array[5][2] = {{0,6}, {5,18}, {14,3}, {33, 5.537}, {34, 0.0305}};
 
 EOS *vdW_H2O = new EOS("H2O vdW", vdW_H2O_array, 5);
 
+// -----------------------------------
+// van der Waals, H2O, 
+//Default Hydrosphere
+double vdW_H2O_iso_array[5][2] = {{0,6}, {5,18}, {14,0}, {33, 5.537}, {34, 0.0305}};
+
+EOS *vdW_H2O_iso = new EOS("H2O vdW", vdW_H2O_iso_array, 5);
+
 //-----------------------------------
 // H2O vdW : 500–1700 K Shomate set, Chase 1998 NIST-JANAF Table
 double vdW_H2O_lo_array[][2] = {{0,6}, {5,18}, {14,3}, {33, 5.537}, {34, 0.0305}, {35, 30.09200}, {36, 6.832514}, {37, 6.793435}, {38, -2.534480}, {39, 0.082139}};

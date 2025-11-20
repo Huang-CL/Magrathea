@@ -448,6 +448,7 @@ int main(int argc, char* argv[])
   delete vdW_H2;
   delete vdW_He;
   delete vdW_H2O;
+  delete vdW_H2O_iso;
   delete vdW_H2O_lo;
   delete vdW_H2O_hi;
   delete vdW_CH4;
