@@ -416,6 +416,8 @@ EOS* find_phase_water_default(double P, double T)
   {
     if(P<0.022064*exp((647.096/T)*(-7.85951783*(1-T/647.096)+1.84408259*pow(1-T/647.096,1.5)-11.7866497*pow(1-T/647.096,3)+22.6807411*pow(1-T/647.096,6)))||T>647.096) //Vapor Line Wagner & PruB 22
     {
+      if(P<1e-5)
+        return vdW_H2O_iso;
       if(T<1000)  //use simplified EOS above 1000 K, IAPWS below
         return Water_Vap_IAPWS; //IAPWS-R6-95
       else if(T<1700)

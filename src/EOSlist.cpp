@@ -482,6 +482,13 @@ double vdW_H2O_array[5][2] = {{0,6}, {5,18}, {14,3}, {33, 5.537}, {34, 0.0305}};
 
 EOS *vdW_H2O = new EOS("H2O vdW", vdW_H2O_array, 5);
 
+// -----------------------------------
+// van der Waals, H2O, 
+//Default Hydrosphere
+double vdW_H2O_iso_array[5][2] = {{0,6}, {5,18}, {14,0}, {33, 5.537}, {34, 0.0305}};
+
+EOS *vdW_H2O_iso = new EOS("H2O vdW", vdW_H2O_iso_array, 5);
+
 //-----------------------------------
 // H2O vdW : 500–1700 K Shomate set, Chase 1998 NIST-JANAF Table
 double vdW_H2O_lo_array[][2] = {{0,6}, {5,18}, {14,3}, {33, 5.537}, {34, 0.0305}, {35, 30.09200}, {36, 6.832514}, {37, 6.793435}, {38, -2.534480}, {39, 0.082139}};
@@ -559,7 +566,7 @@ EOS *BC8 = new EOS("BC8",BC8_array,sizeof(BC8_array)/2/sizeof(BC8_array[0][0]));
 
 // ------------------------------------
 // Graphite (High Temperature Vinet), Lowitzer et al. 2006, Phys Rev B
-double Graph_Lowitzer_array[][2] = {{0,2},{1,5.31153},{2,38},{3,9},{5,mC},{14,1},{15,6},{16,300},{17,32},{18,0},{20,0.714345}};
+double Graph_Lowitzer_array[][2] = {{0,2},{1,21.2461},{2,38},{3,9},{5,mC},{14,1},{15,6},{16,300},{17,32},{18,0},{20,0.714345}};
 
 EOS *Graph_Lowitzer = new EOS("Graph_Lowitzer",Graph_Lowitzer_array,sizeof(Graph_Lowitzer_array)/2/sizeof(Graph_Lowitzer_array[0][0]));
 
@@ -1376,6 +1383,5 @@ void FINVER(double F, int N, double &X, double &XDF, double &XDFF)
     XDF  = t1 * RT;
     XDFF = t2 * RT + pow(t1,2) * (R2 - 2.0*RT) / t;
 }
-
 
 
