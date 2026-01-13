@@ -1777,7 +1777,6 @@ double EOS::dTdP_S(double P, double T, double &rho_guess)
   }
   if(eqntype==7) //tabular P-T table
   {
-    P /= 1E10;
     double adiabat;
     int status;
     status = gsl_spline2d_eval_e(spline2dadi, T, P, accT, accP, &adiabat);
@@ -1791,26 +1790,26 @@ double EOS::dTdP_S(double P, double T, double &rho_guess)
       else if(P<Ptable[0])
       {
         gsl_spline2d_eval_e(spline2dadi, T, Ptable[0], accT, accP, &adiabat);
-        return adiabat/1E10;
+        return adiabat;
       }
       else if(P>Ptable[nline/tlen-1])
       {
         gsl_spline2d_eval_e(spline2dadi, T, Ptable[nline/tlen-1], accT, accP, &adiabat);
-        return adiabat/1E10;
+        return adiabat;
       }
       else if(T < temptable[0])
       {
         gsl_spline2d_eval_e(spline2dadi, temptable[0], P, accT, accP, &adiabat);
-        return adiabat/1E10;
+        return adiabat;
       }
       else
       {
         gsl_spline2d_eval_e(spline2dadi, temptable[tlen-1], P, accT, accP, &adiabat);
-        return adiabat/1E10;
+        return adiabat;
       }          
     }
     else  
-      return adiabat/1E10;     
+      return adiabat;
   }
   rho_guess = density(P*1E10, T, rho_guess);
   double V = volume(rho_guess);

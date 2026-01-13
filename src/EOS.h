@@ -53,7 +53,7 @@ struct EOS
   double getmmol(){return mmol;}
   double getP0(){return P0;}
   double getT0(){return T0;}
-  double (*dTdP)(double P, double T, double &rho_guess); // return the temperature gradient at given pressure and temperature point. Pressure in cgs unit. rho_guess is only used as the initial guess of density solver. Shouldn't be used to calculate temperature gradient.
+  double (*dTdP)(double P, double T, double &rho_guess); // return the temperature gradient at given pressure and temperature point. Pressure in cgs unit. rho_guess is only used as the initial guess of density solver. Shouldn't be used to calculate temperature gradient. The dTdP should be in the unit of K/microbar.
   void DebyeT(double x, double &gamma, double &Theta);	   // return the Grueneisen parameter, Debye temperature or Einstein temperature according to Altshuler form.  If Theta0 is not available, a Debye temperature scaling factor is returned
   double entropy(double rho, double T); // Given the volume per mol and temperature, calculate the entropy over n*R, or P V^{7/5} / R for ideal gas.
   double pSpV_T(double V, double T);

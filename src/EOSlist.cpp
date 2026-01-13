@@ -1150,7 +1150,7 @@ double dTdP_S_H2O_of_rho(double rho, double T)
 }
 
 double H2OSC(double P, double T, double rho_guess)
-// P in GPa
+// P in microbar (cgs). This function is used as density_extern, which expects P in microbar.
 {
   if(!(rho_guess>0.5 && rho_guess<20))
     rho_guess = max(1 + 0.5*log(P/5E10),0.1);
@@ -1158,6 +1158,7 @@ double H2OSC(double P, double T, double rho_guess)
 }
 
 double dTdP_S_H2OSC(double P, double T, double &rho_guess)
+// P in microbar (cgs), returns dT/dP in K/microbar. This function is used by modify_dTdP, which expects P in microbar and returns K/microbar.
 {
   rho_guess = density_solver(P,T,PH2OSC,rho_guess);
   return dTdP_S_H2O_of_rho(rho_guess, T);
