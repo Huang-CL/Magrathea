@@ -261,7 +261,7 @@ EOS* find_phase_Fe_default(double P, double T)
   // Default Core
   if( T > 12.8*P + 2424 && T > 13.7*P + 2328)   // melting curve from Dorogokupets et al. 2017, Scientific Reports. fcc and hcp Fe melting curve.
   {  
-    if(P<80 || T>10000)
+    if(P_GPa<0.0001 || P_GPa<(T-3020)/110 || T>10000)
       return Fe_liquid2;
     else
       return Fe_liquid;
@@ -759,5 +759,6 @@ EOS* find_phase(double m, vector<PhaseDgm> &Comp, vector<double> M, double P, do
   // if nothing matched, return the outermost existing layer
   return Comp.back().find_phase(P, T);
 }
+
 
 
