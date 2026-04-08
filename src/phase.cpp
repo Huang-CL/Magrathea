@@ -261,7 +261,7 @@ EOS* find_phase_Fe_default(double P, double T)
   // Default Core
   if( T > 12.8*P + 2424 && T > 13.7*P + 2328)   // melting curve from Dorogokupets et al. 2017, Scientific Reports. fcc and hcp Fe melting curve.
   {  
-    if(P_GPa<0.0001 || P_GPa<(T-3020)/110 || T>10000)
+    if(P<0.0001 || P<(T-3020)/110 || T>10000)
       return Fe_liquid2;
     else
       return Fe_liquid;
