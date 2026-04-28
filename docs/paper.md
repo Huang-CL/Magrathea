@@ -105,7 +105,7 @@ Together, these changes make Magrathea v2 a substantially expanded platform rath
 
 # Research impact statement
 
-Magrathea has been used in published work to generate mass--radius diagrams [@Taylor:2025], infer interiors of observed planets [@MacDonald:2022; @Desai:2024], connect theoretical composition from formation to observables [@Childs:2023; @Dou:2025; @Steffen:2025], and test how updated high-pressure EOS measurements and interior assumptions change inferred structures [@Huang:2021; @Lozovsky:2026]. The new composition finders are used and described in @Daspute:2025, @Rice:2025, and @Kroft:2026. 
+Magrathea has been used in published work to generate mass--radius diagrams [@Taylor:2025], infer interiors of observed planets [@MacDonald:2022; @Desai:2024], connect theoretical composition from formation to observables [@Childs:2023; @Dou:2024; @Steffen:2025], and test how updated high-pressure EOS measurements and interior assumptions change inferred structures [@Huang:2021; @Lozovsky:2026]. The new composition finders are used and described in @Daspute:2025, @Rice:2025, and @Kroft:2026. 
 
 Beyond its use in published research, Magrathea is already contributing to emerging intercomparison efforts in exoplanet interior modeling. @Schulze:2026 compares EOS and material choices across common rocky-planet models and shows that those choices can change inferred compositions at a level comparable to current observational uncertainties. In that context, open and modular tools like Magrathea help make differences in physical assumptions, EOS choices, and retrieval workflows easier to isolate and test.
 
