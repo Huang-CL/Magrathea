@@ -279,7 +279,7 @@ EOS *Water = new EOS("Water (Valencia)", Water_array, sizeof(Water_array)/2/size
 // -----------------------------------
 // Water & Super Critical, Brown 2018, Fluid Phase Equilib., 463, 18, tabulated by SeaFreeze
 // DEFAULT
-EOS *Water_Brown = new EOS("Water SC (Brown)", "./tabulated/water_Brown.txt");
+EOS *Water_Brown = new EOS("Water Liq&SC (Brown)", "./tabulated/water_Brown.txt");
 
 // -----------------------------------
 // Supercritical water. Mazevet et al. 2019, A&A 621
@@ -483,6 +483,25 @@ double vdW_H2O_array[5][2] = {{0,6}, {5,18}, {14,3}, {33, 5.537}, {34, 0.0305}};
 EOS *vdW_H2O = new EOS("H2O vdW", vdW_H2O_array, 5);
 
 // -----------------------------------
+// van der Waals, H2O, 
+//Default Hydrosphere
+double vdW_H2O_iso_array[5][2] = {{0,6}, {5,18}, {14,0}, {33, 5.537}, {34, 0.0305}};
+
+EOS *vdW_H2O_iso = new EOS("H2O vdW", vdW_H2O_iso_array, 5);
+
+//-----------------------------------
+// H2O vdW : 500–1700 K Shomate set, Chase 1998 NIST-JANAF Table
+double vdW_H2O_lo_array[][2] = {{0,6}, {5,18}, {14,3}, {33, 5.537}, {34, 0.0305}, {35, 30.09200}, {36, 6.832514}, {37, 6.793435}, {38, -2.534480}, {39, 0.082139}};
+
+EOS *vdW_H2O_lo = new EOS("H2O vdW",vdW_H2O_lo_array,sizeof(vdW_H2O_lo_array)/2/sizeof(vdW_H2O_lo_array[0][0]));
+
+//-----------------------------------
+// H2O vdW : 1700–6000 K Shomate set, Chase 1998 NIST-JANAF Table
+double vdW_H2O_hi_array[][2] = {{0,6}, {5,18}, {14,3}, {33, 5.537}, {34, 0.0305}, {35, 41.96426}, {36, 8.622053}, {37, -1.499780}, {38, 0.098119}, {39, -11.15764}};
+
+EOS *vdW_H2O_hi = new EOS("H2O vdW",vdW_H2O_hi_array,sizeof(vdW_H2O_lo_array)/2/sizeof(vdW_H2O_lo_array[0][0]));
+
+// -----------------------------------
 // van der Waals, CH4, 
 double vdW_CH4_array[5][2] = {{0,6}, {5,16}, {14,3}, {33, 2.303}, {34, 0.0431}};
 
@@ -536,6 +555,7 @@ EOS *Graph = new EOS("Graph",Graph_array,sizeof(Graph_array)/2/sizeof(Graph_arra
 double Diamond_array[][2] = {{0,2},{1,3.43467},{2,432.4},{3,3.793},{5,mC},{7,1887.8},{8,0.5836},{9,1},{10,0.499},{14,1},{15,6}};
 
 EOS *Diam = new EOS("Diamond",Diamond_array,sizeof(Diamond_array)/2/sizeof(Diamond_array[0][0]));
+
 // -----------------------------------
 // BC8 (Vinet), Benedict et al. 2018, Phys  Rev B
 // Uses the 1 terms from the double Debye model found in Benedict et al (2018)
@@ -544,6 +564,13 @@ double BC8_array[][2] = {{0,2},{1,3.75902},{2,221.2},{3,4.697},{5,mC},{7,2800.6}
 
 EOS *BC8 = new EOS("BC8",BC8_array,sizeof(BC8_array)/2/sizeof(BC8_array[0][0]));
 
+// ------------------------------------
+// Graphite (High Temperature Vinet), Lowitzer et al. 2006, Phys Rev B
+double Graph_Lowitzer_array[][2] = {{0,2},{1,5.31153},{2,38},{3,9},{5,mC},{14,1},{15,6},{16,300},{17,32},{18,0},{20,0.714345}};
+
+EOS *Graph_Lowitzer = new EOS("Graph_Lowitzer",Graph_Lowitzer_array,sizeof(Graph_Lowitzer_array)/2/sizeof(Graph_Lowitzer_array[0][0]));
+
+//------------------------------------
 // Silicon Carbide B3 (Zinc Blende) - Vinet EOS for better high-pressure extrapolation
 // Based on Miozzi et al. 2018 parameters but using Vinet equation
 double SiC_B3_Vinet_array[][2] = {{0, 2}, {1, 12.47}, {2, 224}, {3, 4.08}, {5, 40.096}, {7, 1200}, {8, 1.06}, {10, 0}, {14, 2}, {17, 6.2}, {16, 300}};
@@ -1123,7 +1150,7 @@ double dTdP_S_H2O_of_rho(double rho, double T)
 }
 
 double H2OSC(double P, double T, double rho_guess)
-// P in GPa
+// P in microbar (cgs). This function is used as density_extern, which expects P in microbar.
 {
   if(!(rho_guess>0.5 && rho_guess<20))
     rho_guess = max(1 + 0.5*log(P/5E10),0.1);
@@ -1131,6 +1158,7 @@ double H2OSC(double P, double T, double rho_guess)
 }
 
 double dTdP_S_H2OSC(double P, double T, double &rho_guess)
+// P in microbar (cgs), returns dT/dP in K/microbar. This function is used by modify_dTdP, which expects P in microbar and returns K/microbar.
 {
   rho_guess = density_solver(P,T,PH2OSC,rho_guess);
   return dTdP_S_H2O_of_rho(rho_guess, T);
@@ -1356,5 +1384,7 @@ void FINVER(double F, int N, double &X, double &XDF, double &XDFF)
     XDF  = t1 * RT;
     XDFF = t2 * RT + pow(t1,2) * (R2 - 2.0*RT) / t;
 }
+
+
 
 

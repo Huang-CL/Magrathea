@@ -448,6 +448,9 @@ int main(int argc, char* argv[])
   delete vdW_H2;
   delete vdW_He;
   delete vdW_H2O;
+  delete vdW_H2O_iso;
+  delete vdW_H2O_lo;
+  delete vdW_H2O_hi;
   delete vdW_CH4;
   delete vdW_NH3;
   delete vdW_CO2;
@@ -478,6 +481,7 @@ int main(int argc, char* argv[])
   delete Wustite;
   delete Kyanite;
   delete Nepheline;
+  delete Graph_Lowitzer;
 
   return 0;
 }

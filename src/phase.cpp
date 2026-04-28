@@ -261,7 +261,7 @@ EOS* find_phase_Fe_default(double P, double T)
   // Default Core
   if( T > 12.8*P + 2424 && T > 13.7*P + 2328)   // melting curve from Dorogokupets et al. 2017, Scientific Reports. fcc and hcp Fe melting curve.
   {  
-    if(P<80 || T>10000)
+    if(P<0.0001 || P<(T-3020)/110 || T>10000)
       return Fe_liquid2;
     else
       return Fe_liquid;
@@ -377,7 +377,7 @@ EOS* find_phase_C_simple(double P, double T)
   else if (P>=1.949+(T+273)/400)  // Transition from Kennedy and Kennedy (1976)
     return Diam;
   else
-    return Graph;
+    return Graph_Lowitzer;
 }
 
 //-----------------------------------
@@ -416,10 +416,14 @@ EOS* find_phase_water_default(double P, double T)
   {
     if(P<0.022064*exp((647.096/T)*(-7.85951783*(1-T/647.096)+1.84408259*pow(1-T/647.096,1.5)-11.7866497*pow(1-T/647.096,3)+22.6807411*pow(1-T/647.096,6)))||T>647.096) //Vapor Line Wagner & PruB 22
     {
+      if(P<1e-5)
+        return vdW_H2O_iso;
       if(T<1000)  //use simplified EOS above 1000 K, IAPWS below
         return Water_Vap_IAPWS; //IAPWS-R6-95
+      else if(T<1700)
+        return vdW_H2O_lo; //Van Der Walls Gas
       else
-        return vdW_H2O; //Van Der Walls Gas
+        return vdW_H2O_hi; //Van Der Walls Gas
     }
     else if(T<-32.26706488*pow(P,3)-143.6159774*pow(P,2)-74.97759097*P+273.1683519) //Ice Ih melt line, SeaFreeze fitted polynomial
       return IceIh_SF;
@@ -435,10 +439,12 @@ EOS* find_phase_water_default(double P, double T)
     {
       if(T<490)
         return Water_SF;
-      else if(T>1000) 
-        return vdW_H2O;
-      else
+      else if(T<1000) 
         return Water_Vap_IAPWS;
+      else if(T<1700)
+        return vdW_H2O_lo;
+      else
+        return vdW_H2O_hi;
     }
     else if(P < 3.986300903e-09*pow(T,3)-1.789026292e-06*pow(T,2)+0.0009677787797*T+0.02631882383) // Ih to II transition, SeaFreeze fitted polynomial
       return IceIh_SF;
@@ -753,5 +759,6 @@ EOS* find_phase(double m, vector<PhaseDgm> &Comp, vector<double> M, double P, do
   // if nothing matched, return the outermost existing layer
   return Comp.back().find_phase(P, T);
 }
+
 
 
