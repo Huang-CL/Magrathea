@@ -319,7 +319,7 @@ Find our emails on our websites:
 
 Chenliang Huang, Shanghai Astronomical Observatory [website](https://huang-cl.github.io/)
 
-David R. Rice, ARCO, Open University of Israel [website](https://davidrrice.github.io/)
+David R. Rice, University of Wisconsin--Madison [website](https://davidrrice.github.io/)
 
 _**Where is the EoS/functionality I want?**_
 
