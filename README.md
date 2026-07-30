@@ -1,6 +1,6 @@
 # MAGRATHEA #
 
-![Header](plot/magratheahead.jpg)
+[<img src="plot/Magrathea_Logo.png" width="350"/>](plot/Magrathea_Logo.png)
 
 **Excerpt from The Hitchhiker's Guide to the Galaxy, Page 634784, Section 5a, Entry: MAGRATHEA**
 
@@ -14,14 +14,21 @@ A 1D planet structure code written in C++ which considers the case of fully diff
 The code integrates the hydrostatic equation in order to shoot for the correct planet radius given the mass in each layer.
 The code returns the pressure, temperature, density, phase, and radius at steps of enclosed mass.
 The code supports 4 layers: core, mantle, hydrosphere, and atmosphere. Each layer has a phase diagram with equations of state (EoS) chosen for each phase.
-The code was developed by [Chenliang Huang](https://huang-cl.github.io/), [David R. Rice](https://davidrrice.github.io/), and [Jason H. Steffen](https://www.jasonhsteffen.com/) at the Univerisity of Nevada, Las Vegas starting in 2017.
-See a [list of works](citations.md) that use MAGRATHEA and [instructions on how to cite](CITATION.md). For further documentation visit our Read the Docs and our publications above. A tutorial and practice projects/problems are found in [docs/Tutorial_Practice_Problems.pdf](docs/Tutorial_Practice_Problems.pdf)
+The code was developed by [Chenliang Huang](https://huang-cl.github.io/), [David R. Rice](https://davidrrice.github.io/), and [Jason H. Steffen](https://www.jasonhsteffen.com/) at the Univerisity of Nevada, Las Vegas starting in 2017. For further documentation visit our Read the Docs and our publications above. A tutorial and practice projects/problems are found in [docs/Tutorial_Practice_Problems.pdf](docs/Tutorial_Practice_Problems.pdf)
 
 We encourage the community to contribute to and use MAGRATHEA for their interior modeling needs.
 
  <p align="center">
 <img width = "600" src="plot/funplanets.png"/>
  </p>
+
+## Contributing and Support
+
+We welcome bug reports, documentation improvements, equations of state, phase diagrams, additional modules, and other contributions.
+
+* See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution instructions and pull-request guidance.
+* Use [GitHub Issues](https://github.com/Huang-CL/Magrathea/issues) to report problems, request features, or ask for help.
+* See [CITATION.md](CITATION.md) for citation instructions and [citations.md](citations.md) for a list of published works using MAGRATHEA.
 
 ## Prerequisite ##
 

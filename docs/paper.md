@@ -60,9 +60,9 @@ Magrathea is designed as such a platform. Rather than enforcing a fixed planet m
 
 # State of the field
 
-The field now includes several open tools for planet interior structure modeling, with broader summaries and comparisons given in @Acuna:2025 and @Baumeister:2025. Two open-source options are GASTLI [@Acuna:2025] which targets volatile-rich planets with coupled interior--atmosphere modeling and ExoPlex [@Unterborn:2023] which focuses on rocky-planet mantle minearology.
+The field includes several open tools for planet interior structure modeling. We point readers to the large tables of tools in @Acuna:2025 and @Baumeister:2025 for a broader summary, and highlight four examples here to illustrate the range of current approaches. GASTLI [@Acuna:2025] focuses on volatile-rich planets and coupled interior--atmosphere models. ExoPlex [@Unterborn:2023] emphasizes the mineralogy of predominantly rocky planets. ExoInt [@Wang:2019] adds modules that use stellar elemental abundances and devolatilization relationships to constrain planetary bulk composition. PALEOS [@Attia:2026] provides multi-phase, tabulated equations of state for rapid interpolation in planetary structure and evolution models.
 
-Magrathea gives users explicit control over phase diagrams and EOS choices in each differentiated layer allowing for diverse planet models from sub-Earth to Neptune-mass planets. Magrathea allows users to swap mineral physics assumptions quickly, run forward models fast enough for large sweeps, and test how interior assumptions propagate into inferred compositions. The combination of modularity and speed form the C++ implementation is the main reason we seek to build on Magrathea.
+Within this landscape, Magrathea emphasizes flexibility in constructing differentiated planet models and provides a growing set of run modes for different use cases. Users have explicit control over phase diagrams and EOS choices in each differentiated layer allowing for diverse planet models from sub-Earth to Neptune-mass planets. Magrathea allows users to swap mineral physics assumptions quickly, run forward models fast enough for large sweeps, and test how interior assumptions propagate into inferred compositions. The combination of modularity and speed from the C++ implementation is the main reason we seek to build on Magrathea.
 
 # Software design
 
