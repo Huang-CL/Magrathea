@@ -101,7 +101,8 @@ Since the initial release [@Huang:2022], Magrathea has undergone expansions in p
 
 Together, these changes make Magrathea v2 a substantially expanded platform rather than a simple update to the default planet model. 
 
-![New phase diagrams in the code. Left, updated default hydrosphere. Center, default mantle with lower-pressure Mg$_2$SiO$_4$ phases. Right, carbon and SiC mantle phase diagrams. On each plot are shown the pressure--temperature conditions inside a one Earth-mass planet with different outer temperatures. \label{fig:phases}](phase_panels.pdf)
+![New phase diagrams in the code. Left, updated default hydrosphere. Center, default mantle with lower-pressure Mg$_2$SiO$_4$ phases. Right, carbon and SiC mantle phase diagrams. On each plot are shown the pressure--temperature conditions inside a one Earth-mass planet with different outer temperatures. The plotting script, model output files, and instructions used to reproduce this figure are available in the [JOSSPhaseDiagrams directory](https://github.com/DavidRRice/MagratheaRelatedFiles/tree/main/JOSSPhaseDiagrams).
+\label{fig:phases}](phase_panels.pdf)
 
 # Research impact statement
 
