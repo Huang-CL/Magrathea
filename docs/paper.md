@@ -60,9 +60,9 @@ Magrathea is designed as such a platform. Rather than enforcing a fixed planet m
 
 # State of the field
 
-The field now includes several open tools for planet interior structure modeling, with broader summaries and comparisons given in @Acuna:2025 and @Baumeister:2025. Two open-source options are GASTLI [@Acuna:2025] which targets volatile-rich planets with coupled interior--atmosphere modeling and ExoPlex [@Unterborn:2023] which focuses on rocky-planet mantle minearology.
+The field includes several open tools for planet interior structure modeling. We point readers to the large tables of tools in @Acuna:2025 and @Baumeister:2025 for a broader summary, and highlight four examples here to illustrate the range of current approaches. GASTLI [@Acuna:2025] focuses on volatile-rich planets and coupled interior--atmosphere models. ExoPlex [@Unterborn:2023] emphasizes the mineralogy of predominantly rocky planets. ExoInt [@Wang:2019] adds modules that use stellar elemental abundances and devolatilization relationships to constrain planetary bulk composition. PALEOS [@Attia:2026] provides multi-phase, tabulated equations of state for rapid interpolation in planetary structure and evolution models.
 
-Magrathea gives users explicit control over phase diagrams and EOS choices in each differentiated layer allowing for diverse planet models from sub-Earth to Neptune-mass planets. Magrathea allows users to swap mineral physics assumptions quickly, run forward models fast enough for large sweeps, and test how interior assumptions propagate into inferred compositions. The combination of modularity and speed form the C++ implementation is the main reason we seek to build on Magrathea.
+Within this landscape, Magrathea emphasizes flexibility in constructing differentiated planet models and provides a growing set of run modes for different use cases. Users have explicit control over phase diagrams and EOS choices in each differentiated layer allowing for diverse planet models from sub-Earth to Neptune-mass planets. Magrathea allows users to swap mineral physics assumptions quickly, run forward models fast enough for large sweeps, and test how interior assumptions propagate into inferred compositions. The combination of modularity and speed from the C++ implementation is the main reason we seek to build on Magrathea.
 
 # Software design
 
@@ -96,12 +96,14 @@ Since the initial release [@Huang:2022], Magrathea has undergone expansions in p
 
 - **Input handling:** All input parameters were moved to `run/*.cfg` files with descriptive keys.
 - **Parallelization:** Bulk runs and composition finder routines can exploit OpenMP in `compfind.cpp` enabling execution with multiple threads.
+- **Built-in numerical tests:** The `./planet --test` option verifies pressure--density inversion for an analytical Vinet EOS and compares the structure solver for a constant-density planet against its analytical radius.
 - **Diagnostics:** More informative error messages are returned when solutions fail to converge.
-- **Tutorial and documentation:** A guided set of examples and practice problems resides in the `docs/` folder with online documentation at [magrathea.readthedocs.io](https://magrathea.readthedocs.io)
+- **Tutorial and documentation:** A guided set of examples and practice problems resides in the `docs/` folder with online documentation at [magrathea.readthedocs.io](https://magrathea.readthedocs.io).
 
 Together, these changes make Magrathea v2 a substantially expanded platform rather than a simple update to the default planet model. 
 
-![New phase diagrams in the code. Left, updated default hydrosphere. Center, default mantle with lower-pressure Mg$_2$SiO$_4$ phases. Right, carbon and SiC mantle phase diagrams. On each plot are shown the pressure--temperature conditions inside a one Earth-mass planet with different outer temperatures. \label{fig:phases}](phase_panels.pdf)
+![New phase diagrams in the code. Left, updated default hydrosphere. Center, default mantle with lower-pressure Mg$_2$SiO$_4$ phases. Right, carbon and SiC mantle phase diagrams. On each plot are shown the pressure--temperature conditions inside a one Earth-mass planet with different outer temperatures. The plotting script, model output files, and instructions used to reproduce this figure are available in the [JOSSPhaseDiagrams directory](https://github.com/DavidRRice/MagratheaRelatedFiles/tree/main/JOSSPhaseDiagrams).
+\label{fig:phases}](phase_panels.pdf)
 
 # Research impact statement
 

@@ -24,10 +24,176 @@ double P_surface = 1E5;		  // The pressure level that the broad band optical tra
 int count_shoot = 0;			  // used to count the total number of shootings per each solution
 int count_step = 0;			  // used to count the sum of integral steps in all shooting results.
 
+// ========================================================
+// Built-in numerical tests
+// Run from the command line with: ./planet --test
+// ========================================================
+
+namespace {
+
+int test_failures = 0;
+EOS* test_constant_eos = nullptr;
+
+/// Compare a calculated value against an expected value.
+void check_close(
+    const string& name,
+    double actual,
+    double expected,
+    double relative_tolerance)
+{
+    double relative_error =
+        fabs(actual - expected) / fabs(expected);
+
+    if (!isfinite(actual) || relative_error > relative_tolerance)
+    {
+        cout<< "FAIL: " << name
+             << " expected " << expected
+             << ", got " << actual << endl;
+        test_failures++;
+    }
+    else
+        cout << "PASS: " << name << endl;
+}
+
+/// Check that an EOS recovers density from its calculated pressure.
+void test_eos_inversion()
+{
+    // Synthetic Vinet EOS with simple reference parameters.
+    double params[][2] = {
+        {0, 2},       // Vinet
+        {1, 10.0},    // V0, cm^3 mol^-1
+        {2, 200.0},   // K0, GPa
+        {3, 4.0},     // K0 prime
+        {5, 40.0}     // molar mass, g mol^-1
+    };
+
+    EOS eos(
+        "Test Vinet",
+        params,
+        sizeof(params) / sizeof(params[0]));
+
+    double expected_density = 5.0;
+    double temperature = 300.0;
+
+    double pressure_gpa =
+        eos.Press(expected_density, temperature); //GPa
+
+    double recovered_density =
+        eos.density(
+            pressure_gpa * 1E10, //microbar
+            temperature,
+            4.8);
+
+    check_close(
+        "Vinet EOS inversion",
+        recovered_density,
+        expected_density,
+        1E-8);
+}
+
+/// Test EOS that returns the same density at all pressures and temperatures.
+double constant_density(double P, double T, double rho_guess)
+{
+    return 5.0; // g cm^-3
+}
+
+/// Return the constant-density EOS for all valid P-T conditions.
+EOS* constant_phase(double P, double T)
+{
+    if (P <= 0 || T <= 0)
+        return nullptr;
+
+    return test_constant_eos;
+}
+
+/// Compare the full solver against the analytical constant-density radius.
+void test_constant_density_planet()
+{
+    const double density = 5.0; // g cm^-3
+    const double mass = 1.0; // Earth masses
+
+    EOS eos("Constant density", constant_density, nullptr);
+    test_constant_eos = &eos;
+
+    // Construct a one-layer planet using the test EOS.
+    vector<PhaseDgm> components;
+    components.emplace_back("constant", constant_phase);
+
+    hydro* planet = fitting_method(
+        components,
+        {mass},
+        {300.0}, // Surface temperature, K
+        {density}, // Initial density estimate
+        1E5, // Surface pressure, microbar
+        true); // Isothermal model
+
+    if (!planet)
+    {
+        cout << "FAIL: constant-density solver returned no solution"
+             << endl;
+        test_failures++;
+        return;
+    }
+
+    // Analytical radius: R = (3M / 4 pi rho)^(1/3).
+    double expected_radius =
+        cbrt(3.0 * mass * ME /
+             (4.0 * pi * density)) / RE;
+
+    double calculated_radius =
+        planet->getRs().back();
+
+    check_close(
+        "constant-density planet",
+        calculated_radius,
+        expected_radius,
+        2E-3);
+
+    delete planet;
+}
+
+/// Run all built-in tests and return an exit status.
+int run_tests()
+{
+    cout << "Running MAGRATHEA numerical tests..." << endl;
+
+    test_eos_inversion();
+    test_constant_density_planet();
+
+    if (test_failures > 0)
+    {
+        cout << test_failures << " test(s) failed." << endl;
+        return EXIT_FAILURE;
+    }
+
+    cout << "All MAGRATHEA tests passed." << endl;
+    return EXIT_SUCCESS;
+}
+
+} // namespace
+
+
+// ========================================================
+// MAGRATHEA command-line modes
+// ========================================================
 
 int main(int argc, char* argv[])
 {
   gsl_set_error_handler_off();  //Dismiss the abortion from execution, which is designed for code testing.
+  
+  // Run numerical tests without loading a configuration file.
+  if (argc == 2 && string(argv[1]) == "--test")
+    return run_tests();
+
+  // Normal runs require a configuration-file argument.
+  if (argc < 2)
+  {
+    cout << "Usage:\n"
+        << "  ./planet <config-file>\n"
+        << "  ./planet --test\n";
+    return EXIT_FAILURE;
+  }
+  
   hydro* planet;
   ifstream fin;
   int n_settings;

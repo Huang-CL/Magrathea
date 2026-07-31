@@ -11,6 +11,7 @@ getting-started
 user-guide/run-modes
 models/phasediagrams
 models/eos
+user-guide/practice-problems
 ```
 
 ```{toctree}
