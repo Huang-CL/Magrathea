@@ -1,8 +1,8 @@
 # MAGRATHEA #
 
-![Header](plot/magratheahead.jpg)
+[<img src="plot/Magrathea_Logo.png" width="350"/>](plot/Magrathea_Logo.png)
 
-**Excerpt from The Hitchhiker's Guide to the Galaxy, Page 634784, Section 5a, Entry: MAGRATHEA**
+**Excerpt from The Hitchhiker's Guide to the Galaxy, Page 634784, Section 5a, Entry: Magrathea**
 
 Planet interior structure code for astronomers, planetary scientists, mice, and more. 
 
@@ -14,14 +14,21 @@ A 1D planet structure code written in C++ which considers the case of fully diff
 The code integrates the hydrostatic equation in order to shoot for the correct planet radius given the mass in each layer.
 The code returns the pressure, temperature, density, phase, and radius at steps of enclosed mass.
 The code supports 4 layers: core, mantle, hydrosphere, and atmosphere. Each layer has a phase diagram with equations of state (EoS) chosen for each phase.
-The code was developed by [Chenliang Huang](https://huang-cl.github.io/), [David R. Rice](https://davidrrice.github.io/), and [Jason H. Steffen](https://www.jasonhsteffen.com/) at the Univerisity of Nevada, Las Vegas starting in 2017.
-See a [list of works](citations.md) that use MAGRATHEA and [instructions on how to cite](CITATION.md). For further documentation visit our Read the Docs and our publications above. A tutorial and practice projects/problems are found in [docs/Tutorial_Practice_Problems.pdf](docs/Tutorial_Practice_Problems.pdf)
+The code was developed by [Chenliang Huang](https://huang-cl.github.io/), [David R. Rice](https://davidrrice.github.io/), and [Jason H. Steffen](https://www.jasonhsteffen.com/) at the Univerisity of Nevada, Las Vegas starting in 2017. For further documentation visit our Read the Docs and our publications above. A tutorial and practice projects/problems are found in [docs/Tutorial_Practice_Problems.pdf](docs/Tutorial_Practice_Problems.pdf)
 
-We encourage the community to contribute to and use MAGRATHEA for their interior modeling needs.
+We encourage the community to contribute to and use Magrathea for their interior modeling needs.
 
  <p align="center">
 <img width = "600" src="plot/funplanets.png"/>
  </p>
+
+## Contributing and Support
+
+We welcome bug reports, documentation improvements, equations of state, phase diagrams, additional modules, and other contributions.
+
+* See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution instructions and pull-request guidance.
+* Use [GitHub Issues](https://github.com/Huang-CL/Magrathea/issues) to report problems, request features, or ask for help.
+* See [CITATION.md](CITATION.md) for citation instructions and [citations.md](citations.md) for a list of published works using Magrathea.
 
 ## Prerequisite ##
 
@@ -43,24 +50,89 @@ When running many simulations with bulk input or composition finder modes, OpenM
 
 Installation:
 
-1. Open a terminal. Navigate to where you wish to install the directory.
-2. Clone the repository: `git clone https://github.com/Huang-CL/Magrathea.git`.
-3. If the gsl library is not installed globally (under /usr/local/ or equivalent), edit `Makefile` of MAGRATHEA to include the actual path toward the gsl headers (e.g. `~/include` or `~/gsl/include`) and gsl library (e.g. `~/lib` or `~/gsl/lib`) following `-I` in `CFLAGS` and `-L` in `LDFLAGS`. The path of headers and libraries can be found using `gsl-config --cflags` and `gsl-config --libs`.  If the `gsl-config` command is not found, `gsl` may not have been installed properly.  _Note: The path after `-I` should end with `/include`, not `/include/gsl`._
-4. Run `make -B` inside the code's directory. _After the first compilation use `make` to compile the code._
+1. Open a terminal and navigate to where you wish to install Magrathea.
 
-Running a planet:
+2. Clone the repository and enter its top-level directory:
 
-5. Open `run/mode0.cfg` in a text editor.
-6. Line 12-14: set mass of the core, mantle, hydrosphere, and atmosphere in Earth-masses.
-7. Line 16-20: set surface temperature and any temperature discontinuities.
-8. Line 21: set output file name and path.
-9. In terminal, compile changed file with `make`.
-10. Run MAGRATHEA with `./planet run/mode0.cfg`.
-11. If an error message like "error while loading shared libraries: libgsl.so.23: cannot open shared object file: No such file or directory" is reported when running the code, add `export LD_LIBRARY_PATH=/usr/local/lib` (directory of GSL library files) to the `.bashrc` file, or add `setenv LD_LIBRARY_PATH /usr/local/lib` to the `.cshrc` file.  To apply the changes immediately, execute either `source ~/.bashrc` or `source ~/.cshrc`.
+   ```bash
+   git clone https://github.com/Huang-CL/Magrathea.git
+   cd Magrathea
+   ```
+
+3. If GSL is not installed globally under `/usr/local/` or an equivalent location, edit the Magrathea `Makefile` to include the paths to the GSL headers and libraries. Add the header path after `-I` in `CFLAGS` and the library path after `-L` in `LDFLAGS`.
+
+   The paths can be found with:
+
+   ```bash
+   gsl-config --cflags
+   gsl-config --libs
+   ```
+
+   If `gsl-config` is not found, GSL may not have been installed correctly. The header path should end in `/include`, not `/include/gsl`.
+
+4. From the top-level Magrathea directory, compile the code:
+
+   ```bash
+   make -B
+   ```
+
+   After the first compilation, use `make` when source files have changed.
+
+5. Run the automated tests to check the installation and core functionality:
+
+   ```bash
+   ./planet --test
+   ```
+
+Running your first planet:
+
+6. From the top-level Magrathea directory, run the default Earth-like planet:
+
+   ```bash
+   ./planet run/mode0.cfg
+   ```
+
+6. Inspect the end of the output file to find the calculated planet radius:
+
+   ```bash
+   tail -2 result/StructureEarth.txt
+   ```
+
+The default `run/mode0.cfg` provides an Earth-like example with a core and mantle and no hydrosphere or atmosphere. 
+
+To create a different planet:
+
+7. Open `run/mode0.cfg` in a text editor.
+8. Set the masses of the core, mantle, hydrosphere, and atmosphere in Earth masses.
+9. Set the surface temperature, temperature discontinuities, and output-file path.
+10. Save the file and rerun, from the top-level Magrathea directory:
+
+```bash
+./planet run/mode0.cfg
+```
+
+Changes to a `.cfg` file do not require recompilation. Run `make` only after changing C++ source files.
+
+If an error such as `error while loading shared libraries: libgsl.so.23: cannot open shared object file` occurs, add the GSL library directory to your shell environment. For Bash:
+
+```bash
+export LD_LIBRARY_PATH=/usr/local/lib
+source ~/.bashrc
+```
+
+For C shell:
+
+```csh
+setenv LD_LIBRARY_PATH /usr/local/lib
+source ~/.cshrc
+```
+
+Replace `/usr/local/lib` with the location of your GSL library files when necessary.
+
 
 ## Capability and Output ##
 
-MAGRATHEA uses a shooting to a fitting-point method with a Runge-Kutta-Fehlberg method with an adaptive step-size. The user's supplied mass fractions determine the enclosed mass at each layer's boundary. Within a layer the enclosed mass at which the phase changes is determined by P-T conditions. When a phase changes, the solver backs up to find the exact location of the phase change. The fitting point is at 20% the mass of the planet. The solver integrates until the inner and outer branch of integration agree at the fitting point with a relative error less than 10<sup>-4</sup>.
+Magrathea uses a shooting to a fitting-point method with a Runge-Kutta-Fehlberg method with an adaptive step-size. The user's supplied mass fractions determine the enclosed mass at each layer's boundary. Within a layer the enclosed mass at which the phase changes is determined by P-T conditions. When a phase changes, the solver backs up to find the exact location of the phase change. The fitting point is at 20% the mass of the planet. The solver integrates until the inner and outer branch of integration agree at the fitting point with a relative error less than 10<sup>-4</sup>.
 
 ### Input Modes ##
 
@@ -100,7 +172,7 @@ Any remaining mass (1-fCore-fMantle-fWater) will be put into the atmosphere.  Ex
 
 In the config file, the user sets the path to the input file and the path to where the output file should be created. The full solver from mode 0 can be used by setting `solver=1` and the temperature-free solver can be used with `solver=2` (solver=1 is recommended). For `solver=1`, the surface temperature and temperature jumps are defined in the same way as mode 0. These parameters will be used in the `multiplanet()` function from `src/compfind.cpp`.
 
-MAGRATHEA will generate an output file with mass of core, mantle, water, and atmosphere and the radius of the core, mantle, water, and planet for each line in the input file.  If the solution crosses the part of the phase diagram that the code has not been fully implemented, "Dummy EOS used" is added to the end of the row.  If the solver cannot find the solution that meets the required accuracy with the given number of iteration, "Solution did not converge" is added.  "No solution found" is also possible in the output if the solver failed to find a solution.
+Magrathea will generate an output file with mass of core, mantle, water, and atmosphere and the radius of the core, mantle, water, and planet for each line in the input file.  If the solution crosses the part of the phase diagram that the code has not been fully implemented, "Dummy EOS used" is added to the end of the row.  If the solver cannot find the solution that meets the required accuracy with the given number of iteration, "Solution did not converge" is added.  "No solution found" is also possible in the output if the solver failed to find a solution.
 
 ### mode4.cfg ###
 
@@ -120,7 +192,7 @@ The **partial mass ratio (PMR%)** is given by the percentage ratio of the outer 
 
 The surface temperature and temperature jumps are defined in the same way as mode 0. The above parameters will be used in the `compfinder()` function from `src/compfind.cpp`.
 
-MAGRATHEA will use the full solver from mode 0 and for each mass and target radius in the input file and will first find the radius of a planet with no unkown mass and the rest of the mass distributed according to the PMR. A secant method is then used to find the unkown mass which is needed to match the planet radius. If a negative mass is needed an error is printed in the output file. An output file with mass of core, mantle, water, and atmosphere and the radius of the core, mantle, water, and planet and the target radius for each line in the input file and for each PMR. If the target radius is not matched within the error tolerance in 30 interations the finder moves to the next PMR or next line in the input file.
+Magrathea will use the full solver from mode 0 and for each mass and target radius in the input file and will first find the radius of a planet with no unkown mass and the rest of the mass distributed according to the PMR. A secant method is then used to find the unkown mass which is needed to match the planet radius. If a negative mass is needed an error is printed in the output file. An output file with mass of core, mantle, water, and atmosphere and the radius of the core, mantle, water, and planet and the target radius for each line in the input file and for each PMR. If the target radius is not matched within the error tolerance in 30 interations the finder moves to the next PMR or next line in the input file.
 
 ### mode5,6,7.cfg ###
 
@@ -134,11 +206,11 @@ This mode is our MCMC method which returns samples of interior solutions for a p
 
 In the config file, the user sets the median and one sigma uncertainties for mass and radius. The user also designates the number of layers to solve---either 2 for core/mantle, 3 for core/mantle/hydrosphere, or 4 for core/mantle/hydrosphere/atmosphere. The user then defines the number of chains and the steps per chain to use for the planet. The surface temperature, temperature jumps, and phase diagrams are defined in the same way as mode 0. The above parameters will be used in the `mcmcsample()` function from `src/compfind.cpp`.
 
-MAGRATHEA will use the full solver from mode 0 and step through the parameter space of mass and mass fractions for the given number of layers using a metropolis hastings algorithm. We suggest using at least 3 chains and 1000 steps per chain. The run time can be approximated as chain*steps seconds, but depends on the planet and the user's computer. The output is a tab separated file with the samples of mass and mass fraction of each layer with the calculated log-likelihood and radius of the planet.
+Magrathea will use the full solver from mode 0 and step through the parameter space of mass and mass fractions for the given number of layers using a metropolis hastings algorithm. We suggest using at least 3 chains and 1000 steps per chain. The run time can be approximated as chain*steps seconds, but depends on the planet and the user's computer. The output is a tab separated file with the samples of mass and mass fraction of each layer with the calculated log-likelihood and radius of the planet.
 
 ## Build your own planet model ##
 
-MAGRATHEA is built for model flexibility with transparent storage structures for equations of state (EoS) and phase diagrams. We make it easy for users to build a reproduceable model and cite the material measurements that have gone into the model.
+Magrathea is built for model flexibility with transparent storage structures for equations of state (EoS) and phase diagrams. We make it easy for users to build a reproduceable model and cite the material measurements that have gone into the model.
 
 The built-in EoSs for various planet building materials and phases are listed in the file `EOSlist.h`.  The detailed definition of each one can be found in `EOSlist.cpp`.
 
@@ -331,9 +403,9 @@ We are open to collaborations! Emails found on websites above.
 
 _**Where do I find other codes for exoplanet modeling?**_
 
-MAGRATHEA and many other useful exoplanet-related codes are archived on NASA's [Exoplanet Modeling and Analysis Center](https://emac.gsfc.nasa.gov/).
+Magrathea and many other useful exoplanet-related codes are archived on NASA's [Exoplanet Modeling and Analysis Center](https://emac.gsfc.nasa.gov/).
 
-_**Where does the name MAGRATHEA come from?**_
+_**Where does the name Magrathea come from?**_
 
 Magrathea is a fictional planet in Douglas Adams's *The Hitchiker's Guide to the Galaxy*: 
 
@@ -345,6 +417,6 @@ Magrathea itself disappeared and its memory soon passed into the obscurity of le
 
 ---
 
-*MAGRATHEA is or has been supported by the [Nevada Center for Astrophysics](https://www.physics.unlv.edu/~bzhang/NCfA.html), the University of Nevada, Las Vegas's [Physics & Astronomy Department](https://www.physics.unlv.edu/) and [Star & Planet Formation Group](https://unlv-spfg.github.io/), the [Astrophysics Research Center](https://arco.org.il/) of the Open University of Israel, and the University of Arizona's [Lunar and Planetary Laboratory](https://www.lpl.arizona.edu/)*
+*Magrathea is or has been supported by the [Nevada Center for Astrophysics](https://www.physics.unlv.edu/~bzhang/NCfA.html), the University of Nevada, Las Vegas's [Physics & Astronomy Department](https://www.physics.unlv.edu/) and [Star & Planet Formation Group](https://unlv-spfg.github.io/), the [Astrophysics Research Center](https://arco.org.il/) of the Open University of Israel, and the University of Arizona's [Lunar and Planetary Laboratory](https://www.lpl.arizona.edu/)*
 
 *We want to thank the many users and supporters of this code. We greatly appreciate the contributions, discussions, and support of [Allona Vazan](https://www.openu.ac.il/en/personalsites/AllonaVazan.aspx), [Michael Lozovsky](https://michloz8.wixsite.com/michael-lozovsky), [Ashkan Salamat](https://nexcl.unlv.edu/the-team/ashkan-salamat), and [Piyush Puranik](https://github.com/preppie22)*
