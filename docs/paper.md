@@ -96,8 +96,9 @@ Since the initial release [@Huang:2022], Magrathea has undergone expansions in p
 
 - **Input handling:** All input parameters were moved to `run/*.cfg` files with descriptive keys.
 - **Parallelization:** Bulk runs and composition finder routines can exploit OpenMP in `compfind.cpp` enabling execution with multiple threads.
+- **Built-in numerical tests:** The `./planet --test` option verifies pressure--density inversion for an analytical Vinet EOS and compares the structure solver for a constant-density planet against its analytical radius.
 - **Diagnostics:** More informative error messages are returned when solutions fail to converge.
-- **Tutorial and documentation:** A guided set of examples and practice problems resides in the `docs/` folder with online documentation at [magrathea.readthedocs.io](https://magrathea.readthedocs.io)
+- **Tutorial and documentation:** A guided set of examples and practice problems resides in the `docs/` folder with online documentation at [magrathea.readthedocs.io](https://magrathea.readthedocs.io).
 
 Together, these changes make Magrathea v2 a substantially expanded platform rather than a simple update to the default planet model. 
 

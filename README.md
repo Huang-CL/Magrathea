@@ -81,7 +81,7 @@ Installation:
 5. Run the automated tests to check the installation and core functionality:
 
    ```bash
-   make test
+   ./planet --test
    ```
 
 Running your first planet:

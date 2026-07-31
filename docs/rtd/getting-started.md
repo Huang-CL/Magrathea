@@ -86,7 +86,7 @@ This creates an executable named **`planet`** in the project directory. After th
 Run the automated tests to check the installation and core functionality:
 
 ```bash
-make test
+./planet --test
 ```
 
 \---
