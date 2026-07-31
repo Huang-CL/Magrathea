@@ -92,7 +92,7 @@ Running your first planet:
    ./planet run/mode0.cfg
    ```
 
-6. Inspect the end of the output file to find the calculated planet radius:
+7. Inspect the end of the output file to find the calculated planet radius:
 
    ```bash
    tail -2 result/StructureEarth.txt
@@ -102,10 +102,10 @@ The default `run/mode0.cfg` provides an Earth-like example with a core and mantl
 
 To create a different planet:
 
-7. Open `run/mode0.cfg` in a text editor.
-8. Set the masses of the core, mantle, hydrosphere, and atmosphere in Earth masses.
-9. Set the surface temperature, temperature discontinuities, and output-file path.
-10. Save the file and rerun, from the top-level Magrathea directory:
+8. Open `run/mode0.cfg` in a text editor.
+9. Set the masses of the core, mantle, hydrosphere, and atmosphere in Earth masses.
+10. Set the surface temperature, temperature discontinuities, and output-file path.
+11. Save the file and rerun, from the top-level Magrathea directory:
 
 ```bash
 ./planet run/mode0.cfg
