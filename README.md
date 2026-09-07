@@ -176,7 +176,7 @@ Magrathea will generate an output file with mass of core, mantle, water, and atm
 
 ### mode4.cfg ###
 
-This mode is our composition finder which finds the mass fraction of an unkown layer for a planet of given mass and radius. Requires a space separated file, where each row of the table lists a planet's total mass in Earth-masses and radius in Earth-radii.
+This mode is our composition finder which finds the mass fraction of an unknown layer for a planet of given mass and radius. Requires a space separated file, where each row of the table lists a planet's total mass in Earth-masses and radius in Earth-radii.
 
 Example input file:
 
@@ -305,7 +305,7 @@ Atmosphere | "gas_default" | Ideal Gas: Isothermal for P<100 bar. Adiabatic idea
 
 ### Adding new phase diagrams ###
 
-Saving a phase diagram for repeated use and comparison with others is often helpful. There is a number of places where a new phase diagram needs to be added. First, define the new `find_phase_X_Y` in `phase.h` then create the function using conidtionals which return an EoS in `phase.cpp` folowing the example of other find_phase functions. Then later in `phase.cpp` pass the function into a phase diagram (`PhaseDgm`) and the layer to which it belongs. Give the `PhaseDgm` a new name (we suggest to continue to interate on our format) and add this new PhaseDgm near the end of `phase.h`. Lastly in `main.cpp` the parser must find the user defined string in the config file and pass it to the vector of phase diagrams in the `//Set Phase Diagrams` section. Write a new conditional for the correct layer and set the correct position in the vector to your new `PhaseDgm`.
+Saving a phase diagram for repeated use and comparison with others is often helpful. There is a number of places where a new phase diagram needs to be added. First, define the new `find_phase_X_Y` in `phase.h` then create the function using conidtionals which return an EoS in `phase.cpp` following the example of other find_phase functions. Then later in `phase.cpp` pass the function into a phase diagram (`PhaseDgm`) and the layer to which it belongs. Give the `PhaseDgm` a new name (we suggest to continue to interate on our format) and add this new PhaseDgm near the end of `phase.h`. Lastly in `main.cpp` the parser must find the user defined string in the config file and pass it to the vector of phase diagrams in the `//Set Phase Diagrams` section. Write a new conditional for the correct layer and set the correct position in the vector to your new `PhaseDgm`.
 
 
 ### Useful unit conversions ###
