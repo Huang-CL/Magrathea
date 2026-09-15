@@ -54,7 +54,7 @@ Magrathea is an open-source C++ code for modeling the internal structure of diff
 
 # Statement of need
 
-Constraining a planet’s composition is essential for understanding its formation and evolution. Observations of mass and radius alone are not sufficient, since many different interiors can yield the same bulk density. Interior structure solvers are therefore essential tools for constraining possible compositions. With observational programs routinely measuring the densities of small to large planets, researchers require codes with models that are transparent and flexible which can adapt as our understanding of planet mineralogy changes.
+Constraining a planet’s composition is essential for understanding its formation and evolution. Observations of mass and radius alone are not sufficient, since many different interiors can yield the same bulk density. Interior structure solvers are therefore essential tools for constraining possible compositions. With observational programs routinely measuring the densities of small to large planets, researchers require codes with models that are transparent, are flexible, and can adapt as our understanding of planet mineralogy changes.
 
 Magrathea is designed as such a platform. Rather than enforcing a fixed planet model, Magrathea provides a framework in which users can define their own phase diagrams, equations of state (EOS), and thermal profiles. The goal is not one preferred interior model, but a fast and readable code base for building and testing many of them. With the continued expansion of the physics and usability in Version 2.0, Magrathea helps the community keep up with the growing precision of exoplanet observations and experimental constraints on planetary materials.
 
@@ -62,11 +62,11 @@ Magrathea is designed as such a platform. Rather than enforcing a fixed planet m
 
 The field includes several open tools for planet interior structure modeling. We point readers to the large tables of tools in @Acuna:2025 and @Baumeister:2025 for a broader summary, and highlight four examples here to illustrate the range of current approaches. GASTLI [@Acuna:2025] focuses on volatile-rich planets and coupled interior--atmosphere models. ExoPlex [@Unterborn:2023] emphasizes the mineralogy of predominantly rocky planets. ExoInt [@Wang:2019] adds modules that use stellar elemental abundances and devolatilization relationships to constrain planetary bulk composition. PALEOS [@Attia:2026] provides multi-phase, tabulated equations of state for rapid interpolation in planetary structure and evolution models.
 
-Within this landscape, Magrathea emphasizes flexibility in constructing differentiated planet models and provides a growing set of run modes for different use cases. Users have explicit control over phase diagrams and EOS choices in each differentiated layer allowing for diverse planet models from sub-Earth to Neptune-mass planets. Magrathea allows users to swap mineral physics assumptions quickly, run forward models fast enough for large sweeps, and test how interior assumptions propagate into inferred compositions. The combination of modularity and speed from the C++ implementation is the main reason we seek to build on Magrathea.
+Within this landscape, Magrathea emphasizes flexibility in constructing differentiated planet models and provides a growing set of run modes for different use cases. Users have explicit control over phase diagrams and EOS choices in each differentiated layer allowing for diverse planet models from sub-Earth to Neptune-mass planets. Magrathea allows users to swap mineral physics assumptions quickly, run forward models fast enough for large parameter sweeps, and test how interior assumptions propagate into inferred compositions. The combination of modularity and speed from the C++ implementation is the main reason we seek to build on Magrathea.
 
 # Software design
 
-The core solver of Magrathea is a one-dimensional, spherically symmetric integrator of the equations of hydrostatic equilibrium, mass continuity, temperature gradient, and equation of state. For a user-defined planet consisting of up to four differentiated layers, the code integrates inward and outward solutions using a shooting-to-fitting-point method with adaptive Runge--Kutta--Fehlberg stepping. The solver returns the radius of the planet, the radii of each compositional boundary, and profiles of pressure, temperature, density, and phase as functions of enclosed mass. Solving one planet takes about one second for most configurations.
+The core solver of Magrathea is a one-dimensional, spherically symmetric integrator of the equations of hydrostatic equilibrium, mass continuity, temperature gradient, and equation of state. For a user-defined planet consisting of up to four differentiated layers, the code integrates inward and outward solutions using a shooting-to-fitting-point method with adaptive Runge--Kutta--Fehlberg stepping. The solver returns the radius of the planet, the radius of each compositional boundary, and profiles of pressure, temperature, density, and phase as functions of enclosed mass. Solving one planet takes about one second for most configurations.
 
 A key design choice is modularity. A large variety of EOS forms are supported in `EOS.cpp`, including Birch--Murnaghan, Vinet, Holzapfel, Keane, ideal and van der Waals gases, Debye or Einstein thermal terms, and tabulated EOS. Parameters for each material are defined in a library of more than 70 EOS in `EOSlist.cpp`. Phase diagrams for each layer define which material is used at a given pressure--temperature condition in `phase.cpp`. Alternative phase diagrams are also stored in a library and can be selected at run time.
 
@@ -76,38 +76,38 @@ Magrathea separates the solver from the model. The code offers nine run modes th
 
 Since the initial release [@Huang:2022], Magrathea has undergone expansions in physics, solvers, and usability.
 
-**New physical models and materials**
+## New physical models and materials
 
-- **Default Mantle:** Added upper-mantle polymorphs of Mg$_2$SiO$_4$ (forsterite, wadsleyite, ringwoodite) [@Dorogokupets:2015], see \autoref{fig:phases}.
-- **Default Hydrosphere:** Updated H$_2$O EOS and phase boundaries for ices [@Journaux:2020], liquid and gas [@Wagner:2002], and supercritical water [@Mazevet:2019], largely inspired by the AQUA package [@Haldemann:2020], see \autoref{fig:phases}.
-- **Additional Gas EOS:** Including the solar-metallicity hydrogen/helium table from @Chabrier:2021 and van der Waals gases.
-- **Carbon Mantles:** EOS and phase diagrams for phases of carbon [@Lowitzer:2006; @Benedict:2014] and silicon carbide [@Miozzi:2018], see \autoref{fig:phases}.
+- **Default mantle:** Added upper-mantle polymorphs of Mg$_2$SiO$_4$ [forsterite, wadsleyite, ringwoodite\; @Dorogokupets:2015], see \autoref{fig:phases}.
+- **Default hydrosphere:** Updated H$_2$O EOS and phase boundaries for ices [@Journaux:2020], liquid and gas [@Wagner:2002], and supercritical water [@Mazevet:2019], largely inspired by the AQUA package [@Haldemann:2020], see \autoref{fig:phases}.
+- **Additional gas EOS:** Including the solar-metallicity hydrogen/helium table from @Chabrier:2021 and van der Waals gases.
+- **Carbon mantles:** EOS and phase diagrams for phases of carbon [@Lowitzer:2006; @Benedict:2014] and silicon carbide [@Miozzi:2018], see \autoref{fig:phases}.
 - **EOS library growth:** Including the AQUA table [@Haldemann:2020], fcc- and bcc-iron [@Dorogokupets:2017], and mantle materials from @Stixrude:2011.
 
-**New functionality and solvers**
+## New functionality and solvers
 
-- **Composition finders:**  
-  - A secant-method routine that determines the mass of a third unknown layer given a target mass, radius, and ratio between the other two layers, looped over layer ratios and mass--radius posterior draws.  
+- **Composition finders:**
+  - A secant-method routine that determines the mass of a third unknown layer given a target mass, radius, and ratio between the other two layers, looped over layer ratios and mass--radius posterior draws.
   - A Markov chain Monte Carlo routine following @Rogers:2010 and @Dorn:2015 for probabilistic composition inference given mass, radius, and associated uncertainties with the Metropolis--Hastings method.
 - **Tabulated EOS:** Support for tabulated $P$--$T$--$\rho$--$\nabla T_S$ EOS tables using bilinear interpolation.
 - **Modular phase diagrams:** Users can store multiple phase-diagram configurations and call them in the configuration file, for example switching between silicate and carbon mantle models without recompiling.
 
-**Usability**
+## Usability
 
 - **Input handling:** All input parameters were moved to `run/*.cfg` files with descriptive keys.
 - **Parallelization:** Bulk runs and composition finder routines can exploit OpenMP in `compfind.cpp` enabling execution with multiple threads.
 - **Built-in numerical tests:** The `./planet --test` option verifies pressure--density inversion for an analytical Vinet EOS and compares the structure solver for a constant-density planet against its analytical radius.
 - **Diagnostics:** More informative error messages are returned when solutions fail to converge.
-- **Tutorial and documentation:** A guided set of examples and practice problems resides in the `docs/` folder with online documentation at [magrathea.readthedocs.io](https://magrathea.readthedocs.io).
+- **Tutorial and documentation:** A guided set of examples and practice problems resides in the `docs/` folder with [online documentation](https://magrathea.readthedocs.io).
 
-Together, these changes make Magrathea v2 a substantially expanded platform rather than a simple update to the default planet model. 
+Together, these changes make Magrathea v2 a substantially expanded platform rather than a simple update to the default planet model.
 
 ![New phase diagrams in the code. Left, updated default hydrosphere. Center, default mantle with lower-pressure Mg$_2$SiO$_4$ phases. Right, carbon and SiC mantle phase diagrams. On each plot are shown the pressure--temperature conditions inside a one Earth-mass planet with different outer temperatures. The plotting script, model output files, and instructions used to reproduce this figure are available in the [JOSSPhaseDiagrams directory](https://github.com/DavidRRice/MagratheaRelatedFiles/tree/main/JOSSPhaseDiagrams).
 \label{fig:phases}](phase_panels.pdf)
 
 # Research impact statement
 
-Magrathea has been used in published work to generate mass--radius diagrams [@Taylor:2025], infer interiors of observed planets [@MacDonald:2022; @Desai:2024], connect theoretical composition from formation to observables [@Childs:2023; @Dou:2024; @Steffen:2025], and test how updated high-pressure EOS measurements and interior assumptions change inferred structures [@Huang:2021; @Lozovsky:2026]. The new composition finders are used and described in @Daspute:2025, @Rice:2025, and @Kroft:2026. 
+Magrathea has been used in published work to generate mass--radius diagrams [@Taylor:2025], infer interiors of observed planets [@MacDonald:2022; @Desai:2024], connect theoretical composition from formation to observables [@Childs:2023; @Dou:2024; @Steffen:2025], and test how updated high-pressure EOS measurements and interior assumptions change inferred structures [@Huang:2021; @Lozovsky:2026]. The new composition finders are used and described in @Daspute:2025, @Rice:2025, and @Kroft:2026.
 
 Beyond its use in published research, Magrathea is already contributing to emerging intercomparison efforts in exoplanet interior modeling. @Schulze:2026 compares EOS and material choices across common rocky-planet models and shows that those choices can change inferred compositions at a level comparable to current observational uncertainties. In that context, open and modular tools like Magrathea help make differences in physical assumptions, EOS choices, and retrieval workflows easier to isolate and test.
 
@@ -115,7 +115,7 @@ Magrathea now covers a broader set of interior assumptions, supports faster comp
 
 # AI usage disclosure
 
-Generative AI was not used to implement most of the updates described in this paper. Limited use of Generative AI was explored during development of the MCMC mode. All AI-assisted code changes were reviewed by the authors against the existing code base, and outputs were tested against other non-AI retrieval modes. Generative AI was also used in drafting and reorganizing this manuscript. All scientific claims and software descriptions were checked and revised by the authors against prior publications and the broader literature.
+Generative AI was not used to implement most of the updates described in this paper. Limited use of generative AI was explored during development of the MCMC mode. All AI-assisted code changes were reviewed by the authors against the existing code base, and outputs were tested against other non-AI retrieval modes. Generative AI was also used in drafting and reorganizing this manuscript. All scientific claims and software descriptions were checked and revised by the authors against prior publications and the broader literature.
 
 # Acknowledgements
 
